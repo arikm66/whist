@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Simple Data Entry</h2>
+    <input type="text" id="itemInput" placeholder="Enter something...">
+    <button onclick="saveData()">Save</button>
+    <ul id="list"></ul>
+
+    <script>
+        async function saveData() {
+            const content = document.getElementById('itemInput').value;
+            await fetch('/api/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
+            });
+            location.reload();
+        }
+
+        async function loadData() {
+            const res = await fetch('/api/items');
+            const data = await res.json();
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.content;
+                document.getElementById('list').appendChild(li);
+            });
+        }
+        loadData();
+    </script>
+</body>
+</html>
