@@ -134,19 +134,23 @@ module.exports = (io) => {
         const tricksAvailable = game.players[0].hand.length;
         bid = parseInt(bid);
 
-        if (bid < game.lastBid) {
-          socket.emit('error', { message: `Bid must be >= ${game.lastBid}` });
+        // New rules: min 0, max = tricksAvailable, no monotonic constraint
+        if (isNaN(bid) || bid < 0 || bid > tricksAvailable) {
+          socket.emit('error', { message: `Bid must be between 0 and ${tricksAvailable}` });
           return;
         }
 
-        if (bid < game.minBid || bid > tricksAvailable) {
-          socket.emit('error', { message: `Bid must be between ${game.minBid} and ${tricksAvailable}` });
-          return;
+        // Last bidder (dealer) cannot make total equal to tricksAvailable
+        if (player.position === game.dealer) {
+          const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
+          if (sumPrev + bid === tricksAvailable) {
+            socket.emit('error', { message: `As last bidder, you cannot bid ${bid} because total would equal ${tricksAvailable}` });
+            return;
+          }
         }
 
         // Record bid
         game.bids[player.position] = bid;
-        game.lastBid = bid;
 
         // Broadcast bid to all players
         io.to(roomCode).emit('bidPlaced', { position: player.position, bid, game });
@@ -265,6 +269,11 @@ function generateRoomCode() {
 async function startGame(roomCode, io) {
   try {
     const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+    
+    // Initialize dealer if not set (first game)
+    if (game.dealer === undefined) {
+      game.dealer = 0;
+    }
     
     // Deal cards
     const hands = dealCards();

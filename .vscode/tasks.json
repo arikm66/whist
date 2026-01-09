@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Update bidding UI to show hand",
+			"type": "shell",
+			"command": "echo Updating GameRoom.jsx to show hand during bidding"
+		}
+	]
+}

@@ -12,6 +12,9 @@ export default function GameRoom() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [trickWinner, setTrickWinner] = useState(null);
   const [isWaitingForNextTrick, setIsWaitingForNextTrick] = useState(false);
+  const [bidValue, setBidValue] = useState('');
+  const [bidTimer, setBidTimer] = useState(null);
+  const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
 
   useEffect(() => {
     if (!user) {
@@ -41,6 +44,21 @@ export default function GameRoom() {
     socket.on('gameStarted', ({ game }) => {
       setGame(game);
       findMyPosition(game);
+    });
+
+    socket.on('bidPlaced', ({ position, bid, game }) => {
+      setGame(game);
+    });
+
+    socket.on('nextBidder', ({ game }) => {
+      setGame(game);
+      setBidValue('');
+      setBidTimeRemaining(30);
+    });
+
+    socket.on('biddingComplete', ({ game }) => {
+      setGame(game);
+      setBidValue('');
     });
 
     socket.on('cardPlayed', ({ game }) => {
@@ -79,6 +97,9 @@ export default function GameRoom() {
       socket.off('roomJoined');
       socket.off('playerJoined');
       socket.off('gameStarted');
+      socket.off('bidPlaced');
+      socket.off('nextBidder');
+      socket.off('biddingComplete');
       socket.off('cardPlayed');
       socket.off('trickComplete');
       socket.off('nextTrick');
@@ -109,6 +130,34 @@ export default function GameRoom() {
       card 
     });
   };
+
+  const handlePlaceBid = () => {
+    if (!bidValue || Number(bidValue) < 0) {
+      alert('Please enter a valid bid');
+      return;
+    }
+    socket.emit('placeBid', { 
+      roomCode, 
+      userId: user._id || user.id, 
+      bid: Number(bidValue) 
+    });
+  };
+
+  // Timer for bidding phase
+  useEffect(() => {
+    if (game && game.status === 'bidding' && Number(myPosition) === Number(game.currentBidder)) {
+      const timer = setInterval(() => {
+        setBidTimeRemaining(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [game, myPosition]);
 
   const getSuitSymbol = (suit) => {
     const symbols = { 'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠' };
@@ -199,6 +248,124 @@ export default function GameRoom() {
         </div>
       )}
 
+      {game.status === 'bidding' && (
+        <div style={{ 
+          padding: '2rem', 
+          backgroundColor: '#e3f2fd', 
+          borderRadius: '8px',
+          marginBottom: '2rem'
+        }}>
+          <h3>Bidding Phase</h3>
+          <p>Trump: {getSuitSymbol(game.trumpSuit)}</p>
+          
+          {/* Bid History */}
+          <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+            <strong>Bids Placed:</strong>
+            {game.bids.map((bid, idx) => (
+              <div key={idx} style={{ marginTop: '0.5rem' }}>
+                Player {idx + 1}: {bid !== null ? bid : 'Waiting...'}
+                {bid !== null && game.bids[idx] !== null && (
+                  <span style={{ marginLeft: '1rem', color: '#4CAF50' }}>✓</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Current Bidder */}
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: Number(game.currentBidder) === Number(myPosition) ? '#fff3cd' : '#f5f5f5',
+            borderRadius: '4px',
+            marginBottom: '1rem'
+          }}>
+            {Number(game.currentBidder) === Number(myPosition) ? (
+              <>
+                <h4>🔔 Your Turn to Bid!</h4>
+                <p style={{ color: '#d32f2f', fontWeight: 'bold' }}>Time remaining: {bidTimeRemaining}s</p>
+                <div style={{ marginTop: '1rem' }}>
+                  {(() => {
+                    const tricksAvailable = (game.players && game.players[myPosition]) ? game.players[myPosition].hand.length : (game.players && game.players[0] ? game.players[0].hand.length : 0);
+                    const isLastBidder = Number(myPosition) === Number(game.dealer);
+                    const sumPrev = game.bids.reduce((sum, b, idx) => {
+                      // Sum all placed bids except dealer's (last bidder)
+                      return sum + ((idx !== game.dealer && typeof b === 'number') ? b : 0);
+                    }, 0);
+                    const forbidden = isLastBidder ? (tricksAvailable - sumPrev) : null;
+                    return (
+                      <>
+                        <p>Bid between 0 and {tricksAvailable} tricks</p>
+                        {isLastBidder && (
+                          <p style={{ color: '#d32f2f' }}>
+                            You cannot bid {forbidden} (would equal total {tricksAvailable}).
+                          </p>
+                        )}
+                        <input
+                          type="number"
+                          min={0}
+                          max={tricksAvailable}
+                          value={bidValue}
+                          onChange={(e) => setBidValue(e.target.value)}
+                          placeholder="Enter bid"
+                          style={{ 
+                            padding: '8px', 
+                            marginRight: '8px',
+                            fontSize: '16px',
+                            border: '2px solid #2196F3',
+                            borderRadius: '4px'
+                          }}
+                        />
+                        <button 
+                          onClick={handlePlaceBid}
+                          disabled={
+                            (bidValue === '' || Number(bidValue) < 0) ||
+                            (isLastBidder && Number(bidValue) === forbidden)
+                          }
+                          style={{ 
+                            padding: '8px 16px', 
+                            backgroundColor: '#4CAF50', 
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            opacity: ((bidValue === '' || Number(bidValue) < 0) || (isLastBidder && Number(bidValue) === forbidden)) ? 0.6 : 1
+                          }}
+                        >
+                          Place Bid
+                        </button>
+                      </>
+                    );
+                  })()}
+                </div>
+              </>
+            ) : (
+              <div>
+                <p>Waiting for <strong>Player {typeof game.currentBidder === 'number' ? game.currentBidder + 1 : 'Unknown'}</strong> to place their bid...</p>
+              </div>
+            )}
+          </div>
+
+          {/* Show hand during bidding (non-interactive) */}
+          {myPlayer && (
+            <div>
+              <h3>Your Hand</h3>
+              <div style={{ 
+                display: 'flex', 
+                gap: '8px', 
+                flexWrap: 'wrap',
+                padding: '1rem',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px'
+              }}>
+                {myPlayer.hand.map(card => 
+                  renderCard(card, null, false)
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {game.status === 'playing' && (
         <>
           {/* Scores */}
@@ -233,7 +400,7 @@ export default function GameRoom() {
                   fontWeight: trickWinner === idx ? 'bold' : 'normal',
                   transition: 'font-weight 0.3s ease'
                 }}>
-                  Tricks: {player.tricksWon} {trickWinner === idx && '🎉'}
+                  Bid: {game.bids[idx]} | Tricks: {player.tricksWon} {trickWinner === idx && '🎉'}
                 </div>
                 <div>Score: {game.scores.find(s => s.position === idx)?.score || 0}</div>
               </div>

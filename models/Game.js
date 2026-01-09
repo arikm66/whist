@@ -20,10 +20,10 @@ const GameSchema = new mongoose.Schema({
     card: String
   }],
   trumpSuit: { type: String, enum: ['H', 'D', 'C', 'S', null], default: null },
-  bids: [{
-    position: Number,
-    bid: Number // Number of tricks bid
-  }],
+  bids: [Number], // Bids for each player position (0-3)
+  currentBidder: { type: Number, default: 0 }, // Which player is currently bidding
+  minBid: { type: Number, default: 1 }, // Minimum bid allowed
+  lastBid: { type: Number, default: 0 }, // Last bid placed
   scores: [{
     position: Number,
     score: { type: Number, default: 0 }
