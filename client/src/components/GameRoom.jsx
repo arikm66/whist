@@ -11,6 +11,7 @@ export default function GameRoom() {
   const [myPosition, setMyPosition] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
   const [trickWinner, setTrickWinner] = useState(null);
+  const [isWaitingForNextTrick, setIsWaitingForNextTrick] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -50,8 +51,10 @@ export default function GameRoom() {
     socket.on('trickComplete', ({ trick, winner, game }) => {
       setGame(game);
       setTrickWinner(winner);
+      setIsWaitingForNextTrick(true);
       setTimeout(() => {
         setTrickWinner(null);
+        setIsWaitingForNextTrick(false);
       }, 2500);
     });
 
@@ -97,6 +100,7 @@ export default function GameRoom() {
   const handlePlayCard = (card) => {
     if (!game || game.status !== 'playing') return;
     if (Number(myPosition) !== Number(game.currentTurn)) return;
+    if (isWaitingForNextTrick) return; // Block playing during transition
     
     setSelectedCard(card);
     socket.emit('playCard', { 
@@ -277,7 +281,7 @@ export default function GameRoom() {
                 borderRadius: '8px'
               }}>
                 {myPlayer.hand.map(card => 
-                  renderCard(card, handlePlayCard, isMyTurn)
+                  renderCard(card, handlePlayCard, isMyTurn && !isWaitingForNextTrick)
                 )}
               </div>
             </div>

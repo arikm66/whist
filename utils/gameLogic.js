@@ -26,13 +26,15 @@ function shuffleDeck(deck) {
 }
 
 // Deal cards to 4 players (13 cards each)
+// TODO: For testing, temporarily deal only 3 cards each
 function dealCards() {
   const deck = shuffleDeck(generateDeck());
+  const CARDS_PER_PLAYER = 13;
   return {
-    player0: deck.slice(0, 13),
-    player1: deck.slice(13, 26),
-    player2: deck.slice(26, 39),
-    player3: deck.slice(39, 52)
+    player0: deck.slice(0, CARDS_PER_PLAYER),
+    player1: deck.slice(CARDS_PER_PLAYER, CARDS_PER_PLAYER * 2),
+    player2: deck.slice(CARDS_PER_PLAYER * 2, CARDS_PER_PLAYER * 3),
+    player3: deck.slice(CARDS_PER_PLAYER * 3, CARDS_PER_PLAYER * 4)
   };
 }
 

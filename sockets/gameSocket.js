@@ -189,14 +189,15 @@ async function startGame(roomCode, io) {
     
     // Deal cards
     const hands = dealCards();
+    
+    // Determine trump from dealer's last card BEFORE sorting
+    const dealerHand = hands[`player${game.dealer}`];
+    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
+    
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
-    
-    // Determine trump (simplified - last card of dealer)
-    const dealerHand = game.players[game.dealer].hand;
-    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
     
     game.status = 'playing';
     game.currentTurn = (game.dealer + 1) % 4;
@@ -236,13 +237,15 @@ async function endRound(game, roomCode, io) {
     game.players.forEach(p => p.tricksWon = 0);
     
     const hands = dealCards();
+    
+    // Determine trump from dealer's last card BEFORE sorting
+    const dealerHand = hands[`player${game.dealer}`];
+    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
+    
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
-    
-    const dealerHand = game.players[game.dealer].hand;
-    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
     game.currentTurn = (game.dealer + 1) % 4;
     
     await game.save();
