@@ -47,4 +47,9 @@ const PORT = process.env.PORT || 5000;
 // Socket.io game logic
 require('./sockets/gameSocket')(io);
 
-httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+httpServer.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[${new Date().toLocaleTimeString()}] Development mode - Timestamp logging enabled`);
+  }
+});

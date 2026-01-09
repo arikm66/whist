@@ -29,6 +29,10 @@ module.exports = (io) => {
         
         socket.join(roomCode);
         socket.emit('roomCreated', { roomCode, game });
+        
+        // Broadcast new room to all connected clients
+        io.emit('roomsListUpdated');
+        
         console.log(`Room ${roomCode} created by ${email}`);
       } catch (error) {
         socket.emit('error', { message: 'Failed to create room' });
@@ -77,6 +81,9 @@ module.exports = (io) => {
         
         socket.join(roomCode);
         io.to(roomCode).emit('playerJoined', { game });
+        
+        // Notify all clients to refresh room list (player count changed)
+        io.emit('roomsListUpdated');
 
         // Start game if 4 players
         if (game.players.length === 4) {
