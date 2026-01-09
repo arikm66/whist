@@ -9,7 +9,7 @@
     "start": "node server.js",
     "client": "cd client && npm run dev",
     "build": "cd client && npm run build",
-    "install-all": "npm install && cd client && npm install && npm run build"
+    "install-all": "npm install && cd client && npm install --include=dev && npm run build"
   },
   "keywords": [],
   "author": "",
