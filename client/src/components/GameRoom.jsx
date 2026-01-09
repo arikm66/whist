@@ -143,6 +143,16 @@ export default function GameRoom() {
     });
   };
 
+  const handleSelectBid = (value) => {
+    if (typeof value !== 'number') return;
+    setBidValue(String(value));
+    socket.emit('placeBid', {
+      roomCode,
+      userId: user._id || user.id,
+      bid: value
+    });
+  };
+
   // Timer for bidding phase
   useEffect(() => {
     if (game && game.status === 'bidding' && Number(myPosition) === Number(game.currentBidder)) {
@@ -287,52 +297,51 @@ export default function GameRoom() {
                     const tricksAvailable = (game.players && game.players[myPosition]) ? game.players[myPosition].hand.length : (game.players && game.players[0] ? game.players[0].hand.length : 0);
                     const isLastBidder = Number(myPosition) === Number(game.dealer);
                     const sumPrev = game.bids.reduce((sum, b, idx) => {
-                      // Sum all placed bids except dealer's (last bidder)
                       return sum + ((idx !== game.dealer && typeof b === 'number') ? b : 0);
                     }, 0);
                     const forbidden = isLastBidder ? (tricksAvailable - sumPrev) : null;
+                    const numbers = Array.from({ length: tricksAvailable + 1 }, (_, i) => i);
                     return (
                       <>
-                        <p>Bid between 0 and {tricksAvailable} tricks</p>
+                        <p>Choose your bid (0–{tricksAvailable})</p>
                         {isLastBidder && (
                           <p style={{ color: '#d32f2f' }}>
                             You cannot bid {forbidden} (would equal total {tricksAvailable}).
                           </p>
                         )}
-                        <input
-                          type="number"
-                          min={0}
-                          max={tricksAvailable}
-                          value={bidValue}
-                          onChange={(e) => setBidValue(e.target.value)}
-                          placeholder="Enter bid"
-                          style={{ 
-                            padding: '8px', 
-                            marginRight: '8px',
-                            fontSize: '16px',
-                            border: '2px solid #2196F3',
-                            borderRadius: '4px'
-                          }}
-                        />
-                        <button 
-                          onClick={handlePlaceBid}
-                          disabled={
-                            (bidValue === '' || Number(bidValue) < 0) ||
-                            (isLastBidder && Number(bidValue) === forbidden)
-                          }
-                          style={{ 
-                            padding: '8px 16px', 
-                            backgroundColor: '#4CAF50', 
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            opacity: ((bidValue === '' || Number(bidValue) < 0) || (isLastBidder && Number(bidValue) === forbidden)) ? 0.6 : 1
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(4, 60px)',
+                            gap: '10px',
+                            marginTop: '8px'
                           }}
                         >
-                          Place Bid
-                        </button>
+                          {numbers.map((num) => {
+                            const isDisabled = isLastBidder && num === forbidden;
+                            const isSelected = String(num) === String(bidValue);
+                            return (
+                              <button
+                                key={num}
+                                onClick={() => !isDisabled && handleSelectBid(num)}
+                                disabled={isDisabled}
+                                style={{
+                                  width: '60px',
+                                  height: '60px',
+                                  borderRadius: '8px',
+                                  border: isSelected ? '2px solid #1976D2' : '2px solid #ccc',
+                                  backgroundColor: isDisabled ? '#eee' : (isSelected ? '#BBDEFB' : 'white'),
+                                  color: isDisabled ? '#999' : '#333',
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  cursor: isDisabled ? 'not-allowed' : 'pointer'
+                                }}
+                              >
+                                {num}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </>
                     );
                   })()}

@@ -100,7 +100,7 @@ function isValidPlay(card, hand, leadSuit, currentTrick) {
   return hand.includes(card);
 }
 
-// Sort hand by suit and value
+// Sort hand by suit, then by value ascending (smallest to the left)
 function sortHand(hand) {
   const suitOrder = { 'S': 0, 'H': 1, 'C': 2, 'D': 3 };
   
@@ -112,7 +112,7 @@ function sortHand(hand) {
       return suitOrder[suitA] - suitOrder[suitB];
     }
     
-    return getCardValue(b) - getCardValue(a);
+    return getCardValue(a) - getCardValue(b);
   });
 }
 
