@@ -104,6 +104,78 @@ module.exports = (io) => {
       }
     });
 
+    // Place bid during bidding phase
+    socket.on('placeBid', async ({ roomCode, userId, bid }) => {
+      try {
+        const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        
+        if (!game) {
+          socket.emit('error', { message: 'Game not found' });
+          return;
+        }
+
+        if (game.status !== 'bidding') {
+          socket.emit('error', { message: 'Not in bidding phase' });
+          return;
+        }
+
+        const player = game.players.find(p => p.userId.toString() === userId.toString());
+        if (!player) {
+          socket.emit('error', { message: 'Player not in game' });
+          return;
+        }
+
+        if (player.position !== game.currentBidder) {
+          socket.emit('error', { message: 'Not your turn to bid' });
+          return;
+        }
+
+        // Validate bid
+        const tricksAvailable = game.players[0].hand.length;
+        bid = parseInt(bid);
+
+        if (bid < game.lastBid) {
+          socket.emit('error', { message: `Bid must be >= ${game.lastBid}` });
+          return;
+        }
+
+        if (bid < game.minBid || bid > tricksAvailable) {
+          socket.emit('error', { message: `Bid must be between ${game.minBid} and ${tricksAvailable}` });
+          return;
+        }
+
+        // Record bid
+        game.bids[player.position] = bid;
+        game.lastBid = bid;
+
+        // Broadcast bid to all players
+        io.to(roomCode).emit('bidPlaced', { position: player.position, bid, game });
+
+        // Move to next bidder
+        const bidsReceived = game.bids.filter(b => b !== null).length;
+        if (bidsReceived === 4) {
+          // All bids received, move to playing phase
+          game.status = 'playing';
+          game.currentTurn = (game.dealer + 1) % 4;
+          game.currentTrick = [];
+          game.leadSuit = null;
+          
+          await game.save();
+          activeGames.set(roomCode, game);
+          io.to(roomCode).emit('biddingComplete', { game });
+        } else {
+          // Move to next bidder
+          game.currentBidder = (game.currentBidder + 1) % 4;
+          await game.save();
+          activeGames.set(roomCode, game);
+          io.to(roomCode).emit('nextBidder', { game });
+        }
+      } catch (error) {
+        console.error('Place bid error:', error);
+        socket.emit('error', { message: 'Failed to place bid' });
+      }
+    });
+
     // Play a card
     socket.on('playCard', async ({ roomCode, userId, card }) => {
       try {
@@ -206,8 +278,12 @@ async function startGame(roomCode, io) {
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
     
-    game.status = 'playing';
-    game.currentTurn = (game.dealer + 1) % 4;
+    // Initialize bidding phase
+    game.status = 'bidding';
+    game.bids = [null, null, null, null]; // Bids for each position
+    game.currentBidder = (game.dealer + 1) % 4; // Player after dealer bids first
+    game.minBid = game.players[0].hand.length <= 5 ? 1 : 5; // Min bid = 1 for 5 or fewer cards
+    game.lastBid = 0; // Track last bid for monotonic increase validation
     
     await game.save();
     activeGames.set(roomCode, game);
@@ -219,11 +295,22 @@ async function startGame(roomCode, io) {
 }
 
 async function endRound(game, roomCode, io) {
-  // Calculate scores (simplified scoring)
+  // Calculate scores based on bidding
   game.players.forEach((player, idx) => {
+    const bid = game.bids[idx];
+    const tricksWon = player.tricksWon;
+    let roundScore = 0;
+
+    if (bid === tricksWon) {
+      // Exact match: +10 + tricks²
+      roundScore = 10 + (tricksWon * tricksWon);
+    } else {
+      // Over/under bid: -10 for every gap
+      const gap = Math.abs(bid - tricksWon);
+      roundScore = -10 * gap;
+    }
+
     const existingScore = game.scores.find(s => s.position === idx);
-    const roundScore = player.tricksWon;
-    
     if (existingScore) {
       existingScore.score += roundScore;
     } else {
@@ -253,7 +340,13 @@ async function endRound(game, roomCode, io) {
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
-    game.currentTurn = (game.dealer + 1) % 4;
+    
+    // Initialize bidding phase for new round
+    game.status = 'bidding';
+    game.bids = [null, null, null, null];
+    game.currentBidder = (game.dealer + 1) % 4;
+    game.minBid = game.players[0].hand.length <= 5 ? 1 : 5;
+    game.lastBid = 0;
     
     await game.save();
     activeGames.set(roomCode, game);
