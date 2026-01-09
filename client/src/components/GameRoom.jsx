@@ -10,6 +10,7 @@ export default function GameRoom() {
   const [game, setGame] = useState(null);
   const [myPosition, setMyPosition] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [trickWinner, setTrickWinner] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -48,9 +49,10 @@ export default function GameRoom() {
 
     socket.on('trickComplete', ({ trick, winner, game }) => {
       setGame(game);
+      setTrickWinner(winner);
       setTimeout(() => {
-        // Show trick winner
-      }, 2000);
+        setTrickWinner(null);
+      }, 2500);
     });
 
     socket.on('nextTrick', ({ game }) => {
@@ -94,7 +96,7 @@ export default function GameRoom() {
 
   const handlePlayCard = (card) => {
     if (!game || game.status !== 'playing') return;
-    if (myPosition !== game.currentTurn) return;
+    if (Number(myPosition) !== Number(game.currentTurn)) return;
     
     setSelectedCard(card);
     socket.emit('playCard', { 
@@ -150,7 +152,7 @@ export default function GameRoom() {
   }
 
   const myPlayer = game.players.find(p => p.position === myPosition);
-  const isMyTurn = game.currentTurn === myPosition;
+  const isMyTurn = Number(game.currentTurn) === Number(myPosition);
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -202,38 +204,65 @@ export default function GameRoom() {
             marginBottom: '2rem',
             backgroundColor: '#f9f9f9',
             padding: '1rem',
-            borderRadius: '8px'
+            borderRadius: '8px',
+            alignItems: 'stretch'
           }}>
             {game.players.map((player, idx) => (
-              <div key={idx} style={{ flex: 1 }}>
-                <strong>Player {idx + 1}</strong>
-                <div>Tricks: {player.tricksWon}</div>
+              <div 
+                key={idx} 
+                style={{ 
+                  flex: '1 1 0',
+                  minWidth: 0,
+                  backgroundColor: trickWinner === idx ? '#4CAF50' : 'transparent',
+                  color: trickWinner === idx ? 'white' : 'inherit',
+                  padding: '0.5rem',
+                  borderRadius: '4px',
+                  transition: 'background-color 0.3s ease, color 0.3s ease',
+                  minHeight: '80px',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <strong>
+                  Player {idx + 1} {idx === myPosition && '(You)'}
+                </strong>
+                <div style={{ 
+                  fontWeight: trickWinner === idx ? 'bold' : 'normal',
+                  transition: 'font-weight 0.3s ease'
+                }}>
+                  Tricks: {player.tricksWon} {trickWinner === idx && '🎉'}
+                </div>
                 <div>Score: {game.scores.find(s => s.position === idx)?.score || 0}</div>
               </div>
             ))}
           </div>
 
           {/* Current Trick */}
-          {game.currentTrick.length > 0 && (
-            <div style={{ 
-              marginBottom: '2rem',
-              padding: '2rem',
-              backgroundColor: '#e8f5e9',
-              borderRadius: '8px'
-            }}>
-              <h3>Current Trick</h3>
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                {game.currentTrick.map((play, idx) => (
+          {/* Current Trick */}
+          <div style={{ 
+            marginBottom: '2rem',
+            padding: '2rem',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '8px',
+            minHeight: '180px'
+          }}>
+            <h3>Current Trick</h3>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              {game.currentTrick.length > 0 ? (
+                game.currentTrick.map((play, idx) => (
                   <div key={idx} style={{ textAlign: 'center' }}>
                     <div style={{ marginBottom: '0.5rem', fontSize: '12px' }}>
                       Player {play.position + 1}
                     </div>
                     {renderCard(play.card, null, false)}
                   </div>
-                ))}
-              </div>
+                ))
+              ) : (
+                <div style={{ color: '#666', fontStyle: 'italic' }}>
+                  Waiting for first card...
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* My Hand */}
           {myPlayer && (
