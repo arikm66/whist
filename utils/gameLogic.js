@@ -102,7 +102,7 @@ function isValidPlay(card, hand, leadSuit, currentTrick) {
 
 // Sort hand by suit and value
 function sortHand(hand) {
-  const suitOrder = { 'S': 0, 'H': 1, 'D': 2, 'C': 3 };
+  const suitOrder = { 'S': 0, 'H': 1, 'C': 2, 'D': 3 };
   
   return hand.sort((a, b) => {
     const suitA = getCardSuit(a);
