@@ -65,8 +65,19 @@ export default function Lobby() {
     socket.emit('joinRoom', { roomCode: code, userId: user._id || user.id, email: user.email });
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day} ${month} ${year} ${hours}:${minutes}`;
+  };
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '1rem 2rem', maxWidth: '1400px', margin: '0 auto', width: 'calc(100% - 4rem)' }}>
       <h1>Whist Card Game - Lobby</h1>
       
       <div style={{ marginBottom: '2rem' }}>
@@ -122,6 +133,9 @@ export default function Lobby() {
                   </div>
                   <div style={{ fontSize: '14px', color: '#555' }}>
                     Players: {room.players.length}/4
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#888' }}>
+                    Created: {formatDate(room.createdAt)}
                   </div>
                 </div>
                 <button 

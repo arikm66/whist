@@ -47,7 +47,7 @@ function AppRoutes() {
   const { token } = useAuth();
 
   return (
-    <div style={{ padding: 12 }}>
+    <div style={{ padding: 12, width: '100%', maxWidth: 'none' }}>
       <Navigation />
       <Routes>
         <Route path="/" element={token ? <Lobby /> : <Navigate to="/login" replace />} />
