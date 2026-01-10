@@ -1,5 +1,5 @@
 const Game = require('../models/Game');
-const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand } = require('../utils/gameLogic');
+const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand, isValidAuctionBid, compareAuctionBids } = require('../utils/gameLogic');
 
 // Store active games in memory for faster access
 const activeGames = new Map();
@@ -104,6 +104,141 @@ module.exports = (io) => {
       }
     });
 
+    // Place auction bid or pass during auction phase
+    socket.on('placeAuctionBid', async ({ roomCode, userId, quantity, suit }) => {
+      try {
+        const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        
+        if (!game) {
+          socket.emit('error', { message: 'Game not found' });
+          return;
+        }
+
+        if (game.status !== 'auction') {
+          socket.emit('error', { message: 'Not in auction phase' });
+          return;
+        }
+
+        const player = game.players.find(p => p.userId.toString() === userId.toString());
+        if (!player) {
+          socket.emit('error', { message: 'Player not in game' });
+          return;
+        }
+
+        if (player.position !== game.auctionCurrentBidder) {
+          socket.emit('error', { message: 'Not your turn in auction' });
+          return;
+        }
+
+        if (game.auctionPassed.includes(player.position)) {
+          socket.emit('error', { message: 'You have already passed' });
+          return;
+        }
+
+        const cardsDealt = game.players[0].hand.length;
+
+        // Validate auction bid
+        const bid = { quantity, suit };
+        if (!isValidAuctionBid(bid, cardsDealt, game.auctionHighestBid)) {
+          const minQty = Math.max(1, cardsDealt - 8);
+          let msg = `Invalid bid. Minimum: ${minQty}, Maximum: ${cardsDealt}`;
+          if (game.auctionHighestBid) {
+            msg += `. Must beat ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`;
+          }
+          socket.emit('error', { message: msg });
+          return;
+        }
+
+        // Record auction bid
+        game.auctionBids.push({
+          position: player.position,
+          quantity,
+          suit,
+          timestamp: new Date()
+        });
+        game.auctionHighestBid = bid;
+
+        // Broadcast auction bid to all players
+        io.to(roomCode).emit('auctionBidPlaced', { position: player.position, bid, game });
+
+        // Move to next bidder
+        await advanceAuctionTurn(game, roomCode, io);
+      } catch (error) {
+        console.error('Place auction bid error:', error);
+        socket.emit('error', { message: 'Failed to place auction bid' });
+      }
+    });
+
+    // Pass during auction phase
+    socket.on('passAuction', async ({ roomCode, userId }) => {
+      try {
+        const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        
+        if (!game) {
+          socket.emit('error', { message: 'Game not found' });
+          return;
+        }
+
+        if (game.status !== 'auction') {
+          socket.emit('error', { message: 'Not in auction phase' });
+          return;
+        }
+
+        const player = game.players.find(p => p.userId.toString() === userId.toString());
+        if (!player) {
+          socket.emit('error', { message: 'Player not in game' });
+          return;
+        }
+
+        if (player.position !== game.auctionCurrentBidder) {
+          socket.emit('error', { message: 'Not your turn in auction' });
+          return;
+        }
+
+        if (game.auctionPassed.includes(player.position)) {
+          socket.emit('error', { message: 'You have already passed' });
+          return;
+        }
+
+        // Record pass
+        game.auctionPassed.push(player.position);
+
+        // Broadcast pass to all players
+        io.to(roomCode).emit('auctionPassed', { position: player.position, game });
+
+        // Check if all 4 players have passed (all pass scenario)
+        if (game.auctionPassed.length === 4) {
+          // Hand is "Dead" - reshuffle and deal to next player
+          game.dealer = (game.dealer + 1) % 4;
+          game.players.forEach(p => p.tricksWon = 0);
+          
+          const hands = dealCards();
+          game.players[0].hand = sortHand(hands.player0);
+          game.players[1].hand = sortHand(hands.player1);
+          game.players[2].hand = sortHand(hands.player2);
+          game.players[3].hand = sortHand(hands.player3);
+          
+          // Restart auction
+          game.auctionCurrentBidder = (game.dealer + 1) % 4;
+          game.auctionWinner = null;
+          game.auctionHighestBid = null;
+          game.auctionPassed = [];
+          game.auctionBids = [];
+          
+          await game.save();
+          activeGames.set(roomCode, game);
+          io.to(roomCode).emit('auctionRestarted', { game });
+          return;
+        }
+
+        // Move to next bidder
+        await advanceAuctionTurn(game, roomCode, io);
+      } catch (error) {
+        console.error('Pass auction error:', error);
+        socket.emit('error', { message: 'Failed to pass' });
+      }
+    });
+
     // Place bid during bidding phase
     socket.on('placeBid', async ({ roomCode, userId, bid }) => {
       try {
@@ -140,8 +275,9 @@ module.exports = (io) => {
           return;
         }
 
-        // Last bidder (dealer) cannot make total equal to tricksAvailable
-        if (player.position === game.dealer) {
+        // Last bidder (4th player after auction winner) cannot make total equal to tricksAvailable
+        const lastBidderPos = (game.auctionWinner + 3) % 4;
+        if (player.position === lastBidderPos) {
           const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
           if (sumPrev + bid === tricksAvailable) {
             socket.emit('error', { message: `As last bidder, you cannot bid ${bid} because total would equal ${tricksAvailable}` });
@@ -160,7 +296,7 @@ module.exports = (io) => {
         if (bidsReceived === 4) {
           // All bids received, move to playing phase
           game.status = 'playing';
-          game.currentTurn = (game.dealer + 1) % 4;
+          game.currentTurn = game.auctionWinner; // Auction winner leads first trick
           game.currentTrick = [];
           game.leadSuit = null;
           
@@ -278,21 +414,21 @@ async function startGame(roomCode, io) {
     // Deal cards
     const hands = dealCards();
     
-    // Determine trump from dealer's last card BEFORE sorting
-    const dealerHand = hands[`player${game.dealer}`];
-    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
-    
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
     
-    // Initialize bidding phase
-    game.status = 'bidding';
-    game.bids = [null, null, null, null]; // Bids for each position
-    game.currentBidder = (game.dealer + 1) % 4; // Player after dealer bids first
-    game.minBid = game.players[0].hand.length <= 5 ? 1 : 5; // Min bid = 1 for 5 or fewer cards
-    game.lastBid = 0; // Track last bid for monotonic increase validation
+    // Initialize auction phase
+    game.status = 'auction';
+    game.auctionCurrentBidder = (game.dealer + 1) % 4; // Player after dealer bids first
+    game.auctionWinner = null;
+    game.auctionHighestBid = null;
+    game.auctionPassed = [];
+    game.auctionBids = [];
+    
+    // DO NOT set trump yet; it will be determined after auction
+    game.trumpSuit = null;
     
     await game.save();
     activeGames.set(roomCode, game);
@@ -361,4 +497,46 @@ async function endRound(game, roomCode, io) {
     activeGames.set(roomCode, game);
     io.to(roomCode).emit('newRound', { game });
   }
+}
+
+async function advanceAuctionTurn(game, roomCode, io) {
+  // Find next player who hasn't passed
+  let nextBidder = (game.auctionCurrentBidder + 1) % 4;
+  let turns = 0;
+
+  while (game.auctionPassed.includes(nextBidder) && turns < 4) {
+    nextBidder = (nextBidder + 1) % 4;
+    turns++;
+  }
+
+  // Check if auction is complete (3 have passed, 1 remains)
+  if (game.auctionPassed.length === 3) {
+    // Auction winner is the only player who hasn't passed
+    const winner = [0, 1, 2, 3].find(pos => !game.auctionPassed.includes(pos));
+    game.auctionWinner = winner;
+
+    // Set trump suit from auction winner's bid
+    if (game.auctionHighestBid) {
+      game.trumpSuit = game.auctionHighestBid.suit === 'NT' ? null : game.auctionHighestBid.suit;
+    }
+
+    // Initialize bidding phase with auction winner's bid
+    game.status = 'bidding';
+    game.bids = [null, null, null, null];
+    game.bids[winner] = game.auctionHighestBid.quantity; // Auction winner's bid is fixed
+    game.currentBidder = (winner + 1) % 4; // Next player after winner starts bidding
+    game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
+    game.lastBid = 0;
+
+    await game.save();
+    activeGames.set(roomCode, game);
+    io.to(roomCode).emit('auctionComplete', { game });
+    return;
+  }
+
+  // Update current bidder and continue auction
+  game.auctionCurrentBidder = nextBidder;
+  await game.save();
+  activeGames.set(roomCode, game);
+  io.to(roomCode).emit('auctionNextBidder', { game });
 }

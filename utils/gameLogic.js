@@ -116,6 +116,40 @@ function sortHand(hand) {
   });
 }
 
+// Auction phase helpers
+function getAuctionSuitRank(suit) {
+  // Clubs < Diamonds < Hearts < Spades < No-Trump
+  const ranks = { 'C': 0, 'D': 1, 'H': 2, 'S': 3, 'NT': 4 };
+  return ranks[suit] !== undefined ? ranks[suit] : -1;
+}
+
+// Compare two auction bids. Returns 1 if bid1 > bid2, -1 if bid1 < bid2, 0 if equal
+function compareAuctionBids(bid1, bid2) {
+  if (bid1.quantity > bid2.quantity) return 1;
+  if (bid1.quantity < bid2.quantity) return -1;
+  
+  const suit1Rank = getAuctionSuitRank(bid1.suit);
+  const suit2Rank = getAuctionSuitRank(bid2.suit);
+  
+  if (suit1Rank > suit2Rank) return 1;
+  if (suit1Rank < suit2Rank) return -1;
+  return 0;
+}
+
+// Validate auction bid against minimum and previous highest bid
+function isValidAuctionBid(bid, cardsDealt, highestBid) {
+  const minQuantity = Math.max(1, cardsDealt - 8);
+  if (bid.quantity < minQuantity || bid.quantity > cardsDealt) {
+    return false;
+  }
+  
+  if (highestBid && compareAuctionBids(bid, highestBid) <= 0) {
+    return false;
+  }
+  
+  return true;
+}
+
 module.exports = {
   generateDeck,
   shuffleDeck,
@@ -124,5 +158,8 @@ module.exports = {
   getCardSuit,
   determineTrickWinner,
   isValidPlay,
-  sortHand
+  sortHand,
+  getAuctionSuitRank,
+  compareAuctionBids,
+  isValidAuctionBid
 };

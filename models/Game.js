@@ -11,7 +11,7 @@ const GameSchema = new mongoose.Schema({
   }],
   status: { 
     type: String, 
-    enum: ['waiting', 'bidding', 'playing', 'finished'], 
+    enum: ['waiting', 'auction', 'bidding', 'playing', 'finished'], 
     default: 'waiting' 
   },
   currentTurn: { type: Number, default: 0 }, // Position index (0-3)
@@ -20,6 +20,21 @@ const GameSchema = new mongoose.Schema({
     card: String
   }],
   trumpSuit: { type: String, enum: ['H', 'D', 'C', 'S', null], default: null },
+  // Auction phase fields
+  auctionBids: [{
+    position: Number,
+    quantity: Number,
+    suit: String,
+    timestamp: Date
+  }],
+  auctionCurrentBidder: { type: Number, default: 0 },
+  auctionWinner: { type: Number, default: null },
+  auctionHighestBid: {
+    quantity: Number,
+    suit: String
+  },
+  auctionPassed: [Number], // Positions that have passed in auction
+  // Bidding phase fields
   bids: [Number], // Bids for each player position (0-3)
   currentBidder: { type: Number, default: 0 }, // Which player is currently bidding
   minBid: { type: Number, default: 1 }, // Minimum bid allowed

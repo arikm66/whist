@@ -12,6 +12,8 @@ export default function GameRoom() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [trickWinner, setTrickWinner] = useState(null);
   const [isWaitingForNextTrick, setIsWaitingForNextTrick] = useState(false);
+  const [auctionBid, setAuctionBid] = useState({ quantity: '', suit: 'C' });
+  const [auctionTimeRemaining, setAuctionTimeRemaining] = useState(30);
   const [bidValue, setBidValue] = useState('');
   const [bidTimer, setBidTimer] = useState(null);
   const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
@@ -44,6 +46,31 @@ export default function GameRoom() {
     socket.on('gameStarted', ({ game }) => {
       setGame(game);
       findMyPosition(game);
+    });
+
+    socket.on('auctionBidPlaced', ({ position, bid, game }) => {
+      setGame(game);
+    });
+
+    socket.on('auctionPassed', ({ position, game }) => {
+      setGame(game);
+    });
+
+    socket.on('auctionNextBidder', ({ game }) => {
+      setGame(game);
+      setAuctionBid({ quantity: '', suit: 'C' });
+      setAuctionTimeRemaining(30);
+    });
+
+    socket.on('auctionComplete', ({ game }) => {
+      setGame(game);
+      setAuctionBid({ quantity: '', suit: 'C' });
+    });
+
+    socket.on('auctionRestarted', ({ game }) => {
+      setGame(game);
+      setAuctionBid({ quantity: '', suit: 'C' });
+      setAuctionTimeRemaining(30);
     });
 
     socket.on('bidPlaced', ({ position, bid, game }) => {
@@ -97,6 +124,11 @@ export default function GameRoom() {
       socket.off('roomJoined');
       socket.off('playerJoined');
       socket.off('gameStarted');
+      socket.off('auctionBidPlaced');
+      socket.off('auctionPassed');
+      socket.off('auctionNextBidder');
+      socket.off('auctionComplete');
+      socket.off('auctionRestarted');
       socket.off('bidPlaced');
       socket.off('nextBidder');
       socket.off('biddingComplete');
@@ -152,6 +184,42 @@ export default function GameRoom() {
       bid: value
     });
   };
+
+  const handlePlaceAuctionBid = () => {
+    if (!auctionBid.quantity || auctionBid.quantity === '') {
+      alert('Please select a quantity');
+      return;
+    }
+    socket.emit('placeAuctionBid', {
+      roomCode,
+      userId: user._id || user.id,
+      quantity: parseInt(auctionBid.quantity),
+      suit: auctionBid.suit
+    });
+  };
+
+  const handlePassAuction = () => {
+    socket.emit('passAuction', {
+      roomCode,
+      userId: user._id || user.id
+    });
+  };
+
+  // Timer for auction phase
+  useEffect(() => {
+    if (game && game.status === 'auction' && Number(myPosition) === Number(game.auctionCurrentBidder)) {
+      const timer = setInterval(() => {
+        setAuctionTimeRemaining(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [game, myPosition]);
 
   // Timer for bidding phase
   useEffect(() => {
@@ -258,6 +326,156 @@ export default function GameRoom() {
         </div>
       )}
 
+      {game.status === 'auction' && (
+        <div style={{ 
+          padding: '2rem', 
+          backgroundColor: '#fff8e1', 
+          borderRadius: '8px',
+          marginBottom: '2rem'
+        }}>
+          <h3>Auction Phase</h3>
+          <p>Players bid on quantity + suit to determine trump</p>
+          
+          {/* Auction History */}
+          <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+            <strong>Auction History:</strong>
+            {game.auctionBids && game.auctionBids.map((bid, idx) => (
+              <div key={idx} style={{ marginTop: '0.5rem' }}>
+                Player {bid.position + 1} {bid.position === myPosition && '(You)'}: {bid.quantity} {getSuitSymbol(bid.suit)}
+              </div>
+            ))}
+            {game.auctionPassed && game.auctionPassed.map((pos, idx) => (
+              <div key={`pass-${idx}`} style={{ marginTop: '0.5rem', color: '#666' }}>
+                Player {pos + 1} {pos === myPosition && '(You)'}: ● Pass
+              </div>
+            ))}
+          </div>
+
+          {/* Current Bidder */}
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: Number(game.auctionCurrentBidder) === Number(myPosition) ? '#fff3cd' : '#f5f5f5',
+            borderRadius: '4px',
+            marginBottom: '1rem'
+          }}>
+            {Number(game.auctionCurrentBidder) === Number(myPosition) && !game.auctionPassed.includes(myPosition) ? (
+              <>
+                <h4>🔔 Your Turn to Bid or Pass!</h4>
+                <p style={{ color: '#d32f2f', fontWeight: 'bold' }}>Time remaining: {auctionTimeRemaining}s</p>
+                <div style={{ marginTop: '1rem' }}>
+                  <p>Min Quantity: {Math.max(1, game.players[0].hand.length - 8)}, Max: {game.players[0].hand.length}</p>
+                  {game.auctionHighestBid && (
+                    <p>Current highest: {game.auctionHighestBid.quantity} {getSuitSymbol(game.auctionHighestBid.suit)}</p>
+                  )}
+                  
+                  <div style={{ marginTop: '1rem' }}>
+                    <label style={{ marginRight: '1rem' }}>
+                      Quantity:
+                      <input
+                        type="number"
+                        min={Math.max(1, game.players[0].hand.length - 8)}
+                        max={game.players[0].hand.length}
+                        value={auctionBid.quantity}
+                        onChange={(e) => setAuctionBid({ ...auctionBid, quantity: e.target.value })}
+                        placeholder="Select quantity"
+                        style={{ 
+                          padding: '8px', 
+                          marginLeft: '8px',
+                          marginRight: '1rem',
+                          fontSize: '14px',
+                          border: '2px solid #2196F3',
+                          borderRadius: '4px',
+                          width: '60px'
+                        }}
+                      />
+                    </label>
+
+                    <label>
+                      Suit:
+                      <select
+                        value={auctionBid.suit}
+                        onChange={(e) => setAuctionBid({ ...auctionBid, suit: e.target.value })}
+                        style={{ 
+                          padding: '8px', 
+                          marginLeft: '8px',
+                          fontSize: '14px',
+                          border: '2px solid #2196F3',
+                          borderRadius: '4px'
+                        }}
+                      >
+                        <option value="C">Clubs ♣</option>
+                        <option value="D">Diamonds ♦</option>
+                        <option value="H">Hearts ♥</option>
+                        <option value="S">Spades ♠</option>
+                        <option value="NT">No-Trump</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div style={{ marginTop: '1rem' }}>
+                    <button
+                      onClick={handlePlaceAuctionBid}
+                      style={{ 
+                        padding: '8px 16px', 
+                        backgroundColor: '#4CAF50', 
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        marginRight: '8px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      Place Bid
+                    </button>
+                    <button
+                      onClick={handlePassAuction}
+                      style={{ 
+                        padding: '8px 16px', 
+                        backgroundColor: '#f44336', 
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '14px'
+                      }}
+                    >
+                      Pass ●
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div>
+                <p>
+                  Waiting for <strong>Player {typeof game.auctionCurrentBidder === 'number' ? game.auctionCurrentBidder + 1 : 'Unknown'}</strong> in auction...
+                  {game.auctionPassed.includes(game.auctionCurrentBidder) && ' (has passed)'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Show hand during auction */}
+          {myPlayer && (
+            <div>
+              <h3>Your Hand</h3>
+              <div style={{ 
+                display: 'flex', 
+                gap: '8px', 
+                flexWrap: 'wrap',
+                padding: '1rem',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px'
+              }}>
+                {myPlayer.hand.map(card => 
+                  renderCard(card, null, false)
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {game.status === 'bidding' && (
         <div style={{ 
           padding: '2rem', 
@@ -273,7 +491,7 @@ export default function GameRoom() {
             <strong>Bids Placed:</strong>
             {game.bids.map((bid, idx) => (
               <div key={idx} style={{ marginTop: '0.5rem' }}>
-                Player {idx + 1}: {bid !== null ? bid : 'Waiting...'}
+                Player {idx + 1} {idx === myPosition && '(You)'}: {bid !== null ? bid : 'Waiting...'}
                 {bid !== null && game.bids[idx] !== null && (
                   <span style={{ marginLeft: '1rem', color: '#4CAF50' }}>✓</span>
                 )}
@@ -295,10 +513,9 @@ export default function GameRoom() {
                 <div style={{ marginTop: '1rem' }}>
                   {(() => {
                     const tricksAvailable = (game.players && game.players[myPosition]) ? game.players[myPosition].hand.length : (game.players && game.players[0] ? game.players[0].hand.length : 0);
-                    const isLastBidder = Number(myPosition) === Number(game.dealer);
-                    const sumPrev = game.bids.reduce((sum, b, idx) => {
-                      return sum + ((idx !== game.dealer && typeof b === 'number') ? b : 0);
-                    }, 0);
+                    const lastBidderPos = (game.auctionWinner + 3) % 4;
+                    const isLastBidder = Number(myPosition) === Number(lastBidderPos);
+                    const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
                     const forbidden = isLastBidder ? (tricksAvailable - sumPrev) : null;
                     const numbers = Array.from({ length: tricksAvailable + 1 }, (_, i) => i);
                     return (
