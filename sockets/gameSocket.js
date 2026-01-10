@@ -67,16 +67,26 @@ module.exports = (io) => {
           return;
         }
 
-        // Add player
-        game.players.push({
+        // Add player atomically using MongoDB to prevent race condition duplicates
+        const newPlayer = {
           userId,
           email,
           position: game.players.length,
           hand: [],
           tricksWon: 0
-        });
+        };
 
-        await game.save();
+        // Use findByIdAndUpdate to atomically add player and prevent duplicates
+        game = await Game.findByIdAndUpdate(
+          game._id,
+          { 
+            $addToSet: { 
+              players: newPlayer 
+            }
+          },
+          { new: true }
+        );
+
         activeGames.set(roomCode, game);
         
         socket.join(roomCode);
