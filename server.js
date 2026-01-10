@@ -18,10 +18,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 // API Routes
 const authRoutes = require('./routes/auth');
-const itemsRoutes = require('./routes/items');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/items', itemsRoutes);
 
 // 3. Serve Frontend (Vite specific)
 // This part tells Node to serve the React files after you run 'npm run build' in the client folder
