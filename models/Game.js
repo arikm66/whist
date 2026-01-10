@@ -34,6 +34,7 @@ const GameSchema = new mongoose.Schema({
     suit: String
   },
   auctionPassed: [Number], // Positions that have passed in auction
+  auctionFinalRaise: { type: Boolean, default: false }, // True when auction winner gets final raise chance
   // Bidding phase fields
   bids: [Number], // Bids for each player position (0-3)
   currentBidder: { type: Number, default: 0 }, // Which player is currently bidding

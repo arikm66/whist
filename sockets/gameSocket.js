@@ -195,6 +195,31 @@ module.exports = (io) => {
           return;
         }
 
+        // During final raise, allow auction winner to pass to end auction
+        if (game.auctionFinalRaise && player.position === game.auctionWinner) {
+          // Finalize auction and transition to bidding
+          const winner = game.auctionWinner;
+
+          // Set trump suit from auction winner's bid
+          if (game.auctionHighestBid) {
+            game.trumpSuit = game.auctionHighestBid.suit === 'NT' ? null : game.auctionHighestBid.suit;
+          }
+
+          // Initialize bidding phase with auction winner's bid
+          game.status = 'bidding';
+          game.bids = [null, null, null, null];
+          game.bids[winner] = game.auctionHighestBid.quantity;
+          game.currentBidder = (winner + 1) % 4;
+          game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
+          game.lastBid = 0;
+          game.auctionFinalRaise = false;
+
+          await game.save();
+          activeGames.set(roomCode, game);
+          io.to(roomCode).emit('auctionComplete', { game });
+          return;
+        }
+
         if (game.auctionPassed.includes(player.position)) {
           socket.emit('error', { message: 'You have already passed' });
           return;
@@ -500,6 +525,23 @@ async function endRound(game, roomCode, io) {
 }
 
 async function advanceAuctionTurn(game, roomCode, io) {
+  // Check if auction is complete (3 have passed, 1 remains)
+  if (game.auctionPassed.length === 3) {
+    // Auction winner is the only player who hasn't passed
+    const winner = [0, 1, 2, 3].find(pos => !game.auctionPassed.includes(pos));
+    game.auctionWinner = winner;
+
+    // Give auction winner one final chance to raise
+    if (!game.auctionFinalRaise) {
+      game.auctionFinalRaise = true;
+      game.auctionCurrentBidder = winner;
+      await game.save();
+      activeGames.set(roomCode, game);
+      io.to(roomCode).emit('auctionNextBidder', { game });
+      return;
+    }
+  }
+
   // Find next player who hasn't passed
   let nextBidder = (game.auctionCurrentBidder + 1) % 4;
   let turns = 0;
@@ -509,11 +551,9 @@ async function advanceAuctionTurn(game, roomCode, io) {
     turns++;
   }
 
-  // Check if auction is complete (3 have passed, 1 remains)
-  if (game.auctionPassed.length === 3) {
-    // Auction winner is the only player who hasn't passed
-    const winner = [0, 1, 2, 3].find(pos => !game.auctionPassed.includes(pos));
-    game.auctionWinner = winner;
+  // Check if auction is complete (after final raise)
+  if (game.auctionPassed.length === 3 && game.auctionFinalRaise) {
+    const winner = game.auctionWinner;
 
     // Set trump suit from auction winner's bid
     if (game.auctionHighestBid) {
@@ -527,6 +567,7 @@ async function advanceAuctionTurn(game, roomCode, io) {
     game.currentBidder = (winner + 1) % 4; // Next player after winner starts bidding
     game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
     game.lastBid = 0;
+    game.auctionFinalRaise = false; // Reset for next round
 
     await game.save();
     activeGames.set(roomCode, game);

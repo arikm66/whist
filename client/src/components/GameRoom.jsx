@@ -339,16 +339,23 @@ export default function GameRoom() {
           {/* Auction History */}
           <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
             <strong>Auction History:</strong>
-            {game.auctionBids && game.auctionBids.map((bid, idx) => (
-              <div key={idx} style={{ marginTop: '0.5rem' }}>
-                Player {bid.position + 1} {bid.position === myPosition && '(You)'}: {bid.quantity} {getSuitSymbol(bid.suit)}
-              </div>
-            ))}
-            {game.auctionPassed && game.auctionPassed.map((pos, idx) => (
-              <div key={`pass-${idx}`} style={{ marginTop: '0.5rem', color: '#666' }}>
-                Player {pos + 1} {pos === myPosition && '(You)'}: ● Pass
-              </div>
-            ))}
+            {[0, 1, 2, 3].map((pos) => {
+              const bid = game.auctionBids && game.auctionBids.filter(b => b.position === pos).pop();
+              const hasPassed = game.auctionPassed && game.auctionPassed.includes(pos);
+              
+              return (
+                <div key={pos} style={{ marginTop: '0.5rem' }}>
+                  Player {pos + 1} {pos === myPosition && '(You)'}:{' '}
+                  {bid ? (
+                    <span>{bid.quantity} {getSuitSymbol(bid.suit)}</span>
+                  ) : hasPassed ? (
+                    <span style={{ color: '#666' }}>Pass</span>
+                  ) : (
+                    <span style={{ color: '#999' }}>Waiting...</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Current Bidder */}
@@ -360,38 +367,60 @@ export default function GameRoom() {
           }}>
             {Number(game.auctionCurrentBidder) === Number(myPosition) && !game.auctionPassed.includes(myPosition) ? (
               <>
-                <h4>🔔 Your Turn to Bid or Pass!</h4>
+                {game.auctionFinalRaise ? (
+                  <h4>🔔 Final Chance to Raise Your Bid or Pass!</h4>
+                ) : (
+                  <h4>🔔 Your Turn to Bid or Pass!</h4>
+                )}
                 <p style={{ color: '#d32f2f', fontWeight: 'bold' }}>Time remaining: {auctionTimeRemaining}s</p>
                 <div style={{ marginTop: '1rem' }}>
                   <p>Min Quantity: {Math.max(1, game.players[0].hand.length - 8)}, Max: {game.players[0].hand.length}</p>
                   {game.auctionHighestBid && (
                     <p>Current highest: {game.auctionHighestBid.quantity} {getSuitSymbol(game.auctionHighestBid.suit)}</p>
                   )}
+                  {game.auctionFinalRaise && (
+                    <p style={{ color: '#d32f2f' }}>Other players have passed. This is your final chance to raise!</p>
+                  )}
                   
                   <div style={{ marginTop: '1rem' }}>
-                    <label style={{ marginRight: '1rem' }}>
-                      Quantity:
-                      <input
-                        type="number"
-                        min={Math.max(1, game.players[0].hand.length - 8)}
-                        max={game.players[0].hand.length}
-                        value={auctionBid.quantity}
-                        onChange={(e) => setAuctionBid({ ...auctionBid, quantity: e.target.value })}
-                        placeholder="Select quantity"
-                        style={{ 
-                          padding: '8px', 
-                          marginLeft: '8px',
-                          marginRight: '1rem',
-                          fontSize: '14px',
-                          border: '2px solid #2196F3',
-                          borderRadius: '4px',
-                          width: '60px'
-                        }}
-                      />
-                    </label>
+                    <p><strong>Select Quantity:</strong></p>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 60px)',
+                        gap: '10px',
+                        marginBottom: '1rem'
+                      }}
+                    >
+                      {Array.from(
+                        { length: game.players[0].hand.length - Math.max(1, game.players[0].hand.length - 8) + 1 },
+                        (_, i) => Math.max(1, game.players[0].hand.length - 8) + i
+                      ).map((num) => {
+                        const isSelected = Number(auctionBid.quantity) === num;
+                        return (
+                          <button
+                            key={num}
+                            onClick={() => setAuctionBid({ ...auctionBid, quantity: String(num) })}
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              borderRadius: '8px',
+                              border: isSelected ? '2px solid #1976D2' : '2px solid #ccc',
+                              backgroundColor: isSelected ? '#BBDEFB' : 'white',
+                              color: '#333',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {num}
+                          </button>
+                        );
+                      })}
+                    </div>
 
                     <label>
-                      Suit:
+                      <strong>Select Suit:</strong>
                       <select
                         value={auctionBid.suit}
                         onChange={(e) => setAuctionBid({ ...auctionBid, suit: e.target.value })}
@@ -440,7 +469,7 @@ export default function GameRoom() {
                         fontSize: '14px'
                       }}
                     >
-                      Pass ●
+                      Pass
                     </button>
                   </div>
                 </div>
