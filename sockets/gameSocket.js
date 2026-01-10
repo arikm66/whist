@@ -94,10 +94,10 @@ module.exports = (io) => {
       }
     });
 
-    // Get available rooms
+    // Get rooms (all, including finished) for lobby display
     socket.on('getRooms', async () => {
       try {
-        const rooms = await Game.find({ status: 'waiting' }).select('roomCode players createdAt');
+        const rooms = await Game.find({}).select('roomCode players status createdAt');
         socket.emit('roomsList', { rooms });
       } catch (error) {
         socket.emit('error', { message: 'Failed to fetch rooms' });
@@ -471,11 +471,26 @@ async function endRound(game, roomCode, io) {
     const tricksWon = player.tricksWon;
     let roundScore = 0;
 
-    if (bid === tricksWon) {
-      // Exact match: +10 + tricks²
+    // Special scoring for bid = 0
+    if (bid === 0) {
+      const bidSum = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
+      
+      if (tricksWon === 0) {
+        // Match: 0 tricks won
+        roundScore = bidSum < 13 ? 50 : 25;
+      } else {
+        // No match: won tricks but bid 0
+        if (bidSum < 13) {
+          roundScore = -50 + (tricksWon - 1) * 10;
+        } else {
+          roundScore = -25 + (tricksWon - 1) * 10;
+        }
+      }
+    } else if (bid === tricksWon) {
+      // Exact match (bid > 0): +10 + tricks²
       roundScore = 10 + (tricksWon * tricksWon);
     } else {
-      // Over/under bid: -10 for every gap
+      // Over/under bid (bid > 0): -10 for every gap
       const gap = Math.abs(bid - tricksWon);
       roundScore = -10 * gap;
     }
