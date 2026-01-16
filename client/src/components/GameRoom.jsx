@@ -115,8 +115,10 @@ export default function GameRoom() {
       findMyPosition(game);
     });
 
-    socket.on('gameFinished', ({ game }) => {
-      setGame(game);
+      socket.on('gameFinished', ({ game }) => {
+        setGame(game);
+        // Redirect to lobby if game is finished due to player leaving
+        navigate('/lobby', { replace: true });
     });
 
     socket.on('error', ({ message }) => {

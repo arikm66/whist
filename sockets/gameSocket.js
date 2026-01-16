@@ -101,14 +101,22 @@ module.exports = (io) => {
         );
         // Remove from in-memory game
         const game = activeGames.get(roomCode);
+        let wasActive = false;
         if (game) {
           game.players = game.players.filter(p => p.userId.toString() !== userId.toString());
+          // If game is in progress, mark as finished and notify all
+          if (game.status === 'playing' || game.status === 'auction') {
+            game.status = 'finished';
+            await game.save();
+            io.to(roomCode).emit('gameFinished', { game });
+            wasActive = true;
+          }
           activeGames.set(roomCode, game);
         }
         // Leave socket.io room
         socket.leave(roomCode);
-        // Notify others
-        io.to(roomCode).emit('playerLeft', { userId });
+        // Notify others (only if not already finished)
+        if (!wasActive) io.to(roomCode).emit('playerLeft', { userId });
         io.emit('roomsListUpdated');
       } catch (err) {
         socket.emit('error', { message: 'Failed to leave room' });
@@ -445,12 +453,19 @@ module.exports = (io) => {
             { $pull: { players: { userId: socket._userId } } }
           );
           const game = activeGames.get(socket._roomCode);
+          let wasActive = false;
           if (game) {
             game.players = game.players.filter(p => p.userId.toString() !== socket._userId.toString());
+            if (game.status === 'playing' || game.status === 'auction') {
+              game.status = 'finished';
+              await game.save();
+              io.to(socket._roomCode).emit('gameFinished', { game });
+              wasActive = true;
+            }
             activeGames.set(socket._roomCode, game);
           }
           socket.leave(socket._roomCode);
-          io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
+          if (!wasActive) io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
           io.emit('roomsListUpdated');
         } catch (err) {
           // Optionally log error
