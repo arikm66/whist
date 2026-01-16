@@ -20,11 +20,11 @@ router.post('/register',
       if (user) return res.status(400).json({ msg: 'User already exists' });
 
       const hashed = await bcrypt.hash(password, 10);
-      user = new User({ email, password: hashed });
+      user = new User({ email, password: hashed, role: 'Player' });
       await user.save();
 
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-      res.json({ token, user: { id: user._id, email: user.email } });
+      res.json({ token, user: { id: user._id, email: user.email, role: user.role } });
     } catch (err) {
       res.status(500).json({ msg: 'Server error' });
     }
@@ -47,7 +47,7 @@ router.post('/login',
       if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-      res.json({ token, user: { id: user._id, email: user.email } });
+      res.json({ token, user: { id: user._id, email: user.email, role: user.role } });
     } catch (err) {
       res.status(500).json({ msg: 'Server error' });
     }
@@ -56,9 +56,9 @@ router.post('/login',
 // GET /api/auth/me
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('id email');
+    const user = await User.findById(req.user.id).select('id email role');
     if (!user) return res.status(404).json({ msg: 'User not found' });
-    res.json({ user: { id: user.id, email: user.email } });
+    res.json({ user: { id: user.id, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }

@@ -23,6 +23,11 @@ function Navigation() {
           <Link to="/lobby" style={{ marginRight: 8 }}>Lobby</Link>
           <span style={{ marginRight: 12, color: '#555' }}>
             {user?.email || 'Signed in'}
+            {user?.role && (
+              <span style={{ marginLeft: 8, fontWeight: 500, color: '#888', fontSize: '0.95em' }}>
+                ({user.role})
+              </span>
+            )}
           </span>
           <a onClick={logout} style={{ marginRight: 8, cursor: 'pointer' }}>
             Logout

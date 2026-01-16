@@ -2,11 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../services/socket';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 export default function Lobby() {
   const [rooms, setRooms] = useState([]);
   const { user, token } = useAuth();
   const navigate = useNavigate();
+
+  const handleDeleteRoom = async (roomCode) => {
+    if (!user || user.role !== 'Admin') return;
+    if (!window.confirm('Are you sure you want to delete this room?')) return;
+    try {
+      await api.delete(`/rooms/${roomCode}`);
+      // Remove room from UI immediately
+      setRooms((prev) => prev.filter((r) => r.roomCode !== roomCode));
+    } catch (err) {
+      alert('Failed to delete room');
+    }
+  };
 
   useEffect(() => {
     if (!token) {
@@ -123,7 +136,8 @@ export default function Lobby() {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   backgroundColor: canJoin ? '#f9fcff' : '#f5f5f5',
-                  cursor: canJoin ? 'pointer' : 'not-allowed'
+                  cursor: canJoin ? 'pointer' : 'not-allowed',
+                  position: 'relative'
                 }}
               >
                 <div>
@@ -138,20 +152,41 @@ export default function Lobby() {
                     Created: {formatDate(room.createdAt)}
                   </div>
                 </div>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); if (canJoin) handleJoinRoom(room.roomCode); }}
-                  disabled={!canJoin}
-                  style={{ 
-                    padding: '8px 16px', 
-                    cursor: canJoin ? 'pointer' : 'not-allowed',
-                    backgroundColor: canJoin ? '#2196F3' : '#ccc',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px'
-                  }}
-                >
-                  {buttonText}
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); if (canJoin) handleJoinRoom(room.roomCode); }}
+                    disabled={!canJoin}
+                    style={{ 
+                      padding: '8px 16px', 
+                      cursor: canJoin ? 'pointer' : 'not-allowed',
+                      backgroundColor: canJoin ? '#2196F3' : '#ccc',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      marginBottom: user?.role === 'Admin' ? '0.5rem' : 0
+                    }}
+                  >
+                    {buttonText}
+                  </button>
+                  {user?.role === 'Admin' && (
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDeleteRoom(room.roomCode); }}
+                      style={{
+                        padding: '6px 14px',
+                        backgroundColor: '#e53935',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        marginTop: 0
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}
