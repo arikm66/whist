@@ -43,30 +43,27 @@ module.exports = (io) => {
     socket.on('joinRoom', async ({ roomCode, userId, email }) => {
       try {
         let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
-        
         if (!game) {
           socket.emit('error', { message: 'Room not found' });
           return;
         }
-
         // Allow rejoin even if room is full or started
         const existingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
         if (existingPlayer) {
           socket.join(roomCode);
+          socket._roomCode = roomCode;
+          socket._userId = userId;
           socket.emit('roomJoined', { game });
           return;
         }
-
         if (game.players.length >= 4) {
           socket.emit('error', { message: 'Room is full' });
           return;
         }
-
         if (game.status !== 'waiting') {
           socket.emit('error', { message: 'Game already started' });
           return;
         }
-
         // Add player atomically using MongoDB to prevent race condition duplicates
         const newPlayer = {
           userId,
@@ -75,32 +72,46 @@ module.exports = (io) => {
           hand: [],
           tricksWon: 0
         };
-
-        // Use findByIdAndUpdate to atomically add player and prevent duplicates
         game = await Game.findByIdAndUpdate(
           game._id,
-          { 
-            $addToSet: { 
-              players: newPlayer 
-            }
-          },
+          { $addToSet: { players: newPlayer } },
           { new: true }
         );
-
         activeGames.set(roomCode, game);
-        
         socket.join(roomCode);
+        socket._roomCode = roomCode;
+        socket._userId = userId;
         io.to(roomCode).emit('playerJoined', { game });
-        
-        // Notify all clients to refresh room list (player count changed)
         io.emit('roomsListUpdated');
-
-        // Start game if 4 players
         if (game.players.length === 4) {
           startGame(roomCode, io);
         }
       } catch (error) {
         socket.emit('error', { message: 'Failed to join room' });
+      }
+    });
+
+    // Handle leaveRoom event
+    socket.on('leaveRoom', async ({ roomCode, userId }) => {
+      try {
+        // Remove player from MongoDB
+        await Game.findOneAndUpdate(
+          { roomCode },
+          { $pull: { players: { userId } } }
+        );
+        // Remove from in-memory game
+        const game = activeGames.get(roomCode);
+        if (game) {
+          game.players = game.players.filter(p => p.userId.toString() !== userId.toString());
+          activeGames.set(roomCode, game);
+        }
+        // Leave socket.io room
+        socket.leave(roomCode);
+        // Notify others
+        io.to(roomCode).emit('playerLeft', { userId });
+        io.emit('roomsListUpdated');
+      } catch (err) {
+        socket.emit('error', { message: 'Failed to leave room' });
       }
     });
 
@@ -426,7 +437,25 @@ module.exports = (io) => {
       }
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
+      if (socket._roomCode && socket._userId) {
+        try {
+          await Game.findOneAndUpdate(
+            { roomCode: socket._roomCode },
+            { $pull: { players: { userId: socket._userId } } }
+          );
+          const game = activeGames.get(socket._roomCode);
+          if (game) {
+            game.players = game.players.filter(p => p.userId.toString() !== socket._userId.toString());
+            activeGames.set(socket._roomCode, game);
+          }
+          socket.leave(socket._roomCode);
+          io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
+          io.emit('roomsListUpdated');
+        } catch (err) {
+          // Optionally log error
+        }
+      }
       console.log('User disconnected:', socket.id);
     });
   });

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Modal from './Modal';
 import { useParams, useNavigate } from 'react-router-dom';
 import socket from '../services/socket';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +18,8 @@ export default function GameRoom() {
   const [bidValue, setBidValue] = useState('');
   const [bidTimer, setBidTimer] = useState(null);
   const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [leaveMsg, setLeaveMsg] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -301,12 +304,37 @@ export default function GameRoom() {
             </>
           )}
         </div>
-        <button 
-          onClick={() => navigate('/lobby')}
+        <button
+          onClick={() => {
+            let msg = 'You are about to leave the room.';
+            if (game.status === 'waiting') {
+              msg += '\nOther players can still join and the game can start later.';
+            } else {
+              msg += '\nLeaving during an active game will close the room for everyone.';
+            }
+            setLeaveMsg(msg + '\nAre you sure you want to leave?');
+            setShowLeaveModal(true);
+          }}
           style={{ padding: '8px 16px', height: 'fit-content' }}
         >
           Leave Room
         </button>
+
+        {showLeaveModal && (
+          <Modal
+            title="Leave Whist Room?"
+            message={leaveMsg}
+            onConfirm={() => {
+              socket.emit('leaveRoom', {
+                roomCode,
+                userId: user._id || user.id
+              });
+              setShowLeaveModal(false);
+              navigate('/lobby');
+            }}
+            onCancel={() => setShowLeaveModal(false)}
+          />
+        )}
       </div>
 
       {game.status === 'waiting' && (
