@@ -150,6 +150,35 @@ function isValidAuctionBid(bid, cardsDealt, highestBid) {
   return true;
 }
 
+// Calculate score for a player in a round
+function calculateRoundScore(bid, tricksWon, bidSum) {
+  let roundScore = 0;
+
+  // Special scoring for bid = 0
+  if (bid === 0) {
+    if (tricksWon === 0) {
+      // Match: 0 tricks won
+      roundScore = bidSum < 13 ? 50 : 25;
+    } else {
+      // No match: won tricks but bid 0
+      if (bidSum < 13) {
+        roundScore = -50 + (tricksWon - 1) * 10;
+      } else {
+        roundScore = -25 + (tricksWon - 1) * 10;
+      }
+    }
+  } else if (bid === tricksWon) {
+    // Exact match (bid > 0): +10 + tricks²
+    roundScore = 10 + (tricksWon * tricksWon);
+  } else {
+    // Over/under bid (bid > 0): -10 for every gap
+    const gap = Math.abs(bid - tricksWon);
+    roundScore = -10 * gap;
+  }
+
+  return roundScore;
+}
+
 module.exports = {
   generateDeck,
   shuffleDeck,
@@ -161,5 +190,6 @@ module.exports = {
   sortHand,
   getAuctionSuitRank,
   compareAuctionBids,
-  isValidAuctionBid
+  isValidAuctionBid,
+  calculateRoundScore
 };

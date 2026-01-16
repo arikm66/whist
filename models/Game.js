@@ -2,13 +2,21 @@ const mongoose = require('mongoose');
 
 const GameSchema = new mongoose.Schema({
   roomCode: { type: String, required: true, unique: true },
-  players: [{
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    email: String,
-    position: { type: Number, min: 0, max: 3 }, // 0: North, 1: East, 2: South, 3: West
-    hand: [String], // Array of card strings like "AS", "KH", "QD", "JC"
-    tricksWon: { type: Number, default: 0 }
-  }],
+  players: {
+    type: [{
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      email: String,
+      position: { type: Number, min: 0, max: 3 },
+      hand: [String],
+      tricksWon: { type: Number, default: 0 }
+    }],
+    validate: {
+      validator: function(players) {
+        return players.length <= 4;
+      },
+      message: 'A game cannot have more than 4 players'
+    }
+  },
   status: { 
     type: String, 
     enum: ['waiting', 'auction', 'bidding', 'playing', 'finished'], 
