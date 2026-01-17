@@ -21,9 +21,20 @@ router.delete('/:roomCode', auth, async (req, res) => {
       global.activeGames.delete(roomCode);
     }
 
+    // Log game aborted by admin
+    try {
+      const { closeRoomLog, appendRoomLog } = require('../utils/logToFile');
+      appendRoomLog(roomCode, 'Game aborted: room deleted by admin');
+      closeRoomLog(roomCode);
+    } catch (e) {}
+
     // Notify all clients to refresh room list
     if (req.app.get('io')) {
-      req.app.get('io').emit('roomsListUpdated');
+      const io = req.app.get('io');
+      const Game = require('../models/Game');
+      Game.find({}).select('roomCode players status createdAt').then(rooms => {
+        io.emit('roomsList', { rooms });
+      });
     }
 
     res.json({ msg: 'Room deleted', roomCode });

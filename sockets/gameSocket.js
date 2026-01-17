@@ -1,11 +1,42 @@
 const Game = require('../models/Game');
 const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand, isValidAuctionBid, compareAuctionBids } = require('../utils/gameLogic');
+const { createRoomLog, appendRoomLog, closeRoomLog } = require('../utils/logToFile');
 
 // Store active games in memory for faster access
 const activeGames = new Map();
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
+            socket.on('login', async ({ userId, email }) => {
+              try {
+                // Find all games where this user is a participant
+                const games = await Game.find({ 'players.userId': userId });
+                for (const game of games) {
+                  // Only log if the room is active (not finished or aborted)
+                  if (game.status !== 'finished' && game.status !== 'aborted') {
+                    appendRoomLog(game.roomCode, `User logged in: ${email || userId}`);
+                  }
+                }
+              } catch (err) {
+                console.error('Login event error:', err);
+                appendRoomLog('lobby', `Error during login event for userId: ${userId}, email: ${email} - ${err.message}`);
+              }
+            });
+        socket.on('logout', async ({ userId, email }) => {
+          try {
+            // Find all games where this user is a participant
+            const games = await Game.find({ 'players.userId': userId });
+            for (const game of games) {
+              // Only log if the room is active (not finished or aborted)
+              if (game.status !== 'finished' && game.status !== 'aborted') {
+                appendRoomLog(game.roomCode, `User logged out: ${email || userId}`);
+              }
+            }
+          } catch (err) {
+            console.error('Logout event error:', err);
+            appendRoomLog('lobby', `Error during logout event for userId: ${userId}, email: ${email} - ${err.message}`);
+          }
+        });
     console.log('User connected:', socket.id);
 
     // Create a new game room
@@ -26,14 +57,13 @@ module.exports = (io) => {
         
         await game.save();
         activeGames.set(roomCode, game);
-        
+        createRoomLog(roomCode);
+        appendRoomLog(roomCode, `Room created by ${email}`);
         socket.join(roomCode);
         socket.emit('roomCreated', { roomCode, game });
         
-        // Broadcast new room to all connected clients
-        io.emit('roomsListUpdated');
-        
-        console.log(`Room ${roomCode} created by ${email}`);
+        // Broadcast new room list to all connected clients
+        broadcastRoomsList(io);
       } catch (error) {
         socket.emit('error', { message: 'Failed to create room' });
       }
@@ -44,6 +74,7 @@ module.exports = (io) => {
       try {
         let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
         if (!game) {
+          appendRoomLog(roomCode, `Invalid action: Room not found (userId: ${userId})`);
           socket.emit('error', { message: 'Room not found' });
           return;
         }
@@ -57,10 +88,12 @@ module.exports = (io) => {
           return;
         }
         if (game.players.length >= 4) {
+          appendRoomLog(roomCode, `Invalid action: Room is full (userId: ${userId})`);
           socket.emit('error', { message: 'Room is full' });
           return;
         }
         if (game.status !== 'waiting') {
+          appendRoomLog(roomCode, `Invalid action: Game already started (userId: ${userId})`);
           socket.emit('error', { message: 'Game already started' });
           return;
         }
@@ -82,11 +115,13 @@ module.exports = (io) => {
         socket._roomCode = roomCode;
         socket._userId = userId;
         io.to(roomCode).emit('playerJoined', { game });
-        io.emit('roomsListUpdated');
+        broadcastRoomsList(io);
         if (game.players.length === 4) {
           startGame(roomCode, io);
         }
+        appendRoomLog(roomCode, `Player joined: ${email}`);
       } catch (error) {
+        appendRoomLog(roomCode, `Invalid action: Failed to join room (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to join room' });
       }
     });
@@ -102,13 +137,18 @@ module.exports = (io) => {
         // Remove from in-memory game
         const game = activeGames.get(roomCode);
         let wasActive = false;
+        let leavingPlayerEmail = null;
         if (game) {
+          const leavingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
+          leavingPlayerEmail = leavingPlayer ? leavingPlayer.email : null;
           game.players = game.players.filter(p => p.userId.toString() !== userId.toString());
           // If game is in progress, mark as finished and notify all
           if (game.status === 'playing' || game.status === 'auction') {
             game.status = 'finished';
             await game.save();
             io.to(roomCode).emit('gameFinished', { game });
+            appendRoomLog(roomCode, `Game aborted: player left during active game (${leavingPlayerEmail || userId})`);
+            closeRoomLog(roomCode);
             wasActive = true;
           }
           activeGames.set(roomCode, game);
@@ -117,8 +157,12 @@ module.exports = (io) => {
         socket.leave(roomCode);
         // Notify others (only if not already finished)
         if (!wasActive) io.to(roomCode).emit('playerLeft', { userId });
-        io.emit('roomsListUpdated');
+        broadcastRoomsList(io);
+        if (!wasActive && leavingPlayerEmail) {
+          appendRoomLog(roomCode, `Player left: ${leavingPlayerEmail}`);
+        }
       } catch (err) {
+        appendRoomLog(roomCode, `Invalid action: Failed to leave room (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to leave room' });
       }
     });
@@ -129,6 +173,7 @@ module.exports = (io) => {
         const rooms = await Game.find({}).select('roomCode players status createdAt');
         socket.emit('roomsList', { rooms });
       } catch (error) {
+        appendRoomLog('lobby', `Invalid action: Failed to fetch rooms (socketId: ${socket.id})`);
         socket.emit('error', { message: 'Failed to fetch rooms' });
       }
     });
@@ -139,27 +184,33 @@ module.exports = (io) => {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
         
         if (!game) {
+          appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
+          appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
           socket.emit('error', { message: 'Game not found' });
           return;
         }
 
         if (game.status !== 'auction') {
+          appendRoomLog(roomCode, `Invalid action: Not in auction phase (userId: ${userId})`);
           socket.emit('error', { message: 'Not in auction phase' });
           return;
         }
 
         const player = game.players.find(p => p.userId.toString() === userId.toString());
         if (!player) {
+          appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
           socket.emit('error', { message: 'Player not in game' });
           return;
         }
 
         if (player.position !== game.auctionCurrentBidder) {
+          appendRoomLog(roomCode, `Invalid action: Not your turn in auction (userId: ${userId})`);
           socket.emit('error', { message: 'Not your turn in auction' });
           return;
         }
 
         if (game.auctionPassed.includes(player.position)) {
+          appendRoomLog(roomCode, `Invalid action: Already passed in auction (userId: ${userId})`);
           socket.emit('error', { message: 'You have already passed' });
           return;
         }
@@ -174,6 +225,7 @@ module.exports = (io) => {
           if (game.auctionHighestBid) {
             msg += `. Must beat ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`;
           }
+          appendRoomLog(roomCode, `Invalid action: ${msg} (userId: ${userId})`);
           socket.emit('error', { message: msg });
           return;
         }
@@ -186,6 +238,7 @@ module.exports = (io) => {
           timestamp: new Date()
         });
         game.auctionHighestBid = bid;
+        appendRoomLog(roomCode, `Auction bid placed: Player ${player.position} (${player.email || player.userId}) bid ${quantity} ${suit}`);
 
         // Broadcast auction bid to all players
         io.to(roomCode).emit('auctionBidPlaced', { position: player.position, bid, game });
@@ -194,6 +247,7 @@ module.exports = (io) => {
         await advanceAuctionTurn(game, roomCode, io);
       } catch (error) {
         console.error('Place auction bid error:', error);
+        appendRoomLog(roomCode, `Invalid action: Failed to place auction bid (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to place auction bid' });
       }
     });
@@ -204,22 +258,26 @@ module.exports = (io) => {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
         
         if (!game) {
+          appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
           socket.emit('error', { message: 'Game not found' });
           return;
         }
 
         if (game.status !== 'auction') {
+          appendRoomLog(roomCode, `Invalid action: Not in auction phase (userId: ${userId})`);
           socket.emit('error', { message: 'Not in auction phase' });
           return;
         }
 
         const player = game.players.find(p => p.userId.toString() === userId.toString());
         if (!player) {
+          appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
           socket.emit('error', { message: 'Player not in game' });
           return;
         }
 
         if (player.position !== game.auctionCurrentBidder) {
+          appendRoomLog(roomCode, `Invalid action: Not your turn in auction (userId: ${userId})`);
           socket.emit('error', { message: 'Not your turn in auction' });
           return;
         }
@@ -250,45 +308,43 @@ module.exports = (io) => {
         }
 
         if (game.auctionPassed.includes(player.position)) {
+          appendRoomLog(roomCode, `Invalid action: Already passed in auction (userId: ${userId})`);
           socket.emit('error', { message: 'You have already passed' });
           return;
         }
 
         // Record pass
         game.auctionPassed.push(player.position);
-
+        appendRoomLog(roomCode, `Auction passed: Player ${player.position} (${player.email || player.userId})`);
         // Broadcast pass to all players
         io.to(roomCode).emit('auctionPassed', { position: player.position, game });
-
         // Check if all 4 players have passed (all pass scenario)
         if (game.auctionPassed.length === 4) {
           // Hand is "Dead" - reshuffle and deal to next player
+          appendRoomLog(roomCode, 'Auction completed: All players passed, hand is dead. Restarting auction.');
           game.dealer = (game.dealer + 1) % 4;
           game.players.forEach(p => p.tricksWon = 0);
-          
           const hands = dealCards();
           game.players[0].hand = sortHand(hands.player0);
           game.players[1].hand = sortHand(hands.player1);
           game.players[2].hand = sortHand(hands.player2);
           game.players[3].hand = sortHand(hands.player3);
-          
           // Restart auction
           game.auctionCurrentBidder = (game.dealer + 1) % 4;
           game.auctionWinner = null;
           game.auctionHighestBid = null;
           game.auctionPassed = [];
           game.auctionBids = [];
-          
           await game.save();
           activeGames.set(roomCode, game);
           io.to(roomCode).emit('auctionRestarted', { game });
           return;
         }
-
         // Move to next bidder
         await advanceAuctionTurn(game, roomCode, io);
       } catch (error) {
         console.error('Pass auction error:', error);
+        appendRoomLog(roomCode, `Invalid action: Failed to pass auction (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to pass' });
       }
     });
@@ -304,17 +360,20 @@ module.exports = (io) => {
         }
 
         if (game.status !== 'bidding') {
+          appendRoomLog(roomCode, `Invalid action: Not in bidding phase (userId: ${userId})`);
           socket.emit('error', { message: 'Not in bidding phase' });
           return;
         }
 
         const player = game.players.find(p => p.userId.toString() === userId.toString());
         if (!player) {
+          appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
           socket.emit('error', { message: 'Player not in game' });
           return;
         }
 
         if (player.position !== game.currentBidder) {
+          appendRoomLog(roomCode, `Invalid action: Not your turn to bid (userId: ${userId})`);
           socket.emit('error', { message: 'Not your turn to bid' });
           return;
         }
@@ -325,6 +384,7 @@ module.exports = (io) => {
 
         // New rules: min 0, max = tricksAvailable, no monotonic constraint
         if (isNaN(bid) || bid < 0 || bid > tricksAvailable) {
+          appendRoomLog(roomCode, `Invalid action: Bid must be between 0 and ${tricksAvailable} (userId: ${userId})`);
           socket.emit('error', { message: `Bid must be between 0 and ${tricksAvailable}` });
           return;
         }
@@ -334,6 +394,7 @@ module.exports = (io) => {
         if (player.position === lastBidderPos) {
           const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
           if (sumPrev + bid === tricksAvailable) {
+            appendRoomLog(roomCode, `Invalid action: Last bidder cannot bid ${bid} (userId: ${userId})`);
             socket.emit('error', { message: `As last bidder, you cannot bid ${bid} because total would equal ${tricksAvailable}` });
             return;
           }
@@ -366,6 +427,7 @@ module.exports = (io) => {
         }
       } catch (error) {
         console.error('Place bid error:', error);
+        appendRoomLog(roomCode, `Invalid action: Failed to place bid (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to place bid' });
       }
     });
@@ -376,23 +438,27 @@ module.exports = (io) => {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
         
         if (!game) {
+          appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
           socket.emit('error', { message: 'Game not found' });
           return;
         }
 
         const player = game.players.find(p => p.userId.toString() === userId.toString());
         if (!player) {
+          appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
           socket.emit('error', { message: 'Player not in game' });
           return;
         }
 
         if (player.position !== game.currentTurn) {
+          appendRoomLog(roomCode, `Invalid action: Not your turn to play (userId: ${userId})`);
           socket.emit('error', { message: 'Not your turn' });
           return;
         }
 
         // Validate play
         if (!isValidPlay(card, player.hand, game.leadSuit, game.currentTrick)) {
+          appendRoomLog(roomCode, `Invalid action: Invalid card play (userId: ${userId})`);
           socket.emit('error', { message: 'Invalid card play' });
           return;
         }
@@ -405,12 +471,14 @@ module.exports = (io) => {
         // Play card
         game.currentTrick.push({ position: player.position, card });
         player.hand = player.hand.filter(c => c !== card);
+        appendRoomLog(roomCode, `Card played: Player ${player.position} (${player.email || player.userId}) played ${card}`);
 
         // If trick complete (4 cards)
         if (game.currentTrick.length === 4) {
           const winner = determineTrickWinner(game.currentTrick, game.trumpSuit, game.leadSuit);
           game.players[winner].tricksWon++;
-          
+          const trickCards = game.currentTrick.map(tc => `P${tc.position}: ${tc.card}`).join(', ');
+          appendRoomLog(roomCode, `Trick completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), cards: ${trickCards}`);
           io.to(roomCode).emit('trickComplete', { 
             trick: game.currentTrick, 
             winner,
@@ -441,6 +509,7 @@ module.exports = (io) => {
         }
       } catch (error) {
         console.error('Play card error:', error);
+        appendRoomLog(roomCode, `Invalid action: Failed to play card (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to play card' });
       }
     });
@@ -460,19 +529,35 @@ module.exports = (io) => {
               game.status = 'finished';
               await game.save();
               io.to(socket._roomCode).emit('gameFinished', { game });
+              appendRoomLog(socket._roomCode, `Game aborted: player disconnected during active game (${socket._userId})`);
+              closeRoomLog(socket._roomCode);
               wasActive = true;
             }
             activeGames.set(socket._roomCode, game);
           }
           socket.leave(socket._roomCode);
-          if (!wasActive) io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
-          io.emit('roomsListUpdated');
+             if (!wasActive) {
+               appendRoomLog(socket._roomCode, `Player left: ${socket._userId}`);
+               io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
+             }
+          broadcastRoomsList(io);
         } catch (err) {
-          // Optionally log error
+          console.error('Disconnect event error:', err);
+          appendRoomLog('lobby', `Error during disconnect event for userId: ${socket._userId}, roomCode: ${socket._roomCode} - ${err.message}`);
         }
       }
       console.log('User disconnected:', socket.id);
     });
+  // Helper to broadcast the current room list to all clients
+  async function broadcastRoomsList(io) {
+    try {
+      const rooms = await Game.find({}).select('roomCode players status createdAt');
+      io.emit('roomsList', { rooms });
+    } catch (error) {
+      console.error('Broadcast rooms list error:', error);
+      appendRoomLog('lobby', `Error broadcasting rooms list: ${error.message}`);
+    }
+  }
   });
 };
 
@@ -513,6 +598,8 @@ async function startGame(roomCode, io) {
     activeGames.set(roomCode, game);
     
     io.to(roomCode).emit('gameStarted', { game });
+    appendRoomLog(roomCode, 'Game started');
+    appendRoomLog(roomCode, 'Auction started');
   } catch (error) {
     console.error('Start game error:', error);
   }
@@ -524,11 +611,9 @@ async function endRound(game, roomCode, io) {
     const bid = game.bids[idx];
     const tricksWon = player.tricksWon;
     let roundScore = 0;
-
     // Special scoring for bid = 0
     if (bid === 0) {
       const bidSum = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
-      
       if (tricksWon === 0) {
         // Match: 0 tricks won
         roundScore = bidSum < 13 ? 50 : 25;
@@ -548,7 +633,6 @@ async function endRound(game, roomCode, io) {
       const gap = Math.abs(bid - tricksWon);
       roundScore = -10 * gap;
     }
-
     const existingScore = game.scores.find(s => s.position === idx);
     if (existingScore) {
       existingScore.score += roundScore;
@@ -556,37 +640,40 @@ async function endRound(game, roomCode, io) {
       game.scores.push({ position: idx, score: roundScore });
     }
   });
-
+  appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
   game.round++;
-  
   // Check if game complete (e.g., after 5 rounds)
   if (game.round > 5) {
     game.status = 'finished';
     await game.save();
     io.to(roomCode).emit('gameFinished', { game });
+    appendRoomLog(roomCode, 'Game finished');
+    // Log final scores
+    const scoreLines = game.scores.map(s => {
+      const player = game.players[s.position];
+      return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
+    }).join('; ');
+    appendRoomLog(roomCode, `Final scores: ${scoreLines}`);
+    closeRoomLog(roomCode);
   } else {
     // Start new round
+    appendRoomLog(roomCode, `Round started: Round ${game.round}`);
     game.dealer = (game.dealer + 1) % 4;
     game.players.forEach(p => p.tricksWon = 0);
-    
     const hands = dealCards();
-    
     // Determine trump from dealer's last card BEFORE sorting
     const dealerHand = hands[`player${game.dealer}`];
     game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
-    
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
-    
     // Initialize bidding phase for new round
     game.status = 'bidding';
     game.bids = [null, null, null, null];
     game.currentBidder = (game.dealer + 1) % 4;
     game.minBid = game.players[0].hand.length <= 5 ? 1 : 5;
     game.lastBid = 0;
-    
     await game.save();
     activeGames.set(roomCode, game);
     io.to(roomCode).emit('newRound', { game });
@@ -623,12 +710,10 @@ async function advanceAuctionTurn(game, roomCode, io) {
   // Check if auction is complete (after final raise)
   if (game.auctionPassed.length === 3 && game.auctionFinalRaise) {
     const winner = game.auctionWinner;
-
     // Set trump suit from auction winner's bid
     if (game.auctionHighestBid) {
       game.trumpSuit = game.auctionHighestBid.suit === 'NT' ? null : game.auctionHighestBid.suit;
     }
-
     // Initialize bidding phase with auction winner's bid
     game.status = 'bidding';
     game.bids = [null, null, null, null];
@@ -637,9 +722,9 @@ async function advanceAuctionTurn(game, roomCode, io) {
     game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
     game.lastBid = 0;
     game.auctionFinalRaise = false; // Reset for next round
-
     await game.save();
     activeGames.set(roomCode, game);
+    appendRoomLog(roomCode, `Auction completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), bid ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`);
     io.to(roomCode).emit('auctionComplete', { game });
     return;
   }

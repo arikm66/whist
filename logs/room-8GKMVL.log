@@ -1,0 +1,86 @@
+[2026-01-17T05:19:51.854Z] Room created
+[2026-01-17T05:19:51.854Z] Room created by arik.mimran@hotmail.com
+[2026-01-17T05:19:56.951Z] Player joined: arikm66@yahoo.com
+[2026-01-17T05:20:00.516Z] Player joined: arik.mimran@gmail.com
+[2026-01-17T05:20:02.862Z] Player joined: il.arik.mimran@gmail.com
+[2026-01-17T05:20:02.951Z] Game started
+[2026-01-17T05:20:02.951Z] Auction started
+[2026-01-17T05:20:28.365Z] Auction passed: Player 1 (arikm66@yahoo.com)
+[2026-01-17T05:20:59.756Z] Auction bid placed: Player 2 (arik.mimran@gmail.com) bid 5 NT
+[2026-01-17T05:21:11.645Z] Auction passed: Player 3 (il.arik.mimran@gmail.com)
+[2026-01-17T05:21:27.630Z] Auction bid placed: Player 0 (arik.mimran@hotmail.com) bid 6 C
+[2026-01-17T05:22:22.615Z] Auction passed: Player 2 (arik.mimran@gmail.com)
+[2026-01-17T05:27:35.084Z] Card played: Player 0 (arik.mimran@hotmail.com) played KC
+[2026-01-17T05:27:41.098Z] Card played: Player 1 (arikm66@yahoo.com) played 6C
+[2026-01-17T05:27:45.234Z] Card played: Player 2 (arik.mimran@gmail.com) played 3C
+[2026-01-17T05:27:46.889Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 5C
+[2026-01-17T05:27:46.889Z] Trick completed: Winner is Player 0 (arik.mimran@hotmail.com), cards: P0: KC, P1: 6C, P2: 3C, P3: 5C
+[2026-01-17T05:27:52.573Z] Card played: Player 0 (arik.mimran@hotmail.com) played AC
+[2026-01-17T05:27:55.095Z] Card played: Player 1 (arikm66@yahoo.com) played 8C
+[2026-01-17T05:27:56.559Z] Card played: Player 2 (arik.mimran@gmail.com) played 9C
+[2026-01-17T05:28:01.751Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 4S
+[2026-01-17T05:28:01.751Z] Trick completed: Winner is Player 0 (arik.mimran@hotmail.com), cards: P0: AC, P1: 8C, P2: 9C, P3: 4S
+[2026-01-17T05:28:50.583Z] Card played: Player 0 (arik.mimran@hotmail.com) played 2C
+[2026-01-17T05:28:54.420Z] Card played: Player 1 (arikm66@yahoo.com) played 10C
+[2026-01-17T05:29:01.278Z] Card played: Player 2 (arik.mimran@gmail.com) played 4D
+[2026-01-17T05:29:03.942Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 5S
+[2026-01-17T05:29:03.942Z] Trick completed: Winner is Player 1 (arikm66@yahoo.com), cards: P0: 2C, P1: 10C, P2: 4D, P3: 5S
+[2026-01-17T05:29:14.284Z] Card played: Player 1 (arikm66@yahoo.com) played JC
+[2026-01-17T05:29:20.287Z] Card played: Player 2 (arik.mimran@gmail.com) played 8D
+[2026-01-17T05:29:23.421Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 6S
+[2026-01-17T05:29:27.989Z] Card played: Player 0 (arik.mimran@hotmail.com) played 4C
+[2026-01-17T05:29:27.989Z] Trick completed: Winner is Player 1 (arikm66@yahoo.com), cards: P1: JC, P2: 8D, P3: 6S, P0: 4C
+[2026-01-17T05:29:34.792Z] Card played: Player 1 (arikm66@yahoo.com) played QC
+[2026-01-17T05:29:42.432Z] Card played: Player 2 (arik.mimran@gmail.com) played 3S
+[2026-01-17T05:29:46.928Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 9S
+[2026-01-17T05:29:50.208Z] Card played: Player 0 (arik.mimran@hotmail.com) played 7C
+[2026-01-17T05:29:50.208Z] Trick completed: Winner is Player 1 (arikm66@yahoo.com), cards: P1: QC, P2: 3S, P3: 9S, P0: 7C
+[2026-01-17T05:30:24.511Z] Card played: Player 1 (arikm66@yahoo.com) played 2S
+[2026-01-17T05:30:31.964Z] Card played: Player 2 (arik.mimran@gmail.com) played AS
+[2026-01-17T05:30:37.071Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 2H
+[2026-01-17T05:30:44.920Z] Card played: Player 0 (arik.mimran@hotmail.com) played 8S
+[2026-01-17T05:30:44.920Z] Trick completed: Winner is Player 2 (arik.mimran@gmail.com), cards: P1: 2S, P2: AS, P3: 2H, P0: 8S
+[2026-01-17T05:30:54.425Z] Card played: Player 2 (arik.mimran@gmail.com) played 7S
+[2026-01-17T05:30:57.920Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 7H
+[2026-01-17T05:31:00.796Z] Card played: Player 0 (arik.mimran@hotmail.com) played 10S
+[2026-01-17T05:31:03.780Z] Card played: Player 1 (arikm66@yahoo.com) played KS
+[2026-01-17T05:31:03.780Z] Trick completed: Winner is Player 1 (arikm66@yahoo.com), cards: P2: 7S, P3: 7H, P0: 10S, P1: KS
+[2026-01-17T05:31:17.918Z] Card played: Player 1 (arikm66@yahoo.com) played 9D
+[2026-01-17T05:31:20.542Z] Card played: Player 2 (arik.mimran@gmail.com) played KD
+[2026-01-17T05:31:23.462Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 3D
+[2026-01-17T05:31:26.462Z] Card played: Player 0 (arik.mimran@hotmail.com) played 2D
+[2026-01-17T05:31:26.462Z] Trick completed: Winner is Player 2 (arik.mimran@gmail.com), cards: P1: 9D, P2: KD, P3: 3D, P0: 2D
+[2026-01-17T05:31:44.609Z] Card played: Player 2 (arik.mimran@gmail.com) played AD
+[2026-01-17T05:31:47.190Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 5D
+[2026-01-17T05:31:50.302Z] Card played: Player 0 (arik.mimran@hotmail.com) played 7D
+[2026-01-17T05:31:53.872Z] Card played: Player 1 (arikm66@yahoo.com) played JD
+[2026-01-17T05:31:53.872Z] Trick completed: Winner is Player 2 (arik.mimran@gmail.com), cards: P2: AD, P3: 5D, P0: 7D, P1: JD
+[2026-01-17T05:32:08.831Z] Card played: Player 2 (arik.mimran@gmail.com) played 5H
+[2026-01-17T05:32:12.521Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 10H
+[2026-01-17T05:32:14.542Z] Card played: Player 0 (arik.mimran@hotmail.com) played KH
+[2026-01-17T05:32:18.563Z] Card played: Player 1 (arikm66@yahoo.com) played 3H
+[2026-01-17T05:32:18.563Z] Trick completed: Winner is Player 0 (arik.mimran@hotmail.com), cards: P2: 5H, P3: 10H, P0: KH, P1: 3H
+[2026-01-17T05:32:32.780Z] Card played: Player 0 (arik.mimran@hotmail.com) played AH
+[2026-01-17T05:32:35.483Z] Invalid action: Invalid card play (userId: 696091709cf5c492acb9f600)
+[2026-01-17T05:32:40.091Z] Card played: Player 1 (arikm66@yahoo.com) played 6H
+[2026-01-17T05:32:46.094Z] Invalid action: Invalid card play (userId: 696091ba9cf5c492acb9f609)
+[2026-01-17T05:32:49.876Z] Card played: Player 2 (arik.mimran@gmail.com) played 8H
+[2026-01-17T05:32:58.781Z] Card played: Player 3 (il.arik.mimran@gmail.com) played JH
+[2026-01-17T05:32:58.781Z] Trick completed: Winner is Player 0 (arik.mimran@hotmail.com), cards: P0: AH, P1: 6H, P2: 8H, P3: JH
+[2026-01-17T05:33:13.623Z] Card played: Player 0 (arik.mimran@hotmail.com) played 10D
+[2026-01-17T05:33:18.706Z] Card played: Player 1 (arikm66@yahoo.com) played JS
+[2026-01-17T05:33:25.902Z] Card played: Player 2 (arik.mimran@gmail.com) played QS
+[2026-01-17T05:33:28.382Z] Trick completed: Winner is Player 3 (il.arik.mimran@gmail.com), cards: P0: 10D, P1: JS, P2: QS, P3: QD
+[2026-01-17T05:33:28.382Z] Card played: Player 3 (il.arik.mimran@gmail.com) played QD
+[2026-01-17T05:33:33.558Z] Card played: Player 3 (il.arik.mimran@gmail.com) played 6D
+[2026-01-17T05:33:35.606Z] Card played: Player 0 (arik.mimran@hotmail.com) played 9H
+[2026-01-17T05:33:36.745Z] Card played: Player 1 (arikm66@yahoo.com) played 4H
+[2026-01-17T05:33:38.655Z] Trick completed: Winner is Player 3 (il.arik.mimran@gmail.com), cards: P3: 6D, P0: 9H, P1: 4H, P2: QH
+[2026-01-17T05:33:38.655Z] Card played: Player 2 (arik.mimran@gmail.com) played QH
+[2026-01-17T05:33:41.665Z] Round ended: Round 1
+[2026-01-17T05:33:41.665Z] Round started: Round 2
+[2026-01-17T05:41:56.222Z] Player left: arik.mimran@hotmail.com
+[2026-01-17T05:44:03.606Z] Player left: arik.mimran@gmail.com
+[2026-01-17T05:44:08.279Z] Player left: il.arik.mimran@gmail.com
+[2026-01-17T05:44:19.046Z] Game aborted: room deleted by admin
+[2026-01-17T05:44:19.046Z] Room closed

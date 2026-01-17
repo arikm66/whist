@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+
 import api from '../services/api';
+import socket from '../services/socket';
 
 const AuthContext = createContext();
 
@@ -38,12 +40,28 @@ export function AuthProvider({ children }) {
 
   const login = (tokenValue, userObj) => {
     localStorage.setItem('token', tokenValue);
-    if (userObj) localStorage.setItem('user', JSON.stringify(userObj));
+    if (userObj) {
+      localStorage.setItem('user', JSON.stringify(userObj));
+      socket.emit('login', {
+        userId: userObj._id || userObj.id,
+        email: userObj.email
+      });
+    }
     setToken(tokenValue);
     setUser(userObj || null);
   };
 
   const logout = () => {
+    try {
+      const userStr = localStorage.getItem('user');
+      const userObj = userStr ? JSON.parse(userStr) : null;
+      if (userObj) {
+        socket.emit('logout', {
+          userId: userObj._id || userObj.id,
+          email: userObj.email
+        });
+      }
+    } catch {}
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);

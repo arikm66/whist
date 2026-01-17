@@ -37,11 +37,6 @@ export default function Lobby() {
       setRooms(rooms);
     });
 
-    // Listen for room list changes (new rooms created, games started)
-    socket.on('roomsListUpdated', () => {
-      socket.emit('getRooms');
-    });
-
     socket.on('roomCreated', ({ roomCode, game }) => {
       navigate(`/game/${roomCode}`);
     });
@@ -60,7 +55,6 @@ export default function Lobby() {
 
     return () => {
       socket.off('roomsList');
-      socket.off('roomsListUpdated');
       socket.off('roomCreated');
       socket.off('roomJoined');
       socket.off('gameStarted');
