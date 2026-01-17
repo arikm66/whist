@@ -89,3 +89,12 @@
 [2026-01-17T07:26:45.395Z] Bid placed: Player 3 (il.arik.mimran@gmail.com) bid 3
 [2026-01-17T07:26:46.988Z] Bid placed: Player 0 (arik.mimran@hotmail.com) bid 3
 [2026-01-17T07:26:59.600Z] Bid placed: Player 1 (arikm66@yahoo.com) bid 2
+[2026-01-17T07:47:25.233Z] Player left: 696091df9cf5c492acb9f614
+[2026-01-17T07:47:25.279Z] Game aborted: player disconnected during active game (695b4c5710844ac67ca61d24)
+[2026-01-17T07:47:25.280Z] Room closed
+[2026-01-17T07:47:25.422Z] Invalid action: Game already started (userId: 696091df9cf5c492acb9f614)
+[2026-01-17T07:47:25.423Z] Invalid action: Game already started (userId: 696091df9cf5c492acb9f614)
+[2026-01-17T07:47:25.424Z] Invalid action: Game already started (userId: 695b4c5710844ac67ca61d24)
+[2026-01-17T07:47:25.741Z] Player left: 696091ba9cf5c492acb9f609
+[2026-01-17T07:47:26.151Z] Player left: 696091709cf5c492acb9f600
+[2026-01-17T07:47:34.828Z] Invalid action: Game already started (userId: 695b4c5710844ac67ca61d24)
