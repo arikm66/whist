@@ -380,10 +380,10 @@ module.exports = (io) => {
 
         // Validate bid
         const tricksAvailable = game.players[0].hand.length;
-        bid = parseInt(bid);
+        const bidInt = parseInt(bid);
 
         // New rules: min 0, max = tricksAvailable, no monotonic constraint
-        if (isNaN(bid) || bid < 0 || bid > tricksAvailable) {
+        if (isNaN(bidInt) || bidInt < 0 || bidInt > tricksAvailable) {
           appendRoomLog(roomCode, `Invalid action: Bid must be between 0 and ${tricksAvailable} (userId: ${userId})`);
           socket.emit('error', { message: `Bid must be between 0 and ${tricksAvailable}` });
           return;
@@ -393,18 +393,19 @@ module.exports = (io) => {
         const lastBidderPos = (game.auctionWinner + 3) % 4;
         if (player.position === lastBidderPos) {
           const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
-          if (sumPrev + bid === tricksAvailable) {
-            appendRoomLog(roomCode, `Invalid action: Last bidder cannot bid ${bid} (userId: ${userId})`);
-            socket.emit('error', { message: `As last bidder, you cannot bid ${bid} because total would equal ${tricksAvailable}` });
+          if (sumPrev + bidInt === tricksAvailable) {
+            appendRoomLog(roomCode, `Invalid action: Last bidder cannot bid ${bidInt} (userId: ${userId})`);
+            socket.emit('error', { message: `As last bidder, you cannot bid ${bidInt} because total would equal ${tricksAvailable}` });
             return;
           }
         }
 
         // Record bid
-        game.bids[player.position] = bid;
+        game.bids[player.position] = bidInt;
+        appendRoomLog(roomCode, `Bid placed: Player ${player.position} (${player.email || player.userId}) bid ${bidInt}`);
 
         // Broadcast bid to all players
-        io.to(roomCode).emit('bidPlaced', { position: player.position, bid, game });
+        io.to(roomCode).emit('bidPlaced', { position: player.position, bid: bidInt, game });
 
         // Move to next bidder
         const bidsReceived = game.bids.filter(b => b !== null).length;
@@ -640,7 +641,13 @@ async function endRound(game, roomCode, io) {
       game.scores.push({ position: idx, score: roundScore });
     }
   });
+  // Log latest scores for all players
+  const scoreLines = game.scores.map(s => {
+    const player = game.players[s.position];
+    return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
+  }).join('; ');
   appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
+  appendRoomLog(roomCode, `Scores after round ${game.round}: ${scoreLines}`);
   game.round++;
   // Check if game complete (e.g., after 5 rounds)
   if (game.round > 5) {

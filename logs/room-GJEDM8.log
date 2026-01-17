@@ -12,3 +12,9 @@
 [2026-01-17T06:05:42.815Z] User logged out: arik.mimran@hotmail.com
 [2026-01-17T06:14:47.538Z] User logged out: arikm66@yahoo.com
 [2026-01-17T06:14:53.657Z] User logged in: arikm66@yahoo.com
+[2026-01-17T06:19:48.017Z] Bid placed: Player 0 (arik.mimran@hotmail.com) bid 1
+[2026-01-17T06:29:23.770Z] Player left: 696091709cf5c492acb9f600
+[2026-01-17T06:29:23.884Z] Invalid action: Game already started (userId: 696091709cf5c492acb9f600)
+[2026-01-17T06:29:24.357Z] Invalid action: Game already started (userId: 696091709cf5c492acb9f600)
+[2026-01-17T06:29:55.599Z] Game aborted: room deleted by admin
+[2026-01-17T06:29:55.599Z] Room closed

@@ -300,6 +300,9 @@ export default function GameRoom() {
             <>
               <div>Round: {game.round}</div>
               <div>Trump: {game.trumpSuit && getSuitSymbol(game.trumpSuit)}</div>
+              <div>
+                Total Bids: {Array.isArray(game.bids) ? game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0) : 0}
+              </div>
               <div style={{ color: isMyTurn ? '#4CAF50' : '#666', fontWeight: 'bold' }}>
                 {isMyTurn ? '🔔 Your Turn!' : `Player ${game.currentTurn + 1}'s Turn`}
               </div>
