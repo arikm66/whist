@@ -608,18 +608,24 @@ async function startGame(roomCode, io) {
 
 async function endRound(game, roomCode, io) {
   // Calculate scores based on bidding
+  const roundTricks = [];
+  const tricksCount = game.players[0].tricksWon + game.players[1].tricksWon + game.players[2].tricksWon + game.players[3].tricksWon;
+  // For each trick, you would need to store the cards played and who won. This assumes you have a way to track all tricks in the round (not just the last one).
+  // For now, we'll just send an empty array for tricks. You should adapt this to your actual trick-tracking logic.
+
+  // Score calculation and round summary
+  const roundScores = [];
   game.players.forEach((player, idx) => {
     const bid = game.bids[idx];
     const tricksWon = player.tricksWon;
     let roundScore = 0;
-    // Special scoring for bid = 0
+    let matchedBid = false;
     if (bid === 0) {
       const bidSum = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
       if (tricksWon === 0) {
-        // Match: 0 tricks won
         roundScore = bidSum < 13 ? 50 : 25;
+        matchedBid = true;
       } else {
-        // No match: won tricks but bid 0
         if (bidSum < 13) {
           roundScore = -50 + (tricksWon - 1) * 10;
         } else {
@@ -627,10 +633,9 @@ async function endRound(game, roomCode, io) {
         }
       }
     } else if (bid === tricksWon) {
-      // Exact match (bid > 0): +10 + tricks²
       roundScore = 10 + (tricksWon * tricksWon);
+      matchedBid = true;
     } else {
-      // Over/under bid (bid > 0): -10 for every gap
       const gap = Math.abs(bid - tricksWon);
       roundScore = -10 * gap;
     }
@@ -640,7 +645,15 @@ async function endRound(game, roomCode, io) {
     } else {
       game.scores.push({ position: idx, score: roundScore });
     }
+    roundScores.push({ value: roundScore, matchedBid });
   });
+
+  // Compose round summary for client
+  const roundSummary = {
+    tricks: roundTricks, // TODO: fill with actual trick data if available
+    scores: roundScores
+  };
+
   // Log latest scores for all players
   const scoreLines = game.scores.map(s => {
     const player = game.players[s.position];
@@ -648,6 +661,10 @@ async function endRound(game, roomCode, io) {
   }).join('; ');
   appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
   appendRoomLog(roomCode, `Scores after round ${game.round}: ${scoreLines}`);
+
+  // Emit round summary to all players
+  io.to(roomCode).emit('roundEnded', { roundSummary, game });
+
   game.round++;
   // Check if game complete (e.g., after 5 rounds)
   if (game.round > 5) {

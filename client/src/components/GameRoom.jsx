@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RoundSummaryTable from './RoundSummaryTable';
 import Modal from './Modal';
 import { useParams, useNavigate } from 'react-router-dom';
 import socket from '../services/socket';
@@ -14,6 +15,8 @@ export default function GameRoom() {
   const [trickWinner, setTrickWinner] = useState(null);
   const [isWaitingForNextTrick, setIsWaitingForNextTrick] = useState(false);
   const [auctionBid, setAuctionBid] = useState({ quantity: '', suit: 'C' });
+  const [showRoundSummary, setShowRoundSummary] = useState(false);
+  const [roundSummaries, setRoundSummaries] = useState([]);
   const [auctionTimeRemaining, setAuctionTimeRemaining] = useState(30);
   const [bidValue, setBidValue] = useState('');
   const [bidTimer, setBidTimer] = useState(null);
@@ -96,6 +99,7 @@ export default function GameRoom() {
       setSelectedCard(null);
     });
 
+
     socket.on('trickComplete', ({ trick, winner, game }) => {
       setGame(game);
       setTrickWinner(winner);
@@ -104,6 +108,12 @@ export default function GameRoom() {
         setTrickWinner(null);
         setIsWaitingForNextTrick(false);
       }, 2500);
+    });
+
+    socket.on('roundEnded', ({ roundSummary, game }) => {
+      setGame(game);
+      setShowRoundSummary(true);
+      setRoundSummaries(prev => [...prev, roundSummary]);
     });
 
     socket.on('nextTrick', ({ game }) => {
@@ -141,6 +151,7 @@ export default function GameRoom() {
       socket.off('trickComplete');
       socket.off('nextTrick');
       socket.off('newRound');
+      socket.off('roundEnded');
       socket.off('gameFinished');
       socket.off('error');
     };
@@ -289,6 +300,22 @@ export default function GameRoom() {
 
   const myPlayer = game.players.find(p => p.position === myPosition);
   const isMyTurn = Number(game.currentTurn) === Number(myPosition);
+
+  if (showRoundSummary && roundSummaries.length > 0) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        <RoundSummaryTable
+          rounds={roundSummaries}
+          players={game.players}
+          myPosition={myPosition}
+        />
+        <button
+          style={{ marginTop: 24, padding: '12px 32px', fontSize: 18, borderRadius: 8, background: '#1976D2', color: 'white', border: 'none' }}
+          onClick={() => setShowRoundSummary(false)}
+        >Continue</button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
