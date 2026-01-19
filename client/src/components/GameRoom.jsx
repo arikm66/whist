@@ -326,7 +326,7 @@ export default function GameRoom() {
           {game.status === 'playing' && (
             <>
               <div>Round: {game.round}</div>
-              <div>Trump: {game.trumpSuit && getSuitSymbol(game.trumpSuit)}</div>
+              <div>Trump: {(!game.trumpSuit || game.trumpSuit === 'NT') ? 'NT' : getSuitSymbol(game.trumpSuit)}</div>
               <div>
                 Total Bids: {Array.isArray(game.bids) ? game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0) : 0}
               </div>
@@ -573,7 +573,7 @@ export default function GameRoom() {
           marginBottom: '2rem'
         }}>
           <h3>Bidding Phase</h3>
-          <p>Trump: {getSuitSymbol(game.trumpSuit)}</p>
+          <p>Trump: {(!game.trumpSuit || game.trumpSuit === 'NT') ? 'NT' : getSuitSymbol(game.trumpSuit)}</p>
           
           {/* Bid History */}
           <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>

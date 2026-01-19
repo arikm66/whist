@@ -110,3 +110,5 @@
 [2026-01-17T13:40:26.573Z] Invalid action: Game already started (userId: 696091ba9cf5c492acb9f609)
 [2026-01-17T13:40:26.579Z] Invalid action: Game already started (userId: 696091ba9cf5c492acb9f609)
 [2026-01-17T13:40:36.560Z] Player left: 696091df9cf5c492acb9f614
+[2026-01-19T04:25:55.938Z] Game aborted: room deleted by admin
+[2026-01-19T04:25:55.938Z] Room closed

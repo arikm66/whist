@@ -575,6 +575,14 @@ async function startGame(roomCode, io) {
     if (game.dealer === undefined) {
       game.dealer = 0;
     }
+
+    // Ensure scores array is initialized for all players
+    if (!Array.isArray(game.scores)) game.scores = [];
+    for (let i = 0; i < 4; i++) {
+      if (!game.scores.find(s => s.position === i)) {
+        game.scores.push({ position: i, score: 0 });
+      }
+    }
     
     // Deal cards
     const hands = dealCards();
@@ -640,11 +648,8 @@ async function endRound(game, roomCode, io) {
       roundScore = -10 * gap;
     }
     const existingScore = game.scores.find(s => s.position === idx);
-    if (existingScore) {
-      existingScore.score += roundScore;
-    } else {
-      game.scores.push({ position: idx, score: roundScore });
-    }
+    // Always true: update the player's score
+    existingScore.score += roundScore;
     roundScores.push({ value: roundScore, matchedBid });
   });
 
@@ -654,12 +659,21 @@ async function endRound(game, roomCode, io) {
     scores: roundScores
   };
 
+
+  // Log summary of all players' bids and tricks won
+  const bidsAndTricks = game.players.map((player, idx) => {
+    const bid = game.bids[idx];
+    const tricks = player.tricksWon;
+    return `Player ${idx} (${player?.email || player?.userId}): Bid ${bid}, Tricks ${tricks}`;
+  }).join('; ');
+  appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
+  appendRoomLog(roomCode, `Bids and tricks: ${bidsAndTricks}`);
+
   // Log latest scores for all players
   const scoreLines = game.scores.map(s => {
     const player = game.players[s.position];
     return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
   }).join('; ');
-  appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
   appendRoomLog(roomCode, `Scores after round ${game.round}: ${scoreLines}`);
 
   // Emit round summary to all players
@@ -680,24 +694,24 @@ async function endRound(game, roomCode, io) {
     appendRoomLog(roomCode, `Final scores: ${scoreLines}`);
     closeRoomLog(roomCode);
   } else {
-    // Start new round
+    // Start new round with auction phase
     appendRoomLog(roomCode, `Round started: Round ${game.round}`);
     game.dealer = (game.dealer + 1) % 4;
     game.players.forEach(p => p.tricksWon = 0);
     const hands = dealCards();
-    // Determine trump from dealer's last card BEFORE sorting
-    const dealerHand = hands[`player${game.dealer}`];
-    game.trumpSuit = getCardSuit(dealerHand[dealerHand.length - 1]);
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
     game.players[2].hand = sortHand(hands.player2);
     game.players[3].hand = sortHand(hands.player3);
-    // Initialize bidding phase for new round
-    game.status = 'bidding';
-    game.bids = [null, null, null, null];
-    game.currentBidder = (game.dealer + 1) % 4;
-    game.minBid = game.players[0].hand.length <= 5 ? 1 : 5;
-    game.lastBid = 0;
+    // Start auction phase for new round
+    game.status = 'auction';
+    game.auctionCurrentBidder = (game.dealer + 1) % 4;
+    game.auctionWinner = null;
+    game.auctionHighestBid = null;
+    game.auctionPassed = [];
+    game.auctionBids = [];
+    game.auctionFinalRaise = false;
+    game.trumpSuit = null;
     await game.save();
     activeGames.set(roomCode, game);
     io.to(roomCode).emit('newRound', { game });
