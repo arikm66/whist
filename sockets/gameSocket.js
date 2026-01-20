@@ -78,15 +78,17 @@ module.exports = (io) => {
           socket.emit('error', { message: 'Room not found' });
           return;
         }
-        // Allow rejoin even if room is full or started
+        // Check if player is already in the room
         const existingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
         if (existingPlayer) {
+          // Only join socket room and emit roomJoined ONCE
           socket.join(roomCode);
           socket._roomCode = roomCode;
           socket._userId = userId;
           socket.emit('roomJoined', { game });
           return;
         }
+        // Only allow new player if room is not full and game not started
         if (game.players.length >= 4) {
           appendRoomLog(roomCode, `Invalid action: Room is full (userId: ${userId})`);
           socket.emit('error', { message: 'Room is full' });
@@ -114,6 +116,7 @@ module.exports = (io) => {
         socket.join(roomCode);
         socket._roomCode = roomCode;
         socket._userId = userId;
+        socket.emit('roomJoined', { game });
         io.to(roomCode).emit('playerJoined', { game });
         broadcastRoomsList(io);
         if (game.players.length === 4) {
@@ -155,10 +158,10 @@ module.exports = (io) => {
         }
         // Leave socket.io room
         socket.leave(roomCode);
-        // Notify others (only if not already finished)
-        if (!wasActive) io.to(roomCode).emit('playerLeft', { userId });
+        // Notify all players in the room to go to lobby
+        io.to(roomCode).emit('roomClosed', { roomCode });
         broadcastRoomsList(io);
-        if (!wasActive && leavingPlayerEmail) {
+        if (leavingPlayerEmail) {
           appendRoomLog(roomCode, `Player left: ${leavingPlayerEmail}`);
         }
       } catch (err) {
@@ -516,36 +519,9 @@ module.exports = (io) => {
     });
 
     socket.on('disconnect', async () => {
+      // On disconnect, do not remove player or abort game. Only log disconnect.
       if (socket._roomCode && socket._userId) {
-        try {
-          await Game.findOneAndUpdate(
-            { roomCode: socket._roomCode },
-            { $pull: { players: { userId: socket._userId } } }
-          );
-          const game = activeGames.get(socket._roomCode);
-          let wasActive = false;
-          if (game) {
-            game.players = game.players.filter(p => p.userId.toString() !== socket._userId.toString());
-            if (game.status === 'playing' || game.status === 'auction') {
-              game.status = 'finished';
-              await game.save();
-              io.to(socket._roomCode).emit('gameFinished', { game });
-              appendRoomLog(socket._roomCode, `Game aborted: player disconnected during active game (${socket._userId})`);
-              closeRoomLog(socket._roomCode);
-              wasActive = true;
-            }
-            activeGames.set(socket._roomCode, game);
-          }
-          socket.leave(socket._roomCode);
-             if (!wasActive) {
-               appendRoomLog(socket._roomCode, `Player left: ${socket._userId}`);
-               io.to(socket._roomCode).emit('playerLeft', { userId: socket._userId });
-             }
-          broadcastRoomsList(io);
-        } catch (err) {
-          console.error('Disconnect event error:', err);
-          appendRoomLog('lobby', `Error during disconnect event for userId: ${socket._userId}, roomCode: ${socket._roomCode} - ${err.message}`);
-        }
+        appendRoomLog(socket._roomCode, `User disconnected: ${socket._userId}`);
       }
       console.log('User disconnected:', socket.id);
     });

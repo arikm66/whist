@@ -135,6 +135,15 @@ export default function GameRoom() {
       alert(message);
     });
 
+    // Listen for roomClosed event to send all players to lobby
+    socket.on('roomClosed', ({ roomCode }) => {
+      // Only navigate if the closed room is the one this component is showing (from useParams)
+      const currentRoomCode = typeof roomCode === 'string' ? roomCode : String(roomCode);
+      if (currentRoomCode === (typeof window !== 'undefined' && window.location.pathname.split('/').pop())) {
+        navigate('/lobby', { replace: true });
+      }
+    });
+
     return () => {
       socket.off('roomJoined');
       socket.off('playerJoined');
@@ -153,6 +162,7 @@ export default function GameRoom() {
       socket.off('newRound');
       socket.off('roundEnded');
       socket.off('gameFinished');
+      socket.off('roomClosed');
       socket.off('error');
     };
   }, [roomCode, user, navigate]);

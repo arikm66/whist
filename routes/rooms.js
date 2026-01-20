@@ -28,9 +28,12 @@ router.delete('/:roomCode', auth, async (req, res) => {
       closeRoomLog(roomCode);
     } catch (e) {}
 
-    // Notify all clients to refresh room list
+    // Notify all clients in the room to go to lobby
     if (req.app.get('io')) {
       const io = req.app.get('io');
+      // Emit roomClosed to all sockets in the deleted room
+      io.to(roomCode).emit('roomClosed', { roomCode });
+      // Also refresh room list for all clients
       const Game = require('../models/Game');
       Game.find({}).select('roomCode players status createdAt').then(rooms => {
         io.emit('roomsList', { rooms });
