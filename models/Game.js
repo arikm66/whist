@@ -19,7 +19,7 @@ const GameSchema = new mongoose.Schema({
   },
   status: { 
     type: String, 
-    enum: ['waiting', 'auction', 'bidding', 'playing', 'finished'], 
+    enum: ['waiting', 'auction', 'frish', 'bidding', 'playing', 'finished'], 
     default: 'waiting' 
   },
   currentTurn: { type: Number, default: 0 }, // Position index (0-3)

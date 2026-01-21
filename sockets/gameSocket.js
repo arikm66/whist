@@ -58,7 +58,7 @@ module.exports = (io) => {
         await game.save();
         activeGames.set(roomCode, game);
         createRoomLog(roomCode);
-        appendRoomLog(roomCode, `Room created by ${email}`);
+        appendRoomLog(roomCode, `Room created by ${userId} ${email}`);
         socket.join(roomCode);
         socket.emit('roomCreated', { roomCode, game });
         
@@ -122,7 +122,7 @@ module.exports = (io) => {
         if (game.players.length === 4) {
           startGame(roomCode, io);
         }
-        appendRoomLog(roomCode, `Player joined: ${email}`);
+        appendRoomLog(roomCode, `Player joined: ${userId} ${email}`);
       } catch (error) {
         appendRoomLog(roomCode, `Invalid action: Failed to join room (userId: ${userId})`);
         socket.emit('error', { message: 'Failed to join room' });
@@ -185,6 +185,7 @@ module.exports = (io) => {
     socket.on('placeAuctionBid', async ({ roomCode, userId, quantity, suit }) => {
       try {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        appendRoomLog(roomCode, `Place auction bid attempt: Player ${userId} bidding ${quantity} ${suit}`);
         
         if (!game) {
           appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
@@ -259,6 +260,7 @@ module.exports = (io) => {
     socket.on('passAuction', async ({ roomCode, userId }) => {
       try {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        appendRoomLog(roomCode, `Pass auction attempt: userId ${userId} passing`);
         
         if (!game) {
           appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
@@ -285,8 +287,29 @@ module.exports = (io) => {
           return;
         }
 
+        if (game.auctionPassed.includes(player.position)) {
+          appendRoomLog(roomCode, `Invalid action: Already passed in auction (userId: ${userId})`);
+          socket.emit('error', { message: 'You have already passed' });
+          return;
+        }
+        // Record pass
+        game.auctionPassed.push(player.position);
+        appendRoomLog(roomCode, `Auction passed: Player ${player.position} (${player.email || player.userId})`);
+        appendRoomLog(roomCode, `game.auctionPassed.length: ${game ? game.auctionPassed.length : 'N/A'}`);
+        // Check if all 4 players have passed (all pass scenario)
+        if (game.auctionPassed.length === 4) {
+          // Enter frish phase
+          appendRoomLog(roomCode, 'Auction completed: All players passed, entering frish phase.');
+          game.status = 'frish';
+          await game.save();
+          activeGames.set(roomCode, game);
+          io.to(roomCode).emit('frishStarted', { game });
+          return;
+        }
+
         // During final raise, allow auction winner to pass to end auction
         if (game.auctionFinalRaise && player.position === game.auctionWinner) {
+          appendRoomLog(roomCode, `auctionFinalRaise: ${game.auctionFinalRaise} Player ${player.position} (${player.email || player.userId}) passed to end auction.`);
           // Finalize auction and transition to bidding
           const winner = game.auctionWinner;
 
@@ -310,39 +333,8 @@ module.exports = (io) => {
           return;
         }
 
-        if (game.auctionPassed.includes(player.position)) {
-          appendRoomLog(roomCode, `Invalid action: Already passed in auction (userId: ${userId})`);
-          socket.emit('error', { message: 'You have already passed' });
-          return;
-        }
-
-        // Record pass
-        game.auctionPassed.push(player.position);
-        appendRoomLog(roomCode, `Auction passed: Player ${player.position} (${player.email || player.userId})`);
         // Broadcast pass to all players
         io.to(roomCode).emit('auctionPassed', { position: player.position, game });
-        // Check if all 4 players have passed (all pass scenario)
-        if (game.auctionPassed.length === 4) {
-          // Hand is "Dead" - reshuffle and deal to next player
-          appendRoomLog(roomCode, 'Auction completed: All players passed, hand is dead. Restarting auction.');
-          game.dealer = (game.dealer + 1) % 4;
-          game.players.forEach(p => p.tricksWon = 0);
-          const hands = dealCards();
-          game.players[0].hand = sortHand(hands.player0);
-          game.players[1].hand = sortHand(hands.player1);
-          game.players[2].hand = sortHand(hands.player2);
-          game.players[3].hand = sortHand(hands.player3);
-          // Restart auction
-          game.auctionCurrentBidder = (game.dealer + 1) % 4;
-          game.auctionWinner = null;
-          game.auctionHighestBid = null;
-          game.auctionPassed = [];
-          game.auctionBids = [];
-          await game.save();
-          activeGames.set(roomCode, game);
-          io.to(roomCode).emit('auctionRestarted', { game });
-          return;
-        }
         // Move to next bidder
         await advanceAuctionTurn(game, roomCode, io);
       } catch (error) {
