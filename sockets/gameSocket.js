@@ -296,8 +296,9 @@ module.exports = (io) => {
         game.auctionPassed.push(player.position);
         appendRoomLog(roomCode, `Auction passed: Player ${player.position} (${player.email || player.userId})`);
         appendRoomLog(roomCode, `game.auctionPassed.length: ${game ? game.auctionPassed.length : 'N/A'}`);
+        appendRoomLog(roomCode, `game.auctionBids: ${game && game.auctionBids ? game.auctionBids.length : 'N/A'}`);
         // Check if all 4 players have passed (all pass scenario)
-        if (game.auctionPassed.length === 4) {
+        if ((!game.auctionBids || game.auctionBids.length === 0) && game.auctionPassed.length === 4) {
           // Enter frish phase
           appendRoomLog(roomCode, 'Auction completed: All players passed, entering frish phase.');
           game.status = 'frish';

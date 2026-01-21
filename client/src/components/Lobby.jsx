@@ -110,7 +110,10 @@ export default function Lobby() {
         <p>No rooms available. Create one to start playing!</p>
       ) : (
         <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
-          {rooms.map((room) => {
+          {rooms
+            .slice() // copy to avoid mutating state
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((room) => {
             const isFull = room.players.length >= 4;
             const userInRoom = room.players.some(p => (p.userId === user?._id || p.userId === user?.id) || p.email === user?.email);
             const canJoin = (room.status === 'waiting' && !isFull) || (userInRoom && room.status !== 'finished');
