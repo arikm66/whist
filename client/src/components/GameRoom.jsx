@@ -23,6 +23,8 @@ export default function GameRoom() {
   const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [leaveMsg, setLeaveMsg] = useState('');
+  // Frish state
+  const [frishCardsSelected, setFrishCardsSelected] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -73,10 +75,16 @@ export default function GameRoom() {
       setAuctionBid({ quantity: '', suit: 'C' });
     });
 
+
     socket.on('auctionRestarted', ({ game }) => {
       setGame(game);
       setAuctionBid({ quantity: '', suit: 'C' });
       setAuctionTimeRemaining(30);
+    });
+
+    // Handle frish phase
+    socket.on('frishStarted', ({ game }) => {
+      setGame(game);
     });
 
     socket.on('bidPlaced', ({ position, bid, game }) => {
@@ -153,6 +161,7 @@ export default function GameRoom() {
       socket.off('auctionNextBidder');
       socket.off('auctionComplete');
       socket.off('auctionRestarted');
+      socket.off('frishStarted');
       socket.off('bidPlaced');
       socket.off('nextBidder');
       socket.off('biddingComplete');
@@ -231,6 +240,10 @@ export default function GameRoom() {
     });
   };
 
+  const handleFrishSelected = () => {
+    // Placeholder for frish action
+  };
+
   // Timer for auction phase
   useEffect(() => {
     if (game && game.status === 'auction' && Number(myPosition) === Number(game.auctionCurrentBidder)) {
@@ -307,6 +320,8 @@ export default function GameRoom() {
   if (!game) {
     return <div style={{ padding: '2rem' }}>Loading...</div>;
   }
+
+  // ...existing code...
 
   const myPlayer = game.players.find(p => p.position === myPosition);
   const isMyTurn = Number(game.currentTurn) === Number(myPosition);
@@ -575,6 +590,55 @@ export default function GameRoom() {
         </div>
       )}
 
+      {game.status === 'frish' && (
+        <div style={{ margin: '32px 0', background: '#f3e5f5', borderRadius: 12, padding: '2rem' }}>
+          <h3>Frish Phase</h3>
+          <p>All players passed in the auction. The hand is dead and the round will be restarted.</p>
+          <div style={{ marginTop: 24, background: '#fff', borderRadius: 8, padding: 24, boxShadow: '0 2px 8px #ccc' }}>
+            <strong>Game Status:</strong>
+            <div>Dealer: Player {typeof game.dealer === 'number' ? game.dealer + 1 : '?'}</div>
+            <div>Round: {game.round}</div>
+          </div>
+
+          {/* My Hand */}
+          {myPlayer && (
+            <div>
+              <h3>Your Hand</h3>
+              <div style={{ 
+                display: 'flex', 
+                gap: '8px', 
+                flexWrap: 'wrap',
+                padding: '1rem',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px'
+              }}>
+                {myPlayer.hand.map(card => 
+                  renderCard(card, frishCardsSelected ? null : () => {}, !frishCardsSelected)
+                )}
+              </div>
+            </div>
+          )}
+
+          <button
+            style={{
+              marginTop: 32,
+              padding: '12px 32px',
+              fontSize: 18,
+              borderRadius: 8,
+              background: frishCardsSelected ? '#1976D2' : '#aaa',
+              color: 'white',
+              border: 'none',
+              cursor: frishCardsSelected ? 'pointer' : 'not-allowed',
+              opacity: frishCardsSelected ? 1 : 0.7
+            }}
+            disabled={!frishCardsSelected}
+            onClick={handleFrishSelected}
+          >
+            Frish
+          </button>
+        </div>
+      )}
+
       {game.status === 'bidding' && (
         <div style={{ 
           padding: '2rem', 
@@ -732,7 +796,6 @@ export default function GameRoom() {
             ))}
           </div>
 
-          {/* Current Trick */}
           {/* Current Trick */}
           <div style={{ 
             marginBottom: '2rem',
