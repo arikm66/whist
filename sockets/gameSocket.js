@@ -185,7 +185,6 @@ module.exports = (io) => {
     socket.on('placeAuctionBid', async ({ roomCode, userId, quantity, suit }) => {
       try {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
-        appendRoomLog(roomCode, `Place auction bid attempt: Player ${userId} bidding ${quantity} ${suit}`);
         
         if (!game) {
           appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
@@ -260,7 +259,6 @@ module.exports = (io) => {
     socket.on('passAuction', async ({ roomCode, userId }) => {
       try {
         const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
-        appendRoomLog(roomCode, `Pass auction attempt: userId ${userId} passing`);
         
         if (!game) {
           appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
@@ -295,8 +293,6 @@ module.exports = (io) => {
         // Record pass
         game.auctionPassed.push(player.position);
         appendRoomLog(roomCode, `Auction passed: Player ${player.position} (${player.email || player.userId})`);
-        appendRoomLog(roomCode, `game.auctionPassed.length: ${game ? game.auctionPassed.length : 'N/A'}`);
-        appendRoomLog(roomCode, `game.auctionBids: ${game && game.auctionBids ? game.auctionBids.length : 'N/A'}`);
         // Check if all 4 players have passed (all pass scenario)
         if ((!game.auctionBids || game.auctionBids.length === 0) && game.auctionPassed.length === 4) {
           // Enter frish phase
