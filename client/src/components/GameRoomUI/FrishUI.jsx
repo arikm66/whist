@@ -12,7 +12,7 @@ export default function GameRoomFrishUI({
   const selectedCount = Array.isArray(myPlayer?.frish) ? myPlayer.frish.length : 0;
   const frishButtonEnabled = selectedCount === 3;
   return (
-    <div style={{ margin: '32px 0', background: '#f3e5f5', borderRadius: 12, padding: '2rem' }}>
+    <div style={{ margin: '32px 0', background: '#f3e5f5', borderRadius: 12, padding: '2rem', color: '#222' }}>
       <h3>Frish Phase</h3>
       <p>All players passed in the auction. The hand is dead and the round will be restarted.</p>
       <div style={{ marginTop: 24, background: '#fff', borderRadius: 8, padding: 24, boxShadow: '0 2px 8px #ccc' }}>
