@@ -1,3 +1,7 @@
+import GameRoomWaitingUI from './GameRoomUI/GameRoomWaitingUI';
+import GameRoomFinishedUI from './GameRoomUI/GameRoomFinishedUI';
+import GameRoomPlayingUI from './GameRoomUI/GameRoomPlayingUI';
+import GameRoomBiddingUI from './GameRoomUI/GameRoomBiddingUI';
 import React, { useState, useEffect } from 'react';
 import GameRoomAuctionUI from './GameRoomUI/GameRoomAuctionUI';
 import GameRoomFrishUI from './GameRoomUI/GameRoomFrishUI';
@@ -397,20 +401,7 @@ export default function GameRoom() {
       </div>
 
       {game.status === 'waiting' && (
-        <div style={{ 
-          padding: '2rem', 
-          backgroundColor: '#f0f0f0', 
-          borderRadius: '8px',
-          marginBottom: '2rem'
-        }}>
-          <h3>Waiting for players...</h3>
-          <p>{game.players.length}/4 players joined</p>
-          <div style={{ marginTop: '1rem' }}>
-            {game.players.map((player, idx) => (
-              <div key={idx}>✓ {player.email}</div>
-            ))}
-          </div>
-        </div>
+        <GameRoomWaitingUI game={game} />
       )}
 
       {game.status === 'auction' && (
@@ -439,225 +430,32 @@ export default function GameRoom() {
       )}
 
       {game.status === 'bidding' && (
-        <div style={{ 
-          padding: '2rem', 
-          backgroundColor: '#e3f2fd', 
-          borderRadius: '8px',
-          marginBottom: '2rem'
-        }}>
-          <h3>Bidding Phase</h3>
-          <p>Trump: {(!game.trumpSuit || game.trumpSuit === 'NT') ? 'NT' : getSuitSymbol(game.trumpSuit)}</p>
-          
-          {/* Bid History */}
-          <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
-            <strong>Bids Placed:</strong>
-            {game.bids.map((bid, idx) => (
-              <div key={idx} style={{ marginTop: '0.5rem' }}>
-                Player {idx + 1} {idx === myPosition && '(You)'}: {bid !== null ? bid : 'Waiting...'}
-                {bid !== null && game.bids[idx] !== null && (
-                  <span style={{ marginLeft: '1rem', color: '#4CAF50' }}>✓</span>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Current Bidder */}
-          <div style={{ 
-            padding: '1rem', 
-            backgroundColor: Number(game.currentBidder) === Number(myPosition) ? '#fff3cd' : '#f5f5f5',
-            borderRadius: '4px',
-            marginBottom: '1rem'
-          }}>
-            {Number(game.currentBidder) === Number(myPosition) ? (
-              <>
-                <h4>🔔 Your Turn to Bid!</h4>
-                <p style={{ color: '#d32f2f', fontWeight: 'bold' }}>Time remaining: {bidTimeRemaining}s</p>
-                <div style={{ marginTop: '1rem' }}>
-                  {(() => {
-                    const tricksAvailable = (game.players && game.players[myPosition]) ? game.players[myPosition].hand.length : (game.players && game.players[0] ? game.players[0].hand.length : 0);
-                    const lastBidderPos = (game.auctionWinner + 3) % 4;
-                    const isLastBidder = Number(myPosition) === Number(lastBidderPos);
-                    const sumPrev = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
-                    const forbidden = isLastBidder ? (tricksAvailable - sumPrev) : null;
-                    const numbers = Array.from({ length: tricksAvailable + 1 }, (_, i) => i);
-                    return (
-                      <>
-                        <p>Choose your bid (0–{tricksAvailable})</p>
-                        {isLastBidder && (
-                          <p style={{ color: '#d32f2f' }}>
-                            You cannot bid {forbidden} (would equal total {tricksAvailable}).
-                          </p>
-                        )}
-                        <div
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(4, 60px)',
-                            gap: '10px',
-                            marginTop: '8px'
-                          }}
-                        >
-                          {numbers.map((num) => {
-                            const isDisabled = isLastBidder && num === forbidden;
-                            const isSelected = String(num) === String(bidValue);
-                            return (
-                              <button
-                                key={num}
-                                onClick={() => !isDisabled && handleSelectBid(num)}
-                                disabled={isDisabled}
-                                style={{
-                                  width: '60px',
-                                  height: '60px',
-                                  borderRadius: '8px',
-                                  border: isSelected ? '2px solid #1976D2' : '2px solid #ccc',
-                                  backgroundColor: isDisabled ? '#eee' : (isSelected ? '#BBDEFB' : 'white'),
-                                  color: isDisabled ? '#999' : '#333',
-                                  fontSize: '18px',
-                                  fontWeight: 'bold',
-                                  cursor: isDisabled ? 'not-allowed' : 'pointer'
-                                }}
-                              >
-                                {num}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
-              </>
-            ) : (
-              <div>
-                <p>Waiting for <strong>Player {typeof game.currentBidder === 'number' ? game.currentBidder + 1 : 'Unknown'}</strong> to place their bid...</p>
-              </div>
-            )}
-          </div>
-
-          {/* Show hand during bidding (non-interactive) */}
-          {myPlayer && (
-            <div>
-              <h3>Your Hand</h3>
-              <div style={{ 
-                display: 'flex', 
-                gap: '8px', 
-                flexWrap: 'wrap',
-                padding: '1rem',
-                backgroundColor: '#f5f5f5',
-                borderRadius: '8px'
-              }}>
-                {myPlayer.hand.map(card => 
-                  renderCard(card, null, false)
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+        <GameRoomBiddingUI
+          game={game}
+          myPlayer={myPlayer}
+          myPosition={myPosition}
+          bidValue={bidValue}
+          bidTimeRemaining={bidTimeRemaining}
+          handleSelectBid={handleSelectBid}
+          renderCard={renderCard}
+        />
       )}
 
       {game.status === 'playing' && (
-        <>
-          {/* Scores */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '1rem', 
-            marginBottom: '2rem',
-            backgroundColor: '#f9f9f9',
-            padding: '1rem',
-            borderRadius: '8px',
-            alignItems: 'stretch'
-          }}>
-            {game.players.map((player, idx) => (
-              <div 
-                key={idx} 
-                style={{ 
-                  flex: '1 1 0',
-                  minWidth: 0,
-                  backgroundColor: trickWinner === idx ? '#4CAF50' : 'transparent',
-                  color: trickWinner === idx ? 'white' : 'inherit',
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  transition: 'background-color 0.3s ease, color 0.3s ease',
-                  minHeight: '80px',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <strong>
-                  Player {idx + 1} {idx === myPosition && '(You)'}
-                </strong>
-                <div style={{ 
-                  fontWeight: trickWinner === idx ? 'bold' : 'normal',
-                  transition: 'font-weight 0.3s ease'
-                }}>
-                  Bid: {game.bids[idx]} | Tricks: {player.tricksWon} {trickWinner === idx && '🎉'}
-                </div>
-                <div>Score: {game.scores.find(s => s.position === idx)?.score || 0}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Current Trick */}
-          <div style={{ 
-            marginBottom: '2rem',
-            padding: '2rem',
-            backgroundColor: '#e8f5e9',
-            borderRadius: '8px',
-            minHeight: '180px'
-          }}>
-            <h3>Current Trick</h3>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              {game.currentTrick.length > 0 ? (
-                game.currentTrick.map((play, idx) => (
-                  <div key={idx} style={{ textAlign: 'center' }}>
-                    <div style={{ marginBottom: '0.5rem', fontSize: '12px' }}>
-                      Player {play.position + 1}
-                    </div>
-                    {renderCard(play.card, null, false)}
-                  </div>
-                ))
-              ) : (
-                <div style={{ color: '#666', fontStyle: 'italic' }}>
-                  Waiting for first card...
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* My Hand */}
-          {myPlayer && (
-            <div>
-              <h3>Your Hand</h3>
-              <div style={{ 
-                display: 'flex', 
-                gap: '8px', 
-                flexWrap: 'wrap',
-                padding: '1rem',
-                backgroundColor: '#f5f5f5',
-                borderRadius: '8px'
-              }}>
-                {myPlayer.hand.map(card => 
-                  renderCard(card, handlePlayCard, isMyTurn && !isWaitingForNextTrick)
-                )}
-              </div>
-            </div>
-          )}
-        </>
+        <GameRoomPlayingUI
+          game={game}
+          myPlayer={myPlayer}
+          myPosition={myPosition}
+          trickWinner={trickWinner}
+          renderCard={renderCard}
+          handlePlayCard={handlePlayCard}
+          isMyTurn={isMyTurn}
+          isWaitingForNextTrick={isWaitingForNextTrick}
+        />
       )}
 
       {game.status === 'finished' && (
-        <div style={{ 
-          padding: '2rem', 
-          backgroundColor: '#fff3cd', 
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <h2>Game Finished!</h2>
-          <h3>Final Scores:</h3>
-          {game.scores.sort((a, b) => b.score - a.score).map((score, idx) => (
-            <div key={idx} style={{ fontSize: '18px', margin: '0.5rem' }}>
-              Player {score.position + 1}: {score.score} points
-            </div>
-          ))}
-        </div>
+        <GameRoomFinishedUI game={game} />
       )}
     </div>
   );
