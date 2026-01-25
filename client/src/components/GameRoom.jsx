@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import GameRoomAuctionUI from './GameRoomAuctionUI';
-import GameRoomFrishUI from './GameRoomFrishUI';
+import GameRoomAuctionUI from './GameRoomUI/GameRoomAuctionUI';
+import GameRoomFrishUI from './GameRoomUI/GameRoomFrishUI';
 import RoundSummaryTable from './RoundSummaryTable';
 import Modal from './Modal';
 import { useParams, useNavigate } from 'react-router-dom';
