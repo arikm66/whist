@@ -1,10 +1,10 @@
-import GameRoomWaitingUI from './GameRoomUI/GameRoomWaitingUI';
-import GameRoomFinishedUI from './GameRoomUI/GameRoomFinishedUI';
-import GameRoomPlayingUI from './GameRoomUI/GameRoomPlayingUI';
-import GameRoomBiddingUI from './GameRoomUI/GameRoomBiddingUI';
 import React, { useState, useEffect } from 'react';
-import GameRoomAuctionUI from './GameRoomUI/GameRoomAuctionUI';
-import GameRoomFrishUI from './GameRoomUI/GameRoomFrishUI';
+import WaitingUI from './GameRoomUI/WaitingUI';
+import FinishedUI from './GameRoomUI/FinishedUI';
+import PlayingUI from './GameRoomUI/PlayingUI';
+import BiddingUI from './GameRoomUI/BiddingUI';
+import AuctionUI from './GameRoomUI/AuctionUI';
+import FrishUI from './GameRoomUI/FrishUI';
 import RoundSummaryTable from './RoundSummaryTable';
 import Modal from './Modal';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -401,11 +401,11 @@ export default function GameRoom() {
       </div>
 
       {game.status === 'waiting' && (
-        <GameRoomWaitingUI game={game} />
+        <WaitingUI game={game} />
       )}
 
       {game.status === 'auction' && (
-        <GameRoomAuctionUI
+        <AuctionUI
           game={game}
           myPlayer={myPlayer}
           myPosition={myPosition}
@@ -420,7 +420,7 @@ export default function GameRoom() {
       )}
 
       {game.status === 'frish' && (
-        <GameRoomFrishUI
+        <FrishUI
           game={game}
           myPlayer={myPlayer}
           frishCardsSelected={frishCardsSelected}
@@ -430,7 +430,7 @@ export default function GameRoom() {
       )}
 
       {game.status === 'bidding' && (
-        <GameRoomBiddingUI
+        <BiddingUI
           game={game}
           myPlayer={myPlayer}
           myPosition={myPosition}
@@ -442,7 +442,7 @@ export default function GameRoom() {
       )}
 
       {game.status === 'playing' && (
-        <GameRoomPlayingUI
+        <PlayingUI
           game={game}
           myPlayer={myPlayer}
           myPosition={myPosition}
@@ -455,7 +455,7 @@ export default function GameRoom() {
       )}
 
       {game.status === 'finished' && (
-        <GameRoomFinishedUI game={game} />
+        <FinishedUI game={game} />
       )}
     </div>
   );
