@@ -341,6 +341,60 @@ module.exports = (io) => {
       }
     });
 
+    // Handle frish card selection
+    socket.on('selectFrishCard', async ({ roomCode, userId, frish }) => {
+      try {
+        const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+        if (!game) {
+          appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
+          socket.emit('error', { message: 'Game not found' });
+          return;
+        }
+        if (game.status !== 'frish') {
+          appendRoomLog(roomCode, `Invalid action: Not in frish phase (userId: ${userId})`);
+          socket.emit('error', { message: 'Not in frish phase' });
+          return;
+        }
+        const player = game.players.find(p => p.userId.toString() === userId.toString());
+        if (!player) {
+          appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
+          socket.emit('error', { message: 'Player not in game' });
+          return;
+        }
+        // Validate card is in player's hand
+        const cardInHand = Array.isArray(player.hand)
+          ? player.hand.includes(frish.card) || player.hand.some(c => (c.card || c) === frish.card)
+          : false;
+        if (!cardInHand) {
+          appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frish.card})`);
+          socket.emit('error', { message: 'Card not in hand' });
+          return;
+        }
+        // Only allow valid place (index in hand)
+        if (typeof frish.place !== 'number' || frish.place < 0 || frish.place >= player.hand.length) {
+          appendRoomLog(roomCode, `Invalid action: Invalid card place (userId: ${userId}, place: ${frish.place})`);
+          socket.emit('error', { message: 'Invalid card place' });
+          return;
+        }
+        // Update or toggle selection in player's frish array
+        if (!Array.isArray(player.frish)) player.frish = [];
+        const existingIdx = player.frish.findIndex(f => f.place === frish.place && f.card === frish.card);
+        if (existingIdx >= 0) {
+          // Deselect if already selected
+          player.frish.splice(existingIdx, 1);
+        } else {
+          player.frish.push({ place: frish.place, card: frish.card });
+        }
+        await game.save();
+        activeGames.set(roomCode, game);
+        // Only emit updated game state to the player who selected/deselected frish card
+        socket.emit('frishCardSelected', { userId, frish, game });
+      } catch (error) {
+        appendRoomLog(roomCode, `Invalid action: Failed to select frish card (userId: ${userId})`);
+        socket.emit('error', { message: 'Failed to select frish card' });
+      }
+    });
+
     // Place bid during bidding phase
     socket.on('placeBid', async ({ roomCode, userId, bid }) => {
       try {

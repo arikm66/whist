@@ -5,7 +5,8 @@ export default function GameRoomFrishUI({
   myPlayer,
   frishCardsSelected,
   renderCard,
-  handleFrishSelected
+  handleFrishSelected,
+  handleSelectFrishCard
 }) {
   return (
     <div style={{ margin: '32px 0', background: '#f3e5f5', borderRadius: 12, padding: '2rem' }}>
@@ -28,8 +29,8 @@ export default function GameRoomFrishUI({
             backgroundColor: '#f5f5f5',
             borderRadius: '8px'
           }}>
-            {myPlayer.hand.map(card => 
-              renderCard(card, frishCardsSelected ? null : () => {}, !frishCardsSelected)
+            {myPlayer.hand.map((card, idx) =>
+              renderCard(card, () => handleSelectFrishCard(idx, card), true)
             )}
           </div>
         </div>

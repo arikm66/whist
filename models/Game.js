@@ -8,7 +8,11 @@ const GameSchema = new mongoose.Schema({
       email: String,
       position: { type: Number, min: 0, max: 3 },
       hand: [String],
-      tricksWon: { type: Number, default: 0 }
+      tricksWon: { type: Number, default: 0 },
+      frish: [{
+        place: { type: Number, required: true },
+        card: { type: String, required: true }
+      }]
     }],
     validate: {
       validator: function(players) {

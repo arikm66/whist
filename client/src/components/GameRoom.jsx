@@ -29,7 +29,6 @@ export default function GameRoom() {
   const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [leaveMsg, setLeaveMsg] = useState('');
-  // Frish state
   const [frishCardsSelected, setFrishCardsSelected] = useState(false);
 
   useEffect(() => {
@@ -81,11 +80,17 @@ export default function GameRoom() {
       setAuctionBid({ quantity: '', suit: 'C' });
     });
 
-
     socket.on('auctionRestarted', ({ game }) => {
       setGame(game);
       setAuctionBid({ quantity: '', suit: 'C' });
       setAuctionTimeRemaining(30);
+    });
+
+    socket.on('frishCardSelected', ({ userId, frish, game }) => {
+      setGame(game);
+      console.log('Frish card selected:', frish);
+      console.log('Current player frish:', game.players.find(p => p.userId.toString() === (user._id || user.id).toString()).frish);
+      // Check if all frish cards have been selected
     });
 
     // Handle frish phase
@@ -167,6 +172,7 @@ export default function GameRoom() {
       socket.off('auctionNextBidder');
       socket.off('auctionComplete');
       socket.off('auctionRestarted');
+      socket.off('frishCardSelected');
       socket.off('frishStarted');
       socket.off('bidPlaced');
       socket.off('nextBidder');
@@ -243,6 +249,14 @@ export default function GameRoom() {
     socket.emit('passAuction', {
       roomCode,
       userId: user._id || user.id
+    });
+  };
+
+  const handleSelectFrishCard = (place, card) => {
+    socket.emit('selectFrishCard', {
+      roomCode,
+      userId: user._id || user.id,
+      frish: { place, card }
     });
   };
 
@@ -426,6 +440,7 @@ export default function GameRoom() {
           frishCardsSelected={frishCardsSelected}
           renderCard={renderCard}
           handleFrishSelected={handleFrishSelected}
+          handleSelectFrishCard={handleSelectFrishCard}
         />
       )}
 
