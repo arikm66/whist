@@ -382,8 +382,15 @@ module.exports = (io) => {
         if (existingIdx >= 0) {
           // Deselect if already selected
           player.frish.splice(existingIdx, 1);
+          appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish?.card}, place=${frish?.place}`);
         } else {
+          if (player.frish.length >= 3) {
+            appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
+            socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
+            return;
+          }
           player.frish.push({ place: frish.place, card: frish.card });
+          appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish?.card}, place=${frish?.place}`);
         }
         await game.save();
         activeGames.set(roomCode, game);

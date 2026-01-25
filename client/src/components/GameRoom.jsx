@@ -88,8 +88,6 @@ export default function GameRoom() {
 
     socket.on('frishCardSelected', ({ userId, frish, game }) => {
       setGame(game);
-      console.log('Frish card selected:', frish);
-      console.log('Current player frish:', game.players.find(p => p.userId.toString() === (user._id || user.id).toString()).frish);
       // Check if all frish cards have been selected
     });
 
@@ -305,7 +303,7 @@ export default function GameRoom() {
     return (suit === 'H' || suit === 'D') ? '#e74c3c' : '#2c3e50';
   };
 
-  const renderCard = (card, onClick, isPlayable = true) => {
+  const renderCard = (card, onClick, isPlayable = true, isFrishSelected = false) => {
     const suit = card.slice(-1);
     const rank = card.slice(0, -1);
     
@@ -316,7 +314,7 @@ export default function GameRoom() {
         style={{
           width: '60px',
           height: '90px',
-          border: '2px solid #333',
+          border: isFrishSelected ? '2px solid #2ecc40' : '2px solid #333',
           borderRadius: '8px',
           backgroundColor: 'white',
           display: 'flex',

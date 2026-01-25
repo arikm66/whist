@@ -8,6 +8,9 @@ export default function GameRoomFrishUI({
   handleFrishSelected,
   handleSelectFrishCard
 }) {
+  // Determine number of selected frish cards
+  const selectedCount = Array.isArray(myPlayer?.frish) ? myPlayer.frish.length : 0;
+  const frishButtonEnabled = selectedCount === 3;
   return (
     <div style={{ margin: '32px 0', background: '#f3e5f5', borderRadius: 12, padding: '2rem' }}>
       <h3>Frish Phase</h3>
@@ -29,9 +32,15 @@ export default function GameRoomFrishUI({
             backgroundColor: '#f5f5f5',
             borderRadius: '8px'
           }}>
-            {myPlayer.hand.map((card, idx) =>
-              renderCard(card, () => handleSelectFrishCard(idx, card), true)
-            )}
+            {myPlayer.hand.map((card, idx) => {
+              const isFrishSelected = Array.isArray(myPlayer.frish) && myPlayer.frish.some(f => f.card === card && f.place === idx);
+              return renderCard(
+                card,
+                () => handleSelectFrishCard(idx, card),
+                true,
+                isFrishSelected
+              );
+            })}
           </div>
         </div>
       )}
@@ -41,13 +50,13 @@ export default function GameRoomFrishUI({
           padding: '12px 32px',
           fontSize: 18,
           borderRadius: 8,
-          background: frishCardsSelected ? '#1976D2' : '#aaa',
+          background: frishButtonEnabled ? '#1976D2' : '#aaa',
           color: 'white',
           border: 'none',
-          cursor: frishCardsSelected ? 'pointer' : 'not-allowed',
-          opacity: frishCardsSelected ? 1 : 0.7
+          cursor: frishButtonEnabled ? 'pointer' : 'not-allowed',
+          opacity: frishButtonEnabled ? 1 : 0.7
         }}
-        disabled={!frishCardsSelected}
+        disabled={!frishButtonEnabled}
         onClick={handleFrishSelected}
       >
         Frish
