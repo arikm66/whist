@@ -1,6 +1,7 @@
 import React from 'react';
+import './AuctionUI.css';
 
-export default function GameRoomAuctionUI({
+export default function AuctionUI({
   game,
   myPlayer,
   myPosition,
@@ -13,16 +14,11 @@ export default function GameRoomAuctionUI({
   getSuitSymbol
 }) {
   return (
-    <div style={{ 
-      padding: '2rem', 
-      backgroundColor: '#fff8e1', 
-      borderRadius: '8px',
-      marginBottom: '2rem'
-    }}>
+    <div className="auction-container">
       <h3>Auction Phase</h3>
       <p>Players bid on quantity + suit to determine trump</p>
       {/* Auction History */}
-      <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+      <div className="auction-history">
         <strong>Auction History:</strong>
         {[0, 1, 2, 3].map((pos) => {
           const bid = game.auctionBids && game.auctionBids.filter(b => b.position === pos).pop();
@@ -33,21 +29,16 @@ export default function GameRoomAuctionUI({
               {bid ? (
                 <span>{bid.quantity} {getSuitSymbol(bid.suit)}</span>
               ) : hasPassed ? (
-                <span style={{ color: '#666' }}>Pass</span>
+                <span className="pass">Pass</span>
               ) : (
-                <span style={{ color: '#999' }}>Waiting...</span>
+                <span className="waiting">Waiting...</span>
               )}
             </div>
           );
         })}
       </div>
       {/* Current Bidder */}
-      <div style={{ 
-        padding: '1rem', 
-        backgroundColor: Number(game.auctionCurrentBidder) === Number(myPosition) ? '#fff3cd' : '#f5f5f5',
-        borderRadius: '4px',
-        marginBottom: '1rem'
-      }}>
+      <div className={`auction-current-bidder ${Number(game.auctionCurrentBidder) === Number(myPosition) ? 'my-turn' : 'other-turn'}`}>
         {Number(game.auctionCurrentBidder) === Number(myPosition) && !game.auctionPassed.includes(myPosition) ? (
           <>
             {game.auctionFinalRaise ? (
@@ -66,14 +57,7 @@ export default function GameRoomAuctionUI({
               )}
               <div style={{ marginTop: '1rem' }}>
                 <p><strong>Select Quantity:</strong></p>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 60px)',
-                    gap: '10px',
-                    marginBottom: '1rem'
-                  }}
-                >
+                <div className="auction-quantity-grid">
                   {Array.from(
                     { length: game.players[0].hand.length - Math.max(1, game.players[0].hand.length - 8) + 1 },
                     (_, i) => Math.max(1, game.players[0].hand.length - 8) + i
@@ -83,17 +67,7 @@ export default function GameRoomAuctionUI({
                       <button
                         key={num}
                         onClick={() => setAuctionBid({ ...auctionBid, quantity: String(num) })}
-                        style={{
-                          width: '60px',
-                          height: '60px',
-                          borderRadius: '8px',
-                          border: isSelected ? '2px solid #1976D2' : '2px solid #ccc',
-                          backgroundColor: isSelected ? '#BBDEFB' : 'white',
-                          color: '#333',
-                          fontSize: '18px',
-                          fontWeight: 'bold',
-                          cursor: 'pointer'
-                        }}
+                        className={`auction-quantity-btn${isSelected ? ' selected' : ''}`}
                       >
                         {num}
                       </button>
@@ -103,15 +77,9 @@ export default function GameRoomAuctionUI({
                 <label>
                   <strong>Select Suit:</strong>
                   <select
+                    className="auction-select-suit"
                     value={auctionBid.suit}
                     onChange={(e) => setAuctionBid({ ...auctionBid, suit: e.target.value })}
-                    style={{ 
-                      padding: '8px', 
-                      marginLeft: '8px',
-                      fontSize: '14px',
-                      border: '2px solid #2196F3',
-                      borderRadius: '4px'
-                    }}
                   >
                     <option value="C">Clubs ♣</option>
                     <option value="D">Diamonds ♦</option>
@@ -123,31 +91,14 @@ export default function GameRoomAuctionUI({
               </div>
               <div style={{ marginTop: '1rem' }}>
                 <button
+                  className="auction-action-btn place"
                   onClick={handlePlaceAuctionBid}
-                  style={{ 
-                    padding: '8px 16px', 
-                    backgroundColor: '#4CAF50', 
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginRight: '8px',
-                    fontSize: '14px'
-                  }}
                 >
                   Place Bid
                 </button>
                 <button
+                  className="auction-action-btn pass"
                   onClick={handlePassAuction}
-                  style={{ 
-                    padding: '8px 16px', 
-                    backgroundColor: '#f44336', 
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px'
-                  }}
                 >
                   Pass
                 </button>
@@ -167,14 +118,7 @@ export default function GameRoomAuctionUI({
       {myPlayer && (
         <div>
           <h3>Your Hand</h3>
-          <div style={{ 
-            display: 'flex', 
-            gap: '8px', 
-            flexWrap: 'wrap',
-            padding: '1rem',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '8px'
-          }}>
+          <div className="auction-hand">
             {myPlayer.hand.map(card => 
               renderCard(card, null, false)
             )}

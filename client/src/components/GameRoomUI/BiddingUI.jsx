@@ -1,6 +1,7 @@
 import React from 'react';
+import './BiddingUI.css';
 
-export default function GameRoomBiddingUI({
+export default function BiddingUI({
   game,
   myPlayer,
   myPosition,
@@ -10,33 +11,23 @@ export default function GameRoomBiddingUI({
   renderCard
 }) {
   return (
-    <div style={{ 
-      padding: '2rem', 
-      backgroundColor: '#e3f2fd', 
-      borderRadius: '8px',
-      marginBottom: '2rem'
-    }}>
+    <div className="bidding-container">
       <h3>Bidding Phase</h3>
       <p>Trump: {(!game.trumpSuit || game.trumpSuit === 'NT') ? 'NT' : (game.trumpSuit)}</p>
       {/* Bid History */}
-      <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '1rem', borderRadius: '4px' }}>
+      <div className="bidding-history">
         <strong>Bids Placed:</strong>
         {game.bids.map((bid, idx) => (
           <div key={idx} style={{ marginTop: '0.5rem' }}>
             Player {idx + 1} {idx === myPosition && '(You)'}: {bid !== null ? bid : 'Waiting...'}
             {bid !== null && game.bids[idx] !== null && (
-              <span style={{ marginLeft: '1rem', color: '#4CAF50' }}>✓</span>
+              <span className="bid-check">✓</span>
             )}
           </div>
         ))}
       </div>
       {/* Current Bidder */}
-      <div style={{ 
-        padding: '1rem', 
-        backgroundColor: Number(game.currentBidder) === Number(myPosition) ? '#fff3cd' : '#f5f5f5',
-        borderRadius: '4px',
-        marginBottom: '1rem'
-      }}>
+      <div className={`bidding-current-bidder ${Number(game.currentBidder) === Number(myPosition) ? 'my-turn' : 'other-turn'}`}>
         {Number(game.currentBidder) === Number(myPosition) ? (
           <>
             <h4>🔔 Your Turn to Bid!</h4>
@@ -57,14 +48,7 @@ export default function GameRoomBiddingUI({
                         You cannot bid {forbidden} (would equal total {tricksAvailable}).
                       </p>
                     )}
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 60px)',
-                        gap: '10px',
-                        marginTop: '8px'
-                      }}
-                    >
+                    <div className="bidding-quantity-grid">
                       {numbers.map((num) => {
                         const isDisabled = isLastBidder && num === forbidden;
                         const isSelected = String(num) === String(bidValue);
@@ -73,17 +57,7 @@ export default function GameRoomBiddingUI({
                             key={num}
                             onClick={() => !isDisabled && handleSelectBid(num)}
                             disabled={isDisabled}
-                            style={{
-                              width: '60px',
-                              height: '60px',
-                              borderRadius: '8px',
-                              border: isSelected ? '2px solid #1976D2' : '2px solid #ccc',
-                              backgroundColor: isDisabled ? '#eee' : (isSelected ? '#BBDEFB' : 'white'),
-                              color: isDisabled ? '#999' : '#333',
-                              fontSize: '18px',
-                              fontWeight: 'bold',
-                              cursor: isDisabled ? 'not-allowed' : 'pointer'
-                            }}
+                            className={`bidding-quantity-btn${isSelected ? ' selected' : ''}${isDisabled ? ' disabled' : ''}`}
                           >
                             {num}
                           </button>
@@ -105,14 +79,7 @@ export default function GameRoomBiddingUI({
       {myPlayer && (
         <div>
           <h3>Your Hand</h3>
-          <div style={{ 
-            display: 'flex', 
-            gap: '8px', 
-            flexWrap: 'wrap',
-            padding: '1rem',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '8px'
-          }}>
+          <div className="bidding-hand">
             {myPlayer.hand.map(card => 
               renderCard(card, null, false)
             )}

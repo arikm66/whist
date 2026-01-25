@@ -1,0 +1,26 @@
+/* WaitingUI.css - Styles for the Waiting phase UI */
+
+.waiting-container {
+  padding: 2rem;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+.waiting-title {
+  margin-bottom: 0.5rem;
+}
+
+.waiting-players-count {
+  margin-bottom: 1rem;
+}
+
+.waiting-players-list {
+  margin-top: 1rem;
+}
+
+.waiting-player-row {
+  font-size: 16px;
+  margin-bottom: 0.25rem;
+}
