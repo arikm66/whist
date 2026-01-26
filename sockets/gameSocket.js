@@ -1,6 +1,7 @@
 const Game = require('../models/Game');
 const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand, isValidAuctionBid, compareAuctionBids } = require('../utils/gameLogic');
 const { createRoomLog, appendRoomLog, closeRoomLog } = require('../utils/logToFile');
+const { registerRoomHandlers } = require('./handlers/roomHandlers');
 
 // Store active games in memory for faster access
 const activeGames = new Map();
@@ -40,146 +41,8 @@ module.exports = (io) => {
       }
     });
 
-    socket.on('createRoom', async ({ userId, email }) => {
-      try {
-        const roomCode = generateRoomCode();
-        const game = new Game({
-          roomCode,
-          players: [{
-            userId,
-            email,
-            position: 0,
-            hand: [],
-            tricksWon: 0
-          }],
-          status: 'waiting'
-        });
-        
-        await game.save();
-        activeGames.set(roomCode, game);
-        createRoomLog(roomCode);
-        appendRoomLog(roomCode, `Room created by ${userId} ${email}`);
-        socket.join(roomCode);
-        socket.emit('roomCreated', { roomCode, game });
-        
-        // Broadcast new room list to all connected clients
-        broadcastRoomsList(io);
-      } catch (error) {
-        socket.emit('error', { message: 'Failed to create room' });
-      }
-    });
-
-    // Join an existing game room
-    socket.on('joinRoom', async ({ roomCode, userId, email }) => {
-      try {
-        let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
-        if (!game) {
-          appendRoomLog(roomCode, `Invalid action: Room not found (userId: ${userId})`);
-          socket.emit('error', { message: 'Room not found' });
-          return;
-        }
-        // Check if player is already in the room
-        const existingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
-        if (existingPlayer) {
-          // Only join socket room and emit roomJoined ONCE
-          socket.join(roomCode);
-          socket._roomCode = roomCode;
-          socket._userId = userId;
-          socket.emit('roomJoined', { game });
-          return;
-        }
-        // Only allow new player if room is not full and game not started
-        if (game.players.length >= 4) {
-          appendRoomLog(roomCode, `Invalid action: Room is full (userId: ${userId})`);
-          socket.emit('error', { message: 'Room is full' });
-          return;
-        }
-        if (game.status !== 'waiting') {
-          appendRoomLog(roomCode, `Invalid action: Game already started (userId: ${userId})`);
-          socket.emit('error', { message: 'Game already started' });
-          return;
-        }
-        // Add player atomically using MongoDB to prevent race condition duplicates
-        const newPlayer = {
-          userId,
-          email,
-          position: game.players.length,
-          hand: [],
-          tricksWon: 0
-        };
-        game = await Game.findByIdAndUpdate(
-          game._id,
-          { $addToSet: { players: newPlayer } },
-          { new: true }
-        );
-        activeGames.set(roomCode, game);
-        socket.join(roomCode);
-        socket._roomCode = roomCode;
-        socket._userId = userId;
-        socket.emit('roomJoined', { game });
-        io.to(roomCode).emit('playerJoined', { game });
-        broadcastRoomsList(io);
-        if (game.players.length === 4) {
-          startGame(roomCode, io);
-        }
-        appendRoomLog(roomCode, `Player joined: ${userId} ${email}`);
-      } catch (error) {
-        appendRoomLog(roomCode, `Invalid action: Failed to join room (userId: ${userId})`);
-        socket.emit('error', { message: 'Failed to join room' });
-      }
-    });
-
-    // Handle leaveRoom event
-    socket.on('leaveRoom', async ({ roomCode, userId }) => {
-      try {
-        // Remove player from MongoDB
-        await Game.findOneAndUpdate(
-          { roomCode },
-          { $pull: { players: { userId } } }
-        );
-        // Remove from in-memory game
-        const game = activeGames.get(roomCode);
-        let wasActive = false;
-        let leavingPlayerEmail = null;
-        if (game) {
-          const leavingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
-          leavingPlayerEmail = leavingPlayer ? leavingPlayer.email : null;
-          game.players = game.players.filter(p => p.userId.toString() !== userId.toString());
-          // If game is in progress, mark as finished and notify all
-          if (game.status === 'playing' || game.status === 'auction') {
-            game.status = 'finished';
-            await game.save();
-            io.to(roomCode).emit('gameFinished', { game });
-            appendRoomLog(roomCode, `Game aborted: player left during active game (${leavingPlayerEmail || userId})`);
-            closeRoomLog(roomCode);
-            wasActive = true;
-          }
-          activeGames.set(roomCode, game);
-        }
-        // Leave socket.io room
-        socket.leave(roomCode);
-        // Notify all players in the room to go to lobby
-        io.to(roomCode).emit('roomClosed', { roomCode });
-        broadcastRoomsList(io);
-        if (leavingPlayerEmail) {
-          appendRoomLog(roomCode, `Player left: ${leavingPlayerEmail}`);
-        }
-      } catch (err) {
-        appendRoomLog(roomCode, `Invalid action: Failed to leave room (userId: ${userId})`);
-        socket.emit('error', { message: 'Failed to leave room' });
-      }
-    });
-
-    // Get rooms (all, including finished) for lobby display
-    socket.on('getRooms', async () => {
-      try {
-        const rooms = await Game.find({}).select('roomCode players status createdAt');
-        socket.emit('roomsList', { rooms });
-      } catch (error) {
-        appendRoomLog('lobby', `Invalid action: Failed to fetch rooms (socketId: ${socket.id})`);
-        socket.emit('error', { message: 'Failed to fetch rooms' });
-      }
-    });
+    // Register all room-related handlers
+    registerRoomHandlers(io, socket, activeGames);
 
     // Place auction bid or pass during auction phase
     socket.on('placeAuctionBid', async ({ roomCode, userId, quantity, suit }) => {
@@ -575,79 +438,12 @@ module.exports = (io) => {
       }
       console.log('User disconnected:', socket.id);
     });
-
-    // Helper to broadcast the current room list to all clients
-    async function broadcastRoomsList(io) {
-      try {
-        const rooms = await Game.find({}).select('roomCode players status createdAt');
-        io.emit('roomsList', { rooms });
-      } catch (error) {
-        console.error('Broadcast rooms list error:', error);
-        appendRoomLog('lobby', `Error broadcasting rooms list: ${error.message}`);
-      }
-    }
   });
 };
-
-// Helper functions
-function generateRoomCode() {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
-async function startGame(roomCode, io) {
-  try {
-    const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
-    
-    // Initialize dealer if not set (first game)
-    if (game.dealer === undefined) {
-      game.dealer = 0;
-    }
-
-    // Ensure scores array is initialized for all players
-    if (!Array.isArray(game.scores)) game.scores = [];
-    for (let i = 0; i < 4; i++) {
-      if (!game.scores.find(s => s.position === i)) {
-        game.scores.push({ position: i, score: 0 });
-      }
-    }
-    
-    // Deal cards
-    const hands = dealCards();
-    
-    game.players[0].hand = sortHand(hands.player0);
-    game.players[1].hand = sortHand(hands.player1);
-    game.players[2].hand = sortHand(hands.player2);
-    game.players[3].hand = sortHand(hands.player3);
-    
-    // Initialize auction phase
-    game.status = 'auction';
-    game.auctionCurrentBidder = (game.dealer + 1) % 4; // Player after dealer bids first
-    game.auctionWinner = null;
-    game.auctionHighestBid = null;
-    game.auctionPassed = [];
-    game.auctionBids = [];
-    
-    // DO NOT set trump yet; it will be determined after auction
-    game.trumpSuit = null;
-    
-    await game.save();
-    activeGames.set(roomCode, game);
-    
-    io.to(roomCode).emit('gameStarted', { game });
-    appendRoomLog(roomCode, 'Game started');
-    appendRoomLog(roomCode, 'Auction started');
-  } catch (error) {
-    console.error('Start game error:', error);
-  }
-}
 
 async function endRound(game, roomCode, io) {
   // Calculate scores based on bidding
   const roundTricks = [];
-  const tricksCount = game.players[0].tricksWon + game.players[1].tricksWon + game.players[2].tricksWon + game.players[3].tricksWon;
-  // For each trick, you would need to store the cards played and who won. This assumes you have a way to track all tricks in the round (not just the last one).
-  // For now, we'll just send an empty array for tricks. You should adapt this to your actual trick-tracking logic.
-
   // Score calculation and round summary
   const roundScores = [];
   game.players.forEach((player, idx) => {
