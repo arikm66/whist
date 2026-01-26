@@ -1,6 +1,6 @@
 const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
-const { isValidAuctionBid } = require('../../utils/gameLogic');
+const { isValidAuctionBid, sortHand } = require('../../utils/gameLogic');
 const { advanceAuctionTurn } = require('../utils/socketUtils');
 
 function registerAuctionHandlers(io, socket, activeGames) {
@@ -221,6 +221,41 @@ function registerAuctionHandlers(io, socket, activeGames) {
       const readyCount = game.players.filter(p => p.readyForFrish).length;
       game.readyForFrishCount = readyCount;
       appendRoomLog(roomCode, `Player ${player.position} (${player.email || player.userId}) marked ready for frish. Total ready: ${readyCount}`);
+
+      // If all 4 players are ready, move frish cards
+      if (readyCount === 4) {
+        // 1. Remove frish cards from each player's hand (by card value only)
+        for (let i = 0; i < 4; i++) {
+          const p = game.players[i];
+          if (Array.isArray(p.frish)) {
+            for (const f of p.frish) {
+              const idx = p.hand.indexOf(f.card);
+              if (idx !== -1) p.hand.splice(idx, 1);
+            }
+          }
+        }
+        // 2. Push to each player's hand the frish cards from the previous player (N-1, wrap around)
+        for (let i = 0; i < 4; i++) {
+          const prev = (i + 3) % 4;
+          const prevFrish = Array.isArray(game.players[prev].frish) ? game.players[prev].frish.map(f => f.card) : [];
+          game.players[i].hand.push(...prevFrish);
+        }
+        // 3. Sort all hands using sortHand()
+        for (let i = 0; i < 4; i++) {
+          game.players[i].hand = sortHand(game.players[i].hand);
+        }
+        appendRoomLog(roomCode, 'All players ready for frish. Frish cards exchanged and hands sorted.');
+        // Optionally, reset readyForFrish and frish arrays for next phase
+        for (let i = 0; i < 4; i++) {
+          game.players[i].readyForFrish = false;
+          game.players[i].frish = [];
+        }
+        game.readyForFrishCount = 0;
+        // You may want to advance the game phase here
+        // game.status = 'bidding';
+        // appendRoomLog(roomCode, 'Frish phase complete. Moving to bidding phase.');
+        // io.to(roomCode).emit('biddingStarted', { game });
+      }
       await game.save();
       activeGames.set(roomCode, game);
       io.to(roomCode).emit('frishReady', { userId, game });
