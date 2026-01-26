@@ -1,3 +1,4 @@
+const { appendRoomLog } = require('../utils/logToFile');
 const { registerAuthHandlers } = require('./handlers/authHandlers');
 const { registerRoomHandlers } = require('./handlers/roomHandlers');
 const { registerAuctionHandlers } = require('./handlers/auctionHandlers');
