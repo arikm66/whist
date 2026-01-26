@@ -29,7 +29,6 @@ export default function GameRoom() {
   const [bidTimeRemaining, setBidTimeRemaining] = useState(30);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [leaveMsg, setLeaveMsg] = useState('');
-  const [frishCardsSelected, setFrishCardsSelected] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -88,10 +87,12 @@ export default function GameRoom() {
 
     socket.on('frishCardSelected', ({ userId, frish, game }) => {
       setGame(game);
-      // Check if all frish cards have been selected
     });
 
-    // Handle frish phase
+    socket.on('frishReady', ({ userId, game }) => {
+      setGame(game);
+    });
+
     socket.on('frishStarted', ({ game }) => {
       setGame(game);
     });
@@ -208,18 +209,6 @@ export default function GameRoom() {
     });
   };
 
-  const handlePlaceBid = () => {
-    if (!bidValue || Number(bidValue) < 0) {
-      alert('Please enter a valid bid');
-      return;
-    }
-    socket.emit('placeBid', { 
-      roomCode, 
-      userId: user._id || user.id, 
-      bid: Number(bidValue) 
-    });
-  };
-
   const handleSelectBid = (value) => {
     if (typeof value !== 'number') return;
     setBidValue(String(value));
@@ -258,8 +247,11 @@ export default function GameRoom() {
     });
   };
 
-  const handleFrishSelected = () => {
-    // Placeholder for frish action
+  const handleReadyForFrish = () => {
+    socket.emit('readyForFrish', {
+      roomCode,
+      userId: user._id || user.id
+    });
   };
 
   // Timer for auction phase
@@ -435,9 +427,8 @@ export default function GameRoom() {
         <FrishUI
           game={game}
           myPlayer={myPlayer}
-          frishCardsSelected={frishCardsSelected}
           renderCard={renderCard}
-          handleFrishSelected={handleFrishSelected}
+          handleReadyForFrish={handleReadyForFrish}
           handleSelectFrishCard={handleSelectFrishCard}
         />
       )}

@@ -12,7 +12,8 @@ const GameSchema = new mongoose.Schema({
       frish: [{
         place: { type: Number, required: true },
         card: { type: String, required: true }
-      }]
+      }],
+      readyForFrish: { type: Boolean, default: false }
     }],
     validate: {
       validator: function(players) {
@@ -47,6 +48,7 @@ const GameSchema = new mongoose.Schema({
   },
   auctionPassed: [Number], // Positions that have passed in auction
   auctionFinalRaise: { type: Boolean, default: false }, // True when auction winner gets final raise chance
+  readyForFrishCount: { type: Number, default: 0 }, // Count of players ready for frish
   // Bidding phase fields
   bids: [Number], // Bids for each player position (0-3)
   currentBidder: { type: Number, default: 0 }, // Which player is currently bidding

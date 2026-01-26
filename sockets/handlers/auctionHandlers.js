@@ -185,7 +185,50 @@ function registerAuctionHandlers(io, socket, activeGames) {
       socket.emit('error', { message: 'Failed to select frish card' });
     }
   });
+
+  // Handle readyForFrish event
+  socket.on('readyForFrish', async ({ roomCode, userId }) => {
+    try {
+      const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+      if (!game) {
+        appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
+        socket.emit('error', { message: 'Game not found' });
+        return;
+      }
+      if (game.status !== 'frish') {
+        appendRoomLog(roomCode, `Invalid action: Not in frish phase (userId: ${userId})`);
+        socket.emit('error', { message: 'Not in frish phase' });
+        return;
+      }
+      const player = game.players.find(p => p.userId.toString() === userId.toString());
+      if (!player) {
+        appendRoomLog(roomCode, `Invalid action: Player not in game (userId: ${userId})`);
+        socket.emit('error', { message: 'Player not in game' });
+        return;
+      }
+      if (!Array.isArray(player.frish) || player.frish.length !== 3) {
+        appendRoomLog(roomCode, `Invalid action: Player does not have 3 frish cards selected (userId: ${userId})`);
+        socket.emit('error', { message: 'You must select exactly 3 frish cards before continuing.' });
+        return;
+      }
+      if (player.readyForFrish) {
+        appendRoomLog(roomCode, `Invalid action: Player already marked ready for frish (userId: ${userId})`);
+        socket.emit('error', { message: 'You are already marked as ready for frish.' });
+        return;
+      }
+      player.readyForFrish = true;
+      // Count how many players are ready
+      const readyCount = game.players.filter(p => p.readyForFrish).length;
+      game.readyForFrishCount = readyCount;
+      appendRoomLog(roomCode, `Player ${player.position} (${player.email || player.userId}) marked ready for frish. Total ready: ${readyCount}`);
+      await game.save();
+      activeGames.set(roomCode, game);
+      io.to(roomCode).emit('frishReady', { userId, game });
+    } catch (error) {
+      appendRoomLog(roomCode, `Invalid action: Failed to mark ready for frish (userId: ${userId})`);
+      socket.emit('error', { message: 'Failed to mark ready for frish' });
+    }
+  });
 }
 
-// You must provide advanceAuctionTurn as a dependency from the main file
 module.exports = { registerAuctionHandlers };

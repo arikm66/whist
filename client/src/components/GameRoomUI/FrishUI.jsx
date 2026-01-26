@@ -4,14 +4,14 @@ import './FrishUI.css';
 export default function FrishUI({
   game,
   myPlayer,
-  frishCardsSelected,
   renderCard,
-  handleFrishSelected,
+  handleReadyForFrish,
   handleSelectFrishCard
 }) {
   // Determine number of selected frish cards
   const selectedCount = Array.isArray(myPlayer?.frish) ? myPlayer.frish.length : 0;
-  const frishButtonEnabled = selectedCount === 3;
+  const frishButtonEnabled = selectedCount === 3 && !myPlayer?.readyForFrish;
+  const canSelectFrish = !myPlayer?.readyForFrish;
   return (
     <div className="frish-container">
       <h3>Frish Phase</h3>
@@ -20,6 +20,7 @@ export default function FrishUI({
         <strong>Game Status:</strong>
         <div>Dealer: Player {typeof game.dealer === 'number' ? game.dealer + 1 : '?'}</div>
         <div>Round: {game.round}</div>
+        <div>Ready for Frish: {game.readyForFrishCount || 0} / 4</div>
       </div>
       {/* My Hand */}
       {myPlayer && (
@@ -30,8 +31,8 @@ export default function FrishUI({
               const isFrishSelected = Array.isArray(myPlayer.frish) && myPlayer.frish.some(f => f.card === card && f.place === idx);
               return renderCard(
                 card,
-                () => handleSelectFrishCard(idx, card),
-                true,
+                canSelectFrish ? () => handleSelectFrishCard(idx, card) : undefined,
+                canSelectFrish,
                 isFrishSelected
               );
             })}
@@ -41,7 +42,7 @@ export default function FrishUI({
       <button
         className="frish-button"
         disabled={!frishButtonEnabled}
-        onClick={handleFrishSelected}
+        onClick={handleReadyForFrish}
         style={{ opacity: frishButtonEnabled ? 1 : 0.7 }}
       >
         Frish
