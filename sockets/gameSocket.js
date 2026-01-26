@@ -2,6 +2,7 @@ const Game = require('../models/Game');
 const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand, isValidAuctionBid, compareAuctionBids } = require('../utils/gameLogic');
 const { createRoomLog, appendRoomLog, closeRoomLog } = require('../utils/logToFile');
 const { registerRoomHandlers } = require('./handlers/roomHandlers');
+const { registerAuthHandlers } = require('./handlers/authHandlers');
 
 // Store active games in memory for faster access
 const activeGames = new Map();
@@ -9,37 +10,9 @@ const activeGames = new Map();
 module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
-    socket.on('login', async ({ userId, email }) => {
-      try {
-        // Find all games where this user is a participant
-        const games = await Game.find({ 'players.userId': userId });
-        for (const game of games) {
-          // Only log if the room is active (not finished or aborted)
-          if (game.status !== 'finished' && game.status !== 'aborted') {
-            appendRoomLog(game.roomCode, `User logged in: ${email || userId}`);
-          }
-        }
-      } catch (err) {
-        console.error('Login event error:', err);
-        appendRoomLog('lobby', `Error during login event for userId: ${userId}, email: ${email} - ${err.message}`);
-      }
-    });
 
-    socket.on('logout', async ({ userId, email }) => {
-      try {
-        // Find all games where this user is a participant
-        const games = await Game.find({ 'players.userId': userId });
-        for (const game of games) {
-          // Only log if the room is active (not finished or aborted)
-          if (game.status !== 'finished' && game.status !== 'aborted') {
-            appendRoomLog(game.roomCode, `User logged out: ${email || userId}`);
-          }
-        }
-      } catch (err) {
-        console.error('Logout event error:', err);
-        appendRoomLog('lobby', `Error during logout event for userId: ${userId}, email: ${email} - ${err.message}`);
-      }
-    });
+    // Register login/logout handlers
+    registerAuthHandlers(io, socket);
 
     // Register all room-related handlers
     registerRoomHandlers(io, socket, activeGames);
