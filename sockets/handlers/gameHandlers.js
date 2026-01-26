@@ -1,5 +1,5 @@
-const { appendRoomLog } = require('../../utils/logToFile');
 const Game = require('../../models/Game');
+const { appendRoomLog } = require('../../utils/logToFile');
 const { isValidPlay, getCardSuit, determineTrickWinner } = require('../../utils/gameLogic');
 const { endRound } = require('../utils/socketUtils');
 

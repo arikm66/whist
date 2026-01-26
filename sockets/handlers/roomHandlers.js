@@ -1,6 +1,6 @@
+const Game = require('../../models/Game');
 const { createRoomLog, appendRoomLog, closeRoomLog } = require('../../utils/logToFile');
 const { broadcastRoomsList, generateRoomCode, startGame } = require('../utils/socketUtils');
-const Game = require('../../models/Game');
 
 function registerRoomHandlers(io, socket, activeGames) {
   // Create Room

@@ -1,5 +1,5 @@
-const { appendRoomLog } = require('../../utils/logToFile');
 const Game = require('../../models/Game');
+const { appendRoomLog } = require('../../utils/logToFile');
 const { isValidAuctionBid } = require('../../utils/gameLogic');
 const { advanceAuctionTurn } = require('../utils/socketUtils');
 

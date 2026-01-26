@@ -1,5 +1,5 @@
-const { appendRoomLog } = require('../../utils/logToFile');
 const Game = require('../../models/Game');
+const { appendRoomLog } = require('../../utils/logToFile');
 
 function registerAuthHandlers(io, socket) {
   socket.on('login', async ({ userId, email }) => {

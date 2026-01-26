@@ -1,8 +1,5 @@
-const Game = require('../models/Game');
-const { dealCards, determineTrickWinner, isValidPlay, getCardSuit, sortHand, isValidAuctionBid, compareAuctionBids } = require('../utils/gameLogic');
-const { createRoomLog, appendRoomLog, closeRoomLog } = require('../utils/logToFile');
-const { registerRoomHandlers } = require('./handlers/roomHandlers');
 const { registerAuthHandlers } = require('./handlers/authHandlers');
+const { registerRoomHandlers } = require('./handlers/roomHandlers');
 const { registerAuctionHandlers } = require('./handlers/auctionHandlers');
 const { registerGameHandlers } = require('./handlers/gameHandlers');
 
