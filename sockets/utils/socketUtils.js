@@ -1,3 +1,101 @@
+async function endRound(game, roomCode, io) {
+  // Calculate scores based on bidding
+  const roundTricks = [];
+  // Score calculation and round summary
+  const roundScores = [];
+  game.players.forEach((player, idx) => {
+    const bid = game.bids[idx];
+    const tricksWon = player.tricksWon;
+    let roundScore = 0;
+    let matchedBid = false;
+    if (bid === 0) {
+      const bidSum = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
+      if (tricksWon === 0) {
+        roundScore = bidSum < 13 ? 50 : 25;
+        matchedBid = true;
+      } else {
+        if (bidSum < 13) {
+          roundScore = -50 + (tricksWon - 1) * 10;
+        } else {
+          roundScore = -25 + (tricksWon - 1) * 10;
+        }
+      }
+    } else if (bid === tricksWon) {
+      roundScore = 10 + (tricksWon * tricksWon);
+      matchedBid = true;
+    } else {
+      const gap = Math.abs(bid - tricksWon);
+      roundScore = -10 * gap;
+    }
+    const existingScore = game.scores.find(s => s.position === idx);
+    // Always true: update the player's score
+    existingScore.score += roundScore;
+    roundScores.push({ value: roundScore, matchedBid });
+  });
+
+  // Compose round summary for client
+  const roundSummary = {
+    tricks: roundTricks, // TODO: fill with actual trick data if available
+    scores: roundScores
+  };
+
+  // Log summary of all players' bids and tricks won
+  const bidsAndTricks = game.players.map((player, idx) => {
+    const bid = game.bids[idx];
+    const tricks = player.tricksWon;
+    return `Player ${idx} (${player?.email || player?.userId}): Bid ${bid}, Tricks ${tricks}`;
+  }).join('; ');
+  appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
+  appendRoomLog(roomCode, `Bids and tricks: ${bidsAndTricks}`);
+
+  // Log latest scores for all players
+  const scoreLines = game.scores.map(s => {
+    const player = game.players[s.position];
+    return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
+  }).join('; ');
+  appendRoomLog(roomCode, `Scores after round ${game.round}: ${scoreLines}`);
+
+  // Emit round summary to all players
+  io.to(roomCode).emit('roundEnded', { roundSummary, game });
+
+  game.round++;
+  // Check if game complete (e.g., after 5 rounds)
+  if (game.round > 5) {
+    game.status = 'finished';
+    await game.save();
+    io.to(roomCode).emit('gameFinished', { game });
+    appendRoomLog(roomCode, 'Game finished');
+    // Log final scores
+    const scoreLines = game.scores.map(s => {
+      const player = game.players[s.position];
+      return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
+    }).join('; ');
+    appendRoomLog(roomCode, `Final scores: ${scoreLines}`);
+    closeRoomLog(roomCode);
+  } else {
+    // Start new round with auction phase
+    appendRoomLog(roomCode, `Round started: Round ${game.round}`);
+    game.dealer = (game.dealer + 1) % 4;
+    game.players.forEach(p => p.tricksWon = 0);
+    const { dealCards, sortHand } = require('../../utils/gameLogic');
+    const hands = dealCards();
+    game.players[0].hand = sortHand(hands.player0);
+    game.players[1].hand = sortHand(hands.player1);
+    game.players[2].hand = sortHand(hands.player2);
+    game.players[3].hand = sortHand(hands.player3);
+    // Start auction phase for new round
+    game.status = 'auction';
+    game.auctionCurrentBidder = (game.dealer + 1) % 4;
+    game.auctionWinner = null;
+    game.auctionHighestBid = null;
+    game.auctionPassed = [];
+    game.auctionBids = [];
+    game.auctionFinalRaise = false;
+    game.trumpSuit = null;
+    await game.save();
+    io.to(roomCode).emit('newRound', { game });
+  }
+}
 async function advanceAuctionTurn(game, roomCode, io, activeGames) {
   // Check if auction is complete (3 have passed, 1 remains)
   if (game.auctionPassed.length === 3) {
@@ -107,4 +205,4 @@ async function startGame(roomCode, io, activeGames) {
   }
 }
 
-module.exports = { broadcastRoomsList, generateRoomCode, startGame, advanceAuctionTurn };
+module.exports = { broadcastRoomsList, generateRoomCode, startGame, advanceAuctionTurn, endRound };
