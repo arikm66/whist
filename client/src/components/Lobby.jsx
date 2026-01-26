@@ -138,7 +138,7 @@ export default function Lobby() {
                 }}
               >
                 <div>
-                  <strong>Room: {room.roomCode}</strong>
+                  <strong style={{ color: '#222' }}>Room: {room.roomCode}</strong>
                   <div style={{ fontSize: '14px', color: '#555' }}>
                     Status: {room.status}
                   </div>
