@@ -1,3 +1,58 @@
+async function advanceAuctionTurn(game, roomCode, io, activeGames) {
+  // Check if auction is complete (3 have passed, 1 remains)
+  if (game.auctionPassed.length === 3) {
+    // Auction winner is the only player who hasn't passed
+    const winner = [0, 1, 2, 3].find(pos => !game.auctionPassed.includes(pos));
+    game.auctionWinner = winner;
+
+    // Give auction winner one final chance to raise
+    if (!game.auctionFinalRaise) {
+      game.auctionFinalRaise = true;
+      game.auctionCurrentBidder = winner;
+      await game.save();
+      activeGames.set(roomCode, game);
+      io.to(roomCode).emit('auctionNextBidder', { game });
+      return;
+    }
+  }
+
+  // Find next player who hasn't passed
+  let nextBidder = (game.auctionCurrentBidder + 1) % 4;
+  let turns = 0;
+
+  while (game.auctionPassed.includes(nextBidder) && turns < 4) {
+    nextBidder = (nextBidder + 1) % 4;
+    turns++;
+  }
+
+  // Check if auction is complete (after final raise)
+  if (game.auctionPassed.length === 3 && game.auctionFinalRaise) {
+    const winner = game.auctionWinner;
+    // Set trump suit from auction winner's bid
+    if (game.auctionHighestBid) {
+      game.trumpSuit = game.auctionHighestBid.suit === 'NT' ? null : game.auctionHighestBid.suit;
+    }
+    // Initialize bidding phase with auction winner's bid
+    game.status = 'bidding';
+    game.bids = [null, null, null, null];
+    game.bids[winner] = game.auctionHighestBid.quantity; // Auction winner's bid is fixed
+    game.currentBidder = (winner + 1) % 4; // Next player after winner starts bidding
+    game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
+    game.lastBid = 0;
+    game.auctionFinalRaise = false; // Reset for next round
+    await game.save();
+    activeGames.set(roomCode, game);
+    appendRoomLog(roomCode, `Auction completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), bid ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`);
+    io.to(roomCode).emit('auctionComplete', { game });
+    return;
+  }
+
+  // Update current bidder and continue auction
+  game.auctionCurrentBidder = nextBidder;
+  await game.save();
+  activeGames.set(roomCode, game);
+  io.to(roomCode).emit('auctionNextBidder', { game });
+}
 const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
 
@@ -52,4 +107,4 @@ async function startGame(roomCode, io, activeGames) {
   }
 }
 
-module.exports = { broadcastRoomsList, generateRoomCode, startGame };
+module.exports = { broadcastRoomsList, generateRoomCode, startGame, advanceAuctionTurn };
