@@ -7,39 +7,39 @@ const activeGames = new Map();
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-            socket.on('login', async ({ userId, email }) => {
-              try {
-                // Find all games where this user is a participant
-                const games = await Game.find({ 'players.userId': userId });
-                for (const game of games) {
-                  // Only log if the room is active (not finished or aborted)
-                  if (game.status !== 'finished' && game.status !== 'aborted') {
-                    appendRoomLog(game.roomCode, `User logged in: ${email || userId}`);
-                  }
-                }
-              } catch (err) {
-                console.error('Login event error:', err);
-                appendRoomLog('lobby', `Error during login event for userId: ${userId}, email: ${email} - ${err.message}`);
-              }
-            });
-        socket.on('logout', async ({ userId, email }) => {
-          try {
-            // Find all games where this user is a participant
-            const games = await Game.find({ 'players.userId': userId });
-            for (const game of games) {
-              // Only log if the room is active (not finished or aborted)
-              if (game.status !== 'finished' && game.status !== 'aborted') {
-                appendRoomLog(game.roomCode, `User logged out: ${email || userId}`);
-              }
-            }
-          } catch (err) {
-            console.error('Logout event error:', err);
-            appendRoomLog('lobby', `Error during logout event for userId: ${userId}, email: ${email} - ${err.message}`);
-          }
-        });
     console.log('User connected:', socket.id);
+    socket.on('login', async ({ userId, email }) => {
+      try {
+        // Find all games where this user is a participant
+        const games = await Game.find({ 'players.userId': userId });
+        for (const game of games) {
+          // Only log if the room is active (not finished or aborted)
+          if (game.status !== 'finished' && game.status !== 'aborted') {
+            appendRoomLog(game.roomCode, `User logged in: ${email || userId}`);
+          }
+        }
+      } catch (err) {
+        console.error('Login event error:', err);
+        appendRoomLog('lobby', `Error during login event for userId: ${userId}, email: ${email} - ${err.message}`);
+      }
+    });
 
-    // Create a new game room
+    socket.on('logout', async ({ userId, email }) => {
+      try {
+        // Find all games where this user is a participant
+        const games = await Game.find({ 'players.userId': userId });
+        for (const game of games) {
+          // Only log if the room is active (not finished or aborted)
+          if (game.status !== 'finished' && game.status !== 'aborted') {
+            appendRoomLog(game.roomCode, `User logged out: ${email || userId}`);
+          }
+        }
+      } catch (err) {
+        console.error('Logout event error:', err);
+        appendRoomLog('lobby', `Error during logout event for userId: ${userId}, email: ${email} - ${err.message}`);
+      }
+    });
+
     socket.on('createRoom', async ({ userId, email }) => {
       try {
         const roomCode = generateRoomCode();
@@ -575,16 +575,17 @@ module.exports = (io) => {
       }
       console.log('User disconnected:', socket.id);
     });
-  // Helper to broadcast the current room list to all clients
-  async function broadcastRoomsList(io) {
-    try {
-      const rooms = await Game.find({}).select('roomCode players status createdAt');
-      io.emit('roomsList', { rooms });
-    } catch (error) {
-      console.error('Broadcast rooms list error:', error);
-      appendRoomLog('lobby', `Error broadcasting rooms list: ${error.message}`);
+
+    // Helper to broadcast the current room list to all clients
+    async function broadcastRoomsList(io) {
+      try {
+        const rooms = await Game.find({}).select('roomCode players status createdAt');
+        io.emit('roomsList', { rooms });
+      } catch (error) {
+        console.error('Broadcast rooms list error:', error);
+        appendRoomLog('lobby', `Error broadcasting rooms list: ${error.message}`);
+      }
     }
-  }
   });
 };
 
