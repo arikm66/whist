@@ -1,5 +1,5 @@
 import React from 'react';
-import './FinishedUI.css';
+import './GameRoomUI.css';
 
 export default function FinishedUI({ game }) {
   return (

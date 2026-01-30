@@ -1,5 +1,5 @@
 import React from 'react';
-import './PlayingUI.css';
+import './GameRoomUI.css';
 
 export default function PlayingUI({
   game,

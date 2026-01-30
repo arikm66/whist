@@ -1,5 +1,5 @@
 import React from 'react';
-import './FrishUI.css';
+import './GameRoomUI.css';
 
 export default function FrishUI({
   game,

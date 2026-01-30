@@ -1,0 +1,75 @@
+/* Combined GameRoomUI.css - Styles for all GameRoomUI phases */
+
+/* Auction Phase */
+.auction-container {
+  padding: 2rem;
+  background-color: #fff8e1;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  color: #222;
+}
+.auction-history {
+  margin-bottom: 2rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.auction-history .pass { color: #666; }
+.auction-history .waiting { color: #999; }
+.auction-current-bidder { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+.auction-current-bidder.my-turn { background-color: #fff3cd; }
+.auction-current-bidder.other-turn { background-color: #f5f5f5; }
+.auction-quantity-grid { display: grid; grid-template-columns: repeat(4, 60px); gap: 10px; margin-bottom: 1rem; }
+.auction-quantity-btn { width: 60px; height: 60px; border-radius: 8px; border: 2px solid #ccc; background-color: white; color: #333; font-size: 18px; font-weight: bold; cursor: pointer; transition: border 0.2s, background 0.2s; }
+.auction-quantity-btn.selected { border: 2px solid #1976D2; background-color: #BBDEFB; }
+.auction-select-suit { padding: 8px; margin-left: 8px; font-size: 14px; border: 2px solid #2196F3; border-radius: 4px; }
+.auction-action-btn { padding: 8px 16px; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 8px; transition: background 0.2s; }
+.auction-action-btn.place { background-color: #4CAF50; }
+.auction-action-btn.pass { background-color: #f44336; margin-right: 0; }
+.auction-hand { display: flex; gap: 8px; flex-wrap: wrap; padding: 1rem; background-color: #f5f5f5; border-radius: 8px; }
+
+/* Waiting Phase */
+.waiting-container { padding: 2rem; background-color: #f0f0f0; border-radius: 8px; margin-bottom: 2rem; color: #222; }
+.waiting-title { margin-bottom: 0.5rem; }
+.waiting-players-count { margin-bottom: 1rem; }
+.waiting-players-list { margin-top: 1rem; }
+.waiting-player-row { font-size: 16px; margin-bottom: 0.25rem; }
+
+/* Playing Phase */
+.playing-scores { display: flex; gap: 1rem; margin-bottom: 2rem; background-color: #f9f9f9; padding: 1rem; border-radius: 8px; align-items: stretch; }
+.playing-score-player { flex: 1 1 0; min-width: 0; padding: 0.5rem; border-radius: 4px; min-height: 80px; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
+.playing-score-player.winner { background-color: #4CAF50; color: white; }
+.playing-score-bid { font-weight: normal; transition: font-weight 0.3s ease; }
+.playing-score-bid.winner { font-weight: bold; }
+.playing-current-trick { margin-bottom: 2rem; padding: 2rem; background-color: #e8f5e9; border-radius: 8px; min-height: 180px; }
+.playing-current-trick-cards { display: flex; gap: 1rem; justify-content: center; }
+.playing-current-trick-player { text-align: center; }
+.playing-current-trick-player-label { margin-bottom: 0.5rem; font-size: 12px; }
+.playing-current-trick-waiting { color: #666; font-style: italic; }
+.playing-hand { display: flex; gap: 8px; flex-wrap: wrap; padding: 1rem; background-color: #f5f5f5; border-radius: 8px; }
+
+/* Frish Phase */
+.frish-container { margin: 32px 0; background: #f3e5f5; border-radius: 12px; padding: 2rem; color: #222; }
+.frish-status { margin-top: 24px; background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px #ccc; color: #222; }
+.frish-hand { display: flex; gap: 8px; flex-wrap: wrap; padding: 1rem; background-color: #f5f5f5; border-radius: 8px; }
+.frish-button { margin-top: 32px; padding: 12px 32px; font-size: 18px; border-radius: 8px; background: #1976D2; color: white; border: none; cursor: pointer; opacity: 1; transition: background 0.2s, opacity 0.2s; }
+.frish-button:disabled { background: #aaa; color: #222; cursor: not-allowed; opacity: 0.7; }
+
+/* Finished Phase */
+.finished-container { padding: 2rem; background-color: #fff3cd; border-radius: 8px; text-align: center; color: #222; }
+.finished-title { margin-bottom: 1rem; }
+.finished-scores-title { margin-bottom: 1rem; }
+.finished-score-row { font-size: 18px; margin: 0.5rem; }
+
+/* Bidding Phase */
+.bidding-container { padding: 2rem; background-color: #e3f2fd; border-radius: 8px; margin-bottom: 2rem; color: #222; }
+.bidding-history { margin-bottom: 2rem; background-color: white; padding: 1rem; border-radius: 4px; }
+.bidding-history .bid-check { margin-left: 1rem; color: #4CAF50; }
+.bidding-current-bidder { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+.bidding-current-bidder.my-turn { background-color: #fff3cd; }
+.bidding-current-bidder.other-turn { background-color: #f5f5f5; }
+.bidding-quantity-grid { display: grid; grid-template-columns: repeat(4, 60px); gap: 10px; margin-top: 8px; }
+.bidding-quantity-btn { width: 60px; height: 60px; border-radius: 8px; border: 2px solid #ccc; background-color: white; color: #333; font-size: 18px; font-weight: bold; cursor: pointer; transition: border 0.2s, background 0.2s; }
+.bidding-quantity-btn.selected { border: 2px solid #1976D2; background-color: #BBDEFB; }
+.bidding-quantity-btn.disabled { background-color: #eee; color: #999; cursor: not-allowed; }
+.bidding-hand { display: flex; gap: 8px; flex-wrap: wrap; padding: 1rem; background-color: #f5f5f5; border-radius: 8px; }

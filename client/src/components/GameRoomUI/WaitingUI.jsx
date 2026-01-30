@@ -1,5 +1,5 @@
 import React from 'react';
-import './WaitingUI.css';
+import './GameRoomUI.css';
 
 export default function WaitingUI({ game }) {
   return (

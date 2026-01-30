@@ -1,5 +1,5 @@
 import React from 'react';
-import './BiddingUI.css';
+import './GameRoomUI.css';
 
 export default function BiddingUI({
   game,
