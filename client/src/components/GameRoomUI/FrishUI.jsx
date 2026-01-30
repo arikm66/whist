@@ -4,6 +4,7 @@ import './GameRoomUI.css';
 export default function FrishUI({
   game,
   myPlayer,
+  frishCounts = [],
   renderCard,
   handleReadyForFrish,
   handleSelectFrishCard
@@ -15,11 +16,25 @@ export default function FrishUI({
   return (
     <div className="frish-container">
       <h3>Frish Phase</h3>
-      <p>All players passed in the auction. The hand is dead and the round will be restarted.</p>
+      <p>All players passed in the auction. The round will be restarted after cards are frished.</p>
       <div className="frish-status">
-        <strong>Game Status:</strong>
-        <div>Dealer: Player {typeof game.dealer === 'number' ? game.dealer + 1 : '?'}</div>
-        <div>Round: {game.round}</div>
+        <strong>Frish Status:</strong>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {game.players.map((player, idx) => {
+            const isMe = myPlayer && player.userId === myPlayer.userId;
+            const countObj = frishCounts.find(fc => fc.userId === player.userId);
+            const frishCount = countObj ? countObj.count : (Array.isArray(player.frish) ? player.frish.length : 0);
+            return (
+              <li key={player.userId || idx} style={{ marginBottom: '8px' }}>
+                Player {idx + 1}{isMe ? ' (You)' : ''}
+                : {frishCount}/3 selected
+                {' '}| {player.readyForFrish ? (
+                  <span style={{ color: 'green', fontWeight: 'bold' }}>Ready</span>
+                ) : 'Not Ready'}
+              </li>
+            );
+          })}
+        </ul>
         <div>Ready for Frish: {game.readyForFrishCount || 0} / 4</div>
       </div>
       {/* My Hand */}

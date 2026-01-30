@@ -16,6 +16,7 @@ export default function GameRoom() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [game, setGame] = useState(null);
+  const [frishCounts, setFrishCounts] = useState([]);
   const [myPosition, setMyPosition] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
   const [trickWinner, setTrickWinner] = useState(null);
@@ -86,6 +87,11 @@ export default function GameRoom() {
     });
 
     socket.on('frishCardSelected', ({ userId, frish, game }) => {
+      setGame(game);
+    });
+
+    socket.on('frishSelectionCounts', ({ frishCounts, game }) => {
+      setFrishCounts(frishCounts);
       setGame(game);
     });
 
@@ -427,6 +433,7 @@ export default function GameRoom() {
         <FrishUI
           game={game}
           myPlayer={myPlayer}
+          frishCounts={frishCounts}
           renderCard={renderCard}
           handleReadyForFrish={handleReadyForFrish}
           handleSelectFrishCard={handleSelectFrishCard}

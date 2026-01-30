@@ -179,6 +179,9 @@ function registerAuctionHandlers(io, socket, activeGames) {
       }
       await game.save();
       activeGames.set(roomCode, game);
+      // Emit frish selection counts to all players
+      const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frish) ? p.frish.length : 0 }));
+      io.to(roomCode).emit('frishSelectionCounts', { frishCounts, game });
       socket.emit('frishCardSelected', { userId, frish, game });
     } catch (error) {
       appendRoomLog(roomCode, `Invalid action: Failed to select frish card (userId: ${userId})`);
