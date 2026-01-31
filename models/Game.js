@@ -9,9 +9,7 @@ const GameSchema = new mongoose.Schema({
       position: { type: Number, min: 0, max: 3 },
       hand: [String],
       tricksWon: { type: Number, default: 0 },
-      frishCards: [{
-        card: { type: String, required: true }
-      }],
+      frishCards: [String],
       readyForFrish: { type: Boolean, default: false }
     }],
     validate: {

@@ -150,28 +150,26 @@ function registerAuctionHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Player not in game' });
         return;
       }
-        const cardInHand = Array.isArray(player.hand)
-          ? player.hand.includes(frishCard) || player.hand.some(c => (c.card || c) === frishCard)
-        : false;
+        const cardInHand = Array.isArray(player.hand) ? player.hand.includes(frishCard) : false;
         if (!cardInHand) {
           appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frishCard})`);
-        socket.emit('error', { message: 'Card not in hand' });
-        return;
-      }
-      if (!Array.isArray(player.frishCards)) player.frishCards = [];
-        const existingIdx = player.frishCards.findIndex(f => f.card === frishCard);
-      if (existingIdx >= 0) {
-          player.frishCards.splice(existingIdx, 1);
-          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=deselected, userId=${userId}, card=${frishCard}`);
-      } else {
-        if (player.frishCards.length >= 3) {
-          appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
-          socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
+          socket.emit('error', { message: 'Card not in hand' });
           return;
         }
-          player.frishCards.push({ card: frishCard });
+        if (!Array.isArray(player.frishCards)) player.frishCards = [];
+        const existingIdx = player.frishCards.indexOf(frishCard);
+        if (existingIdx >= 0) {
+          player.frishCards.splice(existingIdx, 1);
+          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=deselected, userId=${userId}, card=${frishCard}`);
+        } else {
+          if (player.frishCards.length >= 3) {
+            appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
+            socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
+            return;
+          }
+          player.frishCards.push(frishCard);
           appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=selected, userId=${userId}, card=${frishCard}`);
-      }
+        }
       await game.save();
       activeGames.set(roomCode, game);
       // Emit frish selection counts to all players
@@ -227,7 +225,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
           const p = game.players[i];
           if (Array.isArray(p.frishCards)) {
             for (const f of p.frishCards) {
-              const idx = p.hand.indexOf(f.card);
+              const idx = p.hand.indexOf(f);
               if (idx !== -1) p.hand.splice(idx, 1);
             }
           }
@@ -235,7 +233,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
         // 2. Push to each player's hand the frish cards from the previous player (N-1, wrap around)
         for (let i = 0; i < 4; i++) {
           const prev = (i + 3) % 4;
-          const prevFrish = Array.isArray(game.players[prev].frishCards) ? game.players[prev].frishCards.map(f => f.card) : [];
+          const prevFrish = Array.isArray(game.players[prev].frishCards) ? game.players[prev].frishCards : [];
           game.players[i].hand.push(...prevFrish);
         }
         // 3. Sort all hands using sortHand()
