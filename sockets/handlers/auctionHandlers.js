@@ -160,7 +160,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
         const existingIdx = player.frishCards.indexOf(frishCard);
         if (existingIdx >= 0) {
           player.frishCards.splice(existingIdx, 1);
-          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=deselected, userId=${userId}, card=${frishCard}`);
+          appendRoomLog(roomCode, `Frish card de-selected: Player ${player.position}, userId=${userId}, card=${frishCard}`);
         } else {
           if (player.frishCards.length >= 3) {
             appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
@@ -168,7 +168,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
             return;
           }
           player.frishCards.push(frishCard);
-          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=selected, userId=${userId}, card=${frishCard}`);
+          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, userId=${userId}, card=${frishCard}`);
         }
       await game.save();
       activeGames.set(roomCode, game);
@@ -241,16 +241,28 @@ function registerAuctionHandlers(io, socket, activeGames) {
           game.players[i].hand = sortHand(game.players[i].hand);
         }
         appendRoomLog(roomCode, 'All players ready for frish. Frish cards exchanged and hands sorted.');
-        // Optionally, reset readyForFrish and frishCards arrays for next phase
+        // Reset frish-related flags and arrays
         for (let i = 0; i < 4; i++) {
           game.players[i].readyForFrish = false;
           game.players[i].frishCards = [];
         }
         game.readyForFrishCount = 0;
-        // You may want to advance the game phase here
-        // game.status = 'bidding';
-        // appendRoomLog(roomCode, 'Frish phase complete. Moving to bidding phase.');
-        // io.to(roomCode).emit('biddingStarted', { game });
+
+        // Prepare for new auction phase
+        game.status = 'auction';
+        game.auctionBids = [];
+        game.auctionCurrentBidder = 0;
+        game.auctionWinner = null;
+        game.auctionHighestBid = null;
+        game.auctionPassed = [];
+        game.auctionFinalRaise = false;
+        // Optionally reset other auction/bidding fields if needed
+        game.bids = [null, null, null, null];
+        game.currentBidder = 0;
+        game.minBid = 1;
+        game.lastBid = 0;
+        appendRoomLog(roomCode, 'Frish phase complete. Game reset for new auction phase.');
+        io.to(roomCode).emit('auctionRestarted', { game });
       }
       await game.save();
       activeGames.set(roomCode, game);
