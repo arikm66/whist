@@ -249,7 +249,7 @@ export default function GameRoom() {
     socket.emit('selectFrishCard', {
       roomCode,
       userId: user._id || user.id,
-      frish: card
+      frishCard: card
     });
   };
 

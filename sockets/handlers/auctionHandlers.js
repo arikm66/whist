@@ -131,7 +131,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
   });
 
   // Handle frish card selection
-  socket.on('selectFrishCard', async ({ roomCode, userId, frish }) => {
+  socket.on('selectFrishCard', async ({ roomCode, userId, frishCard }) => {
     try {
       const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
       if (!game) {
@@ -150,34 +150,34 @@ function registerAuctionHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Player not in game' });
         return;
       }
-      const cardInHand = Array.isArray(player.hand)
-        ? player.hand.includes(frish) || player.hand.some(c => (c.card || c) === frish)
+        const cardInHand = Array.isArray(player.hand)
+          ? player.hand.includes(frishCard) || player.hand.some(c => (c.card || c) === frishCard)
         : false;
-      if (!cardInHand) {
-        appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frish})`);
+        if (!cardInHand) {
+          appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frishCard})`);
         socket.emit('error', { message: 'Card not in hand' });
         return;
       }
       if (!Array.isArray(player.frishCards)) player.frishCards = [];
-      const existingIdx = player.frishCards.findIndex(f => f.card === frish);
+        const existingIdx = player.frishCards.findIndex(f => f.card === frishCard);
       if (existingIdx >= 0) {
-        player.frishCards.splice(existingIdx, 1);
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish}`);
+          player.frishCards.splice(existingIdx, 1);
+          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=deselected, userId=${userId}, card=${frishCard}`);
       } else {
         if (player.frishCards.length >= 3) {
           appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
           socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
           return;
         }
-        player.frishCards.push({ card: frish });
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish}`);
+          player.frishCards.push({ card: frishCard });
+          appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, action=selected, userId=${userId}, card=${frishCard}`);
       }
       await game.save();
       activeGames.set(roomCode, game);
       // Emit frish selection counts to all players
       const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frishCards) ? p.frishCards.length : 0 }));
       io.to(roomCode).emit('frishSelectionCounts', { frishCounts, game });
-      socket.emit('frishCardSelected', { userId, frish, game });
+      socket.emit('frishCardSelected', { userId, frishCard, game });
     } catch (error) {
       appendRoomLog(roomCode, `Invalid action: Failed to select frish card (userId: ${userId})`);
       socket.emit('error', { message: 'Failed to select frish card' });
