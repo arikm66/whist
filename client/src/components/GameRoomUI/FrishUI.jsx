@@ -42,11 +42,11 @@ export default function FrishUI({
         <div>
           <h3>Your Hand</h3>
           <div className="frish-hand">
-            {myPlayer.hand.map((card, idx) => {
-              const isFrishSelected = Array.isArray(myPlayer.frish) && myPlayer.frish.some(f => f.card === card && f.place === idx);
+            {myPlayer.hand.map((card) => {
+              const isFrishSelected = Array.isArray(myPlayer.frish) && myPlayer.frish.some(f => f.card === card);
               return renderCard(
                 card,
-                canSelectFrish ? () => handleSelectFrishCard(idx, card) : undefined,
+                canSelectFrish ? () => handleSelectFrishCard(card) : undefined,
                 canSelectFrish,
                 isFrishSelected
               );

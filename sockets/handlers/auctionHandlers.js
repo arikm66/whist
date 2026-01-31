@@ -158,24 +158,19 @@ function registerAuctionHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Card not in hand' });
         return;
       }
-      if (typeof frish.place !== 'number' || frish.place < 0 || frish.place >= player.hand.length) {
-        appendRoomLog(roomCode, `Invalid action: Invalid card place (userId: ${userId}, place: ${frish.place})`);
-        socket.emit('error', { message: 'Invalid card place' });
-        return;
-      }
       if (!Array.isArray(player.frish)) player.frish = [];
-      const existingIdx = player.frish.findIndex(f => f.place === frish.place && f.card === frish.card);
+      const existingIdx = player.frish.findIndex(f => f.card === frish.card);
       if (existingIdx >= 0) {
         player.frish.splice(existingIdx, 1);
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish?.card}, place=${frish?.place}`);
+        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish?.card}`);
       } else {
         if (player.frish.length >= 3) {
           appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
           socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
           return;
         }
-        player.frish.push({ place: frish.place, card: frish.card });
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish?.card}, place=${frish?.place}`);
+        player.frish.push({ card: frish.card });
+        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish?.card}`);
       }
       await game.save();
       activeGames.set(roomCode, game);
@@ -225,9 +220,9 @@ function registerAuctionHandlers(io, socket, activeGames) {
       game.readyForFrishCount = readyCount;
       appendRoomLog(roomCode, `Player ${player.position} (${player.email || player.userId}) marked ready for frish. Total ready: ${readyCount}`);
 
-      // If all 4 players are ready, move frish cards
+      // If all 4 players are ready, swap frish cards
       if (readyCount === 4) {
-        // 1. Remove frish cards from each player's hand (by card value only)
+        // 1. Remove frish cards from each player's hand
         for (let i = 0; i < 4; i++) {
           const p = game.players[i];
           if (Array.isArray(p.frish)) {

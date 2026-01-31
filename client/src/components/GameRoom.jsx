@@ -245,11 +245,11 @@ export default function GameRoom() {
     });
   };
 
-  const handleSelectFrishCard = (place, card) => {
+  const handleSelectFrishCard = (card) => {
     socket.emit('selectFrishCard', {
       roomCode,
       userId: user._id || user.id,
-      frish: { place, card }
+      frish: { card }
     });
   };
 
