@@ -1,3 +1,4 @@
+const { getFilteredGameForPlayer } = require('../utils/socketUtils');
 const Game = require('../../models/Game');
 const { createRoomLog, appendRoomLog, closeRoomLog } = require('../../utils/logToFile');
 const { broadcastRoomsList, generateRoomCode, startGame } = require('../utils/socketUtils');
@@ -23,7 +24,9 @@ function registerRoomHandlers(io, socket, activeGames) {
       createRoomLog(roomCode);
       appendRoomLog(roomCode, `Room created by ${userId} ${email}`);
       socket.join(roomCode);
-      socket.emit('roomCreated', { roomCode, game });
+      socket.join(userId.toString());
+      const filteredGame = getFilteredGameForPlayer(game, userId);
+      socket.emit('roomCreated', { roomCode, game: filteredGame });
       broadcastRoomsList(io);
     } catch (error) {
       socket.emit('error', { message: 'Failed to create room' });
@@ -42,9 +45,11 @@ function registerRoomHandlers(io, socket, activeGames) {
       const existingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
       if (existingPlayer) {
         socket.join(roomCode);
+        socket.join(userId.toString());
         socket._roomCode = roomCode;
         socket._userId = userId;
-        socket.emit('roomJoined', { game });
+        const filteredGame = getFilteredGameForPlayer(game, userId);
+        socket.emit('roomJoined', { game: filteredGame });
         return;
       }
       if (game.players.length >= 4) {
@@ -71,10 +76,15 @@ function registerRoomHandlers(io, socket, activeGames) {
       );
       activeGames.set(roomCode, game);
       socket.join(roomCode);
+      socket.join(userId.toString());
       socket._roomCode = roomCode;
       socket._userId = userId;
-      socket.emit('roomJoined', { game });
-      io.to(roomCode).emit('playerJoined', { game });
+      const filteredGame = getFilteredGameForPlayer(game, userId);
+      socket.emit('roomJoined', { game: filteredGame });
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('playerJoined', { game: filteredGame });
+      });
       broadcastRoomsList(io);
       if (game.players.length === 4) {
         startGame(roomCode, io, activeGames);
@@ -103,7 +113,10 @@ function registerRoomHandlers(io, socket, activeGames) {
         if (game.status === 'playing' || game.status === 'auction') {
           game.status = 'finished';
           await game.save();
-          io.to(roomCode).emit('gameFinished', { game });
+          game.players.forEach(p => {
+            const filteredGame = getFilteredGameForPlayer(game, p.userId);
+            io.to(p.userId.toString()).emit('gameFinished', { game: filteredGame });
+          });
           appendRoomLog(roomCode, `Game aborted: player left during active game (${leavingPlayerEmail || userId})`);
           closeRoomLog(roomCode);
           wasActive = true;
@@ -111,6 +124,7 @@ function registerRoomHandlers(io, socket, activeGames) {
         activeGames.set(roomCode, game);
       }
       socket.leave(roomCode);
+      socket.leave(userId.toString());
       io.to(roomCode).emit('roomClosed', { roomCode });
       broadcastRoomsList(io);
       if (leavingPlayerEmail) {

@@ -2,6 +2,7 @@ const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
 const { isValidPlay, getCardSuit, determineTrickWinner } = require('../../utils/gameLogic');
 const { endRound } = require('../utils/socketUtils');
+const { getFilteredGameForPlayer } = require('../utils/socketUtils');
 
 function registerGameHandlers(io, socket, activeGames) {
   // Place bid during bidding phase
@@ -50,7 +51,10 @@ function registerGameHandlers(io, socket, activeGames) {
       game.bids[player.position] = bidInt;
       appendRoomLog(roomCode, `Bid placed: Player ${player.position} (${player.email || player.userId}) bid ${bidInt}`);
       // Broadcast bid to all players
-      io.to(roomCode).emit('bidPlaced', { position: player.position, bid: bidInt, game });
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('bidPlaced', { position: player.position, bid: bidInt, game: filteredGame });
+      });
       // Move to next bidder
       const bidsReceived = game.bids.filter(b => b !== null).length;
       if (bidsReceived === 4) {
@@ -61,13 +65,19 @@ function registerGameHandlers(io, socket, activeGames) {
         game.leadSuit = null;
         await game.save();
         activeGames.set(roomCode, game);
-        io.to(roomCode).emit('biddingComplete', { game });
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('biddingComplete', { game: filteredGame });
+        });
       } else {
         // Move to next bidder
         game.currentBidder = (game.currentBidder + 1) % 4;
         await game.save();
         activeGames.set(roomCode, game);
-        io.to(roomCode).emit('nextBidder', { game });
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('nextBidder', { game: filteredGame });
+        });
       }
     } catch (error) {
       console.error('Place bid error:', error);
@@ -116,10 +126,13 @@ function registerGameHandlers(io, socket, activeGames) {
         game.players[winner].tricksWon++;
         const trickCards = game.currentTrick.map(tc => `P${tc.position}: ${tc.card}`).join(', ');
         appendRoomLog(roomCode, `Trick completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), cards: ${trickCards}`);
-        io.to(roomCode).emit('trickComplete', { 
-          trick: game.currentTrick, 
-          winner,
-          game 
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('trickComplete', { 
+            trick: game.currentTrick, 
+            winner,
+            game: filteredGame 
+          });
         });
         // Reset for next trick
         setTimeout(async () => {
@@ -132,7 +145,10 @@ function registerGameHandlers(io, socket, activeGames) {
           } else {
             await game.save();
             activeGames.set(roomCode, game);
-            io.to(roomCode).emit('nextTrick', { game });
+            game.players.forEach(p => {
+              const filteredGame = getFilteredGameForPlayer(game, p.userId);
+              io.to(p.userId.toString()).emit('nextTrick', { game: filteredGame });
+            });
           }
         }, 3000);
       } else {
@@ -140,7 +156,10 @@ function registerGameHandlers(io, socket, activeGames) {
         game.currentTurn = (game.currentTurn + 1) % 4;
         await game.save();
         activeGames.set(roomCode, game);
-        io.to(roomCode).emit('cardPlayed', { game });
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('cardPlayed', { game: filteredGame });
+        });
       }
     } catch (error) {
       console.error('Play card error:', error);

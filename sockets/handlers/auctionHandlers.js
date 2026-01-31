@@ -2,6 +2,7 @@ const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
 const { isValidAuctionBid, sortHand } = require('../../utils/gameLogic');
 const { advanceAuctionTurn } = require('../utils/socketUtils');
+const { getFilteredGameForPlayer } = require('../utils/socketUtils');
 
 function registerAuctionHandlers(io, socket, activeGames) {
   // Place auction bid or pass during auction phase
@@ -54,7 +55,11 @@ function registerAuctionHandlers(io, socket, activeGames) {
       });
       game.auctionHighestBid = bid;
       appendRoomLog(roomCode, `Auction bid placed: Player ${player.position} (${player.email || player.userId}) bid ${quantity} ${suit}`);
-      io.to(roomCode).emit('auctionBidPlaced', { position: player.position, bid, game });
+      // Emit filtered game to each player
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('auctionBidPlaced', { position: player.position, bid, game: filteredGame });
+      });
       await advanceAuctionTurn(game, roomCode, io, activeGames);
     } catch (error) {
       console.error('Place auction bid error:', error);
@@ -100,7 +105,11 @@ function registerAuctionHandlers(io, socket, activeGames) {
         game.status = 'frish';
         await game.save();
         activeGames.set(roomCode, game);
-        io.to(roomCode).emit('frishStarted', { game });
+        // Emit filtered game to each player
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('frishStarted', { game: filteredGame });
+        });
         return;
       }
       if (game.auctionFinalRaise && player.position === game.auctionWinner) {
@@ -118,10 +127,18 @@ function registerAuctionHandlers(io, socket, activeGames) {
         game.auctionFinalRaise = false;
         await game.save();
         activeGames.set(roomCode, game);
-        io.to(roomCode).emit('auctionComplete', { game });
+        // Emit filtered game to each player
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('auctionComplete', { game: filteredGame });
+        });
         return;
       }
-      io.to(roomCode).emit('auctionPassed', { position: player.position, game });
+      // Emit filtered game to each player
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('auctionPassed', { position: player.position, game: filteredGame });
+      });
       await advanceAuctionTurn(game, roomCode, io, activeGames);
     } catch (error) {
       console.error('Pass auction error:', error);
@@ -174,8 +191,14 @@ function registerAuctionHandlers(io, socket, activeGames) {
       activeGames.set(roomCode, game);
       // Emit frish selection counts to all players
       const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frishCards) ? p.frishCards.length : 0 }));
-      io.to(roomCode).emit('frishSelectionCounts', { frishCounts, game });
-      socket.emit('frishCardSelected', { userId, frishCard, game });
+      // Emit filtered game to each player
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('frishSelectionCounts', { frishCounts, game: filteredGame });
+      });
+      // Also emit to the acting socket for immediate feedback
+      const filteredGame = getFilteredGameForPlayer(game, userId);
+      socket.emit('frishCardSelected', { userId, frishCard, game: filteredGame });
     } catch (error) {
       appendRoomLog(roomCode, `Invalid action: Failed to select frish card (userId: ${userId})`);
       socket.emit('error', { message: 'Failed to select frish card' });
@@ -262,11 +285,20 @@ function registerAuctionHandlers(io, socket, activeGames) {
         game.minBid = 1;
         game.lastBid = 0;
         appendRoomLog(roomCode, 'Frish phase complete. Game reset for new auction phase.');
-        io.to(roomCode).emit('auctionRestarted', { game });
+        // Emit filtered game to each player
+        game.players.forEach(p => {
+          const filteredGame = getFilteredGameForPlayer(game, p.userId);
+          io.to(p.userId.toString()).emit('auctionRestarted', { game: filteredGame });
+        });
       }
       await game.save();
       activeGames.set(roomCode, game);
-      io.to(roomCode).emit('frishReady', { userId, game });
+      // Emit filtered game to each player for frishReady
+      game.players.forEach(p => {
+        const filteredGame = getFilteredGameForPlayer(game, p.userId);
+        io.to(p.userId.toString()).emit('frishReady', { userId, game: filteredGame });
+      });
+      return;
     } catch (error) {
       appendRoomLog(roomCode, `Invalid action: Failed to mark ready for frish (userId: ${userId})`);
       socket.emit('error', { message: 'Failed to mark ready for frish' });

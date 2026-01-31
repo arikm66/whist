@@ -1,3 +1,17 @@
+function getFilteredGameForPlayer(game, userId) {
+  // Deep clone the game object (shallow for performance, deep for hand)
+  const filtered = JSON.parse(JSON.stringify(game));
+  filtered.players = filtered.players.map(p => {
+    if (p.userId.toString() === userId.toString()) {
+      return p; // This player's own hand and frishCards are visible
+    } else {
+      // Hide other players' hands and frishCards
+      return { ...p, hand: [], frishCards: [] };
+    }
+  });
+  return filtered;
+}
+
 async function endRound(game, roomCode, io) {
   // Calculate scores based on bidding
   const roundTricks = [];
@@ -63,7 +77,10 @@ async function endRound(game, roomCode, io) {
   if (game.round > 5) {
     game.status = 'finished';
     await game.save();
-    io.to(roomCode).emit('gameFinished', { game });
+    game.players.forEach(p => {
+      const filteredGame = getFilteredGameForPlayer(game, p.userId);
+      io.to(p.userId.toString()).emit('gameFinished', { game: filteredGame });
+    });
     appendRoomLog(roomCode, 'Game finished');
     // Log final scores
     const scoreLines = game.scores.map(s => {
@@ -93,7 +110,10 @@ async function endRound(game, roomCode, io) {
     game.auctionFinalRaise = false;
     game.trumpSuit = null;
     await game.save();
-    io.to(roomCode).emit('newRound', { game });
+    game.players.forEach(p => {
+      const filteredGame = getFilteredGameForPlayer(game, p.userId);
+      io.to(p.userId.toString()).emit('newRound', { game: filteredGame });
+    });
   }
 }
 async function advanceAuctionTurn(game, roomCode, io, activeGames) {
@@ -141,7 +161,10 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
     await game.save();
     activeGames.set(roomCode, game);
     appendRoomLog(roomCode, `Auction completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), bid ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`);
-    io.to(roomCode).emit('auctionComplete', { game });
+    game.players.forEach(p => {
+      const filteredGame = getFilteredGameForPlayer(game, p.userId);
+      io.to(p.userId.toString()).emit('auctionComplete', { game: filteredGame });
+    });
     return;
   }
 
@@ -149,7 +172,10 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
   game.auctionCurrentBidder = nextBidder;
   await game.save();
   activeGames.set(roomCode, game);
-  io.to(roomCode).emit('auctionNextBidder', { game });
+  game.players.forEach(p => {
+    const filteredGame = getFilteredGameForPlayer(game, p.userId);
+    io.to(p.userId.toString()).emit('auctionNextBidder', { game: filteredGame });
+  });
 }
 const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
@@ -197,7 +223,10 @@ async function startGame(roomCode, io, activeGames) {
     game.trumpSuit = null;
     await game.save();
     activeGames.set(roomCode, game);
-    io.to(roomCode).emit('gameStarted', { game });
+    game.players.forEach(p => {
+      const filteredGame = getFilteredGameForPlayer(game, p.userId);
+      io.to(p.userId.toString()).emit('gameStarted', { game: filteredGame });
+    });
     appendRoomLog(roomCode, 'Game started');
     appendRoomLog(roomCode, 'Auction started');
   } catch (error) {
@@ -205,4 +234,4 @@ async function startGame(roomCode, io, activeGames) {
   }
 }
 
-module.exports = { broadcastRoomsList, generateRoomCode, startGame, advanceAuctionTurn, endRound };
+module.exports = { broadcastRoomsList, generateRoomCode, startGame, advanceAuctionTurn, endRound, getFilteredGameForPlayer };
