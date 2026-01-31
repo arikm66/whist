@@ -151,26 +151,26 @@ function registerAuctionHandlers(io, socket, activeGames) {
         return;
       }
       const cardInHand = Array.isArray(player.hand)
-        ? player.hand.includes(frish.card) || player.hand.some(c => (c.card || c) === frish.card)
+        ? player.hand.includes(frish) || player.hand.some(c => (c.card || c) === frish)
         : false;
       if (!cardInHand) {
-        appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frish.card})`);
+        appendRoomLog(roomCode, `Invalid action: Card not in hand (userId: ${userId}, card: ${frish})`);
         socket.emit('error', { message: 'Card not in hand' });
         return;
       }
       if (!Array.isArray(player.frishCards)) player.frishCards = [];
-      const existingIdx = player.frishCards.findIndex(f => f.card === frish.card);
+      const existingIdx = player.frishCards.findIndex(f => f.card === frish);
       if (existingIdx >= 0) {
         player.frishCards.splice(existingIdx, 1);
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish?.card}`);
+        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish}`);
       } else {
         if (player.frishCards.length >= 3) {
           appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
           socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
           return;
         }
-        player.frishCards.push({ card: frish.card });
-        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish?.card}`);
+        player.frishCards.push({ card: frish });
+        appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish}`);
       }
       await game.save();
       activeGames.set(roomCode, game);
