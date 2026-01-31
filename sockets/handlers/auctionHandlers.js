@@ -158,24 +158,24 @@ function registerAuctionHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Card not in hand' });
         return;
       }
-      if (!Array.isArray(player.frish)) player.frish = [];
-      const existingIdx = player.frish.findIndex(f => f.card === frish.card);
+      if (!Array.isArray(player.frishCards)) player.frishCards = [];
+      const existingIdx = player.frishCards.findIndex(f => f.card === frish.card);
       if (existingIdx >= 0) {
-        player.frish.splice(existingIdx, 1);
+        player.frishCards.splice(existingIdx, 1);
         appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=deselected, userId=${userId}, card=${frish?.card}`);
       } else {
-        if (player.frish.length >= 3) {
+        if (player.frishCards.length >= 3) {
           appendRoomLog(roomCode, `Invalid action: Cannot select more than 3 frish cards (userId: ${userId})`);
           socket.emit('error', { message: 'You can only select up to 3 frish cards.' });
           return;
         }
-        player.frish.push({ card: frish.card });
+        player.frishCards.push({ card: frish.card });
         appendRoomLog(roomCode, `selectFrishCard event: Player ${player.position}, action=selected, userId=${userId}, card=${frish?.card}`);
       }
       await game.save();
       activeGames.set(roomCode, game);
       // Emit frish selection counts to all players
-      const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frish) ? p.frish.length : 0 }));
+      const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frishCards) ? p.frishCards.length : 0 }));
       io.to(roomCode).emit('frishSelectionCounts', { frishCounts, game });
       socket.emit('frishCardSelected', { userId, frish, game });
     } catch (error) {
@@ -204,7 +204,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Player not in game' });
         return;
       }
-      if (!Array.isArray(player.frish) || player.frish.length !== 3) {
+      if (!Array.isArray(player.frishCards) || player.frishCards.length !== 3) {
         appendRoomLog(roomCode, `Invalid action: Player does not have 3 frish cards selected (userId: ${userId})`);
         socket.emit('error', { message: 'You must select exactly 3 frish cards before continuing.' });
         return;
@@ -225,8 +225,8 @@ function registerAuctionHandlers(io, socket, activeGames) {
         // 1. Remove frish cards from each player's hand
         for (let i = 0; i < 4; i++) {
           const p = game.players[i];
-          if (Array.isArray(p.frish)) {
-            for (const f of p.frish) {
+          if (Array.isArray(p.frishCards)) {
+            for (const f of p.frishCards) {
               const idx = p.hand.indexOf(f.card);
               if (idx !== -1) p.hand.splice(idx, 1);
             }
@@ -235,7 +235,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
         // 2. Push to each player's hand the frish cards from the previous player (N-1, wrap around)
         for (let i = 0; i < 4; i++) {
           const prev = (i + 3) % 4;
-          const prevFrish = Array.isArray(game.players[prev].frish) ? game.players[prev].frish.map(f => f.card) : [];
+          const prevFrish = Array.isArray(game.players[prev].frishCards) ? game.players[prev].frishCards.map(f => f.card) : [];
           game.players[i].hand.push(...prevFrish);
         }
         // 3. Sort all hands using sortHand()
@@ -243,10 +243,10 @@ function registerAuctionHandlers(io, socket, activeGames) {
           game.players[i].hand = sortHand(game.players[i].hand);
         }
         appendRoomLog(roomCode, 'All players ready for frish. Frish cards exchanged and hands sorted.');
-        // Optionally, reset readyForFrish and frish arrays for next phase
+        // Optionally, reset readyForFrish and frishCards arrays for next phase
         for (let i = 0; i < 4; i++) {
           game.players[i].readyForFrish = false;
-          game.players[i].frish = [];
+          game.players[i].frishCards = [];
         }
         game.readyForFrishCount = 0;
         // You may want to advance the game phase here

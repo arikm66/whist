@@ -10,7 +10,7 @@ export default function FrishUI({
   handleSelectFrishCard
 }) {
   // Determine number of selected frish cards
-  const selectedCount = Array.isArray(myPlayer?.frish) ? myPlayer.frish.length : 0;
+  const selectedCount = Array.isArray(myPlayer?.frishCards) ? myPlayer.frishCards.length : 0;
   const frishButtonEnabled = selectedCount === 3 && !myPlayer?.readyForFrish;
   const canSelectFrish = !myPlayer?.readyForFrish;
   return (
@@ -23,7 +23,7 @@ export default function FrishUI({
           {game.players.map((player, idx) => {
             const isMe = myPlayer && player.userId === myPlayer.userId;
             const countObj = frishCounts.find(fc => fc.userId === player.userId);
-            const frishCount = countObj ? countObj.count : (Array.isArray(player.frish) ? player.frish.length : 0);
+            const frishCount = countObj ? countObj.count : (Array.isArray(player.frishCards) ? player.frishCards.length : 0);
             return (
               <li key={player.userId || idx} style={{ marginBottom: '8px' }}>
                 Player {idx + 1}{isMe ? ' (You)' : ''}
@@ -43,7 +43,7 @@ export default function FrishUI({
           <h3>Your Hand</h3>
           <div className="frish-hand">
             {myPlayer.hand.map((card) => {
-              const isFrishSelected = Array.isArray(myPlayer.frish) && myPlayer.frish.some(f => f.card === card);
+              const isFrishSelected = Array.isArray(myPlayer.frishCards) && myPlayer.frishCards.some(f => f.card === card);
               return renderCard(
                 card,
                 canSelectFrish ? () => handleSelectFrishCard(card) : undefined,
