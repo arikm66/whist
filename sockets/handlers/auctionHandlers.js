@@ -2,7 +2,7 @@ const Game = require('../../models/Game');
 const { appendRoomLog } = require('../../utils/logToFile');
 const { isValidAuctionBid, sortHand } = require('../../utils/gameLogic');
 const { advanceAuctionTurn } = require('../utils/socketUtils');
-const { getFilteredGameForPlayer } = require('../utils/socketUtils');
+const { getFilteredGameForPlayer, completeFrishPhase } = require('../utils/socketUtils');
 
 function registerAuctionHandlers(io, socket, activeGames) {
   // Place auction bid or pass during auction phase
@@ -243,53 +243,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
 
       // If all 4 players are ready, swap frish cards
       if (readyCount === 4) {
-        // 1. Remove frish cards from each player's hand
-        for (let i = 0; i < 4; i++) {
-          const p = game.players[i];
-          if (Array.isArray(p.frishCards)) {
-            for (const f of p.frishCards) {
-              const idx = p.hand.indexOf(f);
-              if (idx !== -1) p.hand.splice(idx, 1);
-            }
-          }
-        }
-        // 2. Push to each player's hand the frish cards from the previous player (N-1, wrap around)
-        for (let i = 0; i < 4; i++) {
-          const prev = (i + 3) % 4;
-          const prevFrish = Array.isArray(game.players[prev].frishCards) ? game.players[prev].frishCards : [];
-          game.players[i].hand.push(...prevFrish);
-        }
-        // 3. Sort all hands using sortHand()
-        for (let i = 0; i < 4; i++) {
-          game.players[i].hand = sortHand(game.players[i].hand);
-        }
-        appendRoomLog(roomCode, 'All players ready for frish. Frish cards exchanged and hands sorted.');
-        // Reset frish-related flags and arrays
-        for (let i = 0; i < 4; i++) {
-          game.players[i].readyForFrish = false;
-          game.players[i].frishCards = [];
-        }
-        game.readyForFrishCount = 0;
-
-        // Prepare for new auction phase
-        game.status = 'auction';
-        game.auctionBids = [];
-        game.auctionCurrentBidder = 0;
-        game.auctionWinner = null;
-        game.auctionHighestBid = null;
-        game.auctionPassed = [];
-        game.auctionFinalRaise = false;
-        // Optionally reset other auction/bidding fields if needed
-        game.bids = [null, null, null, null];
-        game.currentBidder = 0;
-        game.minBid = 1;
-        game.lastBid = 0;
-        appendRoomLog(roomCode, 'Frish phase complete. Game reset for new auction phase.');
-        // Emit filtered game to each player
-        game.players.forEach(p => {
-          const filteredGame = getFilteredGameForPlayer(game, p.userId);
-          io.to(p.userId.toString()).emit('auctionRestarted', { game: filteredGame });
-        });
+        completeFrishPhase(game, roomCode, io, activeGames, sortHand, appendRoomLog);
       }
       await game.save();
       activeGames.set(roomCode, game);
