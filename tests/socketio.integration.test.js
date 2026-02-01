@@ -3,6 +3,7 @@ const path = require('path');
 const Client = require('socket.io-client');
 const fs = require('fs');
 const axios = require('axios');
+require('dotenv').config();
 
 const out = fs.openSync('./server-test.log', 'a'); // 'a' for append mode
 let serverProcess;
@@ -54,8 +55,8 @@ test('should create a room and receive roomCreated event', (done) => {
 
     // Cleanup: log in as admin and delete the created room via API
     axios.post(`${SERVER_URL}/api/auth/login`, {
-      email: 'arikm66@yahoo.com',
-      password: 'Vibe@2026'
+      email: process.env.TEST_USER,
+      password: process.env.TEST_PASSWORD
     })
     .then(res => {
       const token = res.data.token;
