@@ -1,11 +1,7 @@
-const path = require('path');
 const Client = require('socket.io-client');
-const fs = require('fs');
 const axios = require('axios');
 require('dotenv').config();
 
-const out = fs.openSync('./server-test.log', 'a'); // 'a' for append mode
-let serverProcess;
 const SERVER_URL = 'http://localhost:5000'; // Match the PORT in server.js
 
 let adminToken;
