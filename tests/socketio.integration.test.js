@@ -1,138 +1,74 @@
-// ...existing code...
-// Integration tests for Socket.io game logic in Whist
-// Environment: Jest, socket.io-client
-
-const { Server } = require('socket.io');
+const { spawn } = require('child_process');
+const path = require('path');
 const Client = require('socket.io-client');
-const http = require('http');
+const fs = require('fs');
+const axios = require('axios');
 
-let io, serverSocket, httpServer, httpServerAddr;
+const out = fs.openSync('./server-test.log', 'a'); // 'a' for append mode
+let serverProcess;
+const SERVER_URL = 'http://localhost:6000'; // Points to the test server we are going to start using spawn
 
 beforeAll((done) => {
-  httpServer = http.createServer();
-  io = new Server(httpServer);
-  // Track players in each room
-  const roomPlayers = {};
-  io.on('connection', (socket) => {
-    socket.on('joinGame', (data) => {
-      const { roomId, playerId } = data;
-      if (!roomPlayers[roomId]) roomPlayers[roomId] = new Set();
-      if (roomPlayers[roomId].size >= 4) {
-        socket.emit('joinRejected', { reason: 'Room is full' });
-        return;
-      }
-      roomPlayers[roomId].add(playerId);
-      socket.join(roomId);
-      // Store playerId and roomId on socket for disconnect cleanup
-      socket._whistPlayerId = playerId;
-      socket._whistRoomId = roomId;
-      socket.emit('joinedGame', { roomId, playerId });
-    });
-    socket.on('disconnecting', () => {
-      const roomId = socket._whistRoomId;
-      const playerId = socket._whistPlayerId;
-      if (roomId && playerId && roomPlayers[roomId]) {
-        roomPlayers[roomId].delete(playerId);
-      }
-    });
+  // Start the backend server as a child process
+  serverProcess = spawn('node', [path.join(__dirname, '../server.js')], {
+    env: { ...process.env, NODE_ENV: 'test', PORT: 6000 },
+    stdio: ['ignore', out, out],
+    cwd: path.join(__dirname, '..'),
   });
-  httpServer.listen(() => {
-    httpServerAddr = httpServer.address();
-    done();
-  });
+  // Wait for server to be ready
+  setTimeout(done, 3000); // Adjust delay if needed
 });
 
 afterAll((done) => {
-  io.close();
-  httpServer.close(done);
+  if (serverProcess) serverProcess.kill();
+  setTimeout(done, 500);
 });
 
-// Example: Connect four clients and join a room
-describe('Socket.io Whist Game Integration', () => {
-  let clients = [];
+test('should connect to backend Socket.io server', (done) => {
+  const client = Client(SERVER_URL);
+  client.on('connect', () => {
+    expect(client.connected).toBe(true);
+    client.close();
+    done();
+  });
+  client.on('connect_error', (err) => {
+    done(err);
+  });
+});
 
-  beforeEach((done) => {
-    clients = [];
-    let connected = 0;
-    for (let i = 0; i < 4; i++) {
-      const client = Client(`http://localhost:${httpServerAddr.port}`);
-      clients.push(client);
-      client.on('connect', () => {
-        connected++;
-        if (connected === 4) done();
+test('should create a room and receive roomCreated event', (done) => {
+  const client = Client(SERVER_URL);
+  // Use a valid ObjectId string for userId
+  const testUser = { userId: '507f1f77bcf86cd799439011', email: 'test1@example.com' };
+  client.on('connect', () => {
+    client.emit('createRoom', testUser);
+  });
+  client.on('roomCreated', (data) => {
+    expect(data).toBeDefined();
+    expect(data.roomCode).toBeDefined();
+    expect(data.game).toBeDefined();
+    expect(data.game.players[0].userId).toBe(testUser.userId);
+    createdRoomCode = data.roomCode;
+    client.close();
+
+
+    // Cleanup: log in as admin and delete the created room via API
+    axios.post(`${SERVER_URL}/api/auth/login`, {
+      email: 'arikm66@yahoo.com',
+      password: 'Vibe@2026'
+    })
+    .then(res => {
+      const token = res.data.token;
+      return axios.delete(`${SERVER_URL}/api/rooms/${createdRoomCode}`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-    }
+    })
+    .then(() => done())
+    .catch(err => done(err));
   });
 
-  afterEach(() => {
-    clients.forEach((client) => client.disconnect());
-  });
-
-  it('should allow four players to join a game room', (done) => {
-    let joinCount = 0;
-    clients.forEach((client, idx) => {
-      client.emit('joinGame', { roomId: 'test-room', playerId: `player${idx}` });
-      client.on('joinedGame', (data) => {
-        joinCount++;
-        if (joinCount === 4) done();
-      });
-    });
-  });
-
-  it('should reject a 5th player from joining a full game room', (done) => {
-    // First, connect 4 players and join the room
-    let joinCount = 0;
-    clients.forEach((client, idx) => {
-      client.emit('joinGame', { roomId: 'full-room', playerId: `player${idx}` });
-      client.on('joinedGame', () => {
-        joinCount++;
-        if (joinCount === 4) {
-          // Now try to connect a 5th player
-          const fifthClient = Client(`http://localhost:${httpServerAddr.port}`);
-          fifthClient.on('connect', () => {
-            fifthClient.emit('joinGame', { roomId: 'full-room', playerId: 'player4' });
-          });
-          fifthClient.on('joinRejected', (data) => {
-            expect(data).toBeDefined();
-            expect(data.reason).toBe('Room is full');
-            fifthClient.disconnect();
-            done();
-          });
-        }
-      });
-    });
-  });
-  it('should allow a 5th player to join after one leaves', (done) => {
-    let joinCount = 0;
-    let firstFour = [];
-    clients.forEach((client, idx) => {
-      firstFour.push(client);
-      client.emit('joinGame', { roomId: 'leave-room', playerId: `player${idx}` });
-      client.on('joinedGame', () => {
-        joinCount++;
-        if (joinCount === 4) {
-          // Disconnect the first player
-          firstFour[0].disconnect();
-          setTimeout(() => {
-            // Now try to connect a 5th player
-            const fifthClient = Client(`http://localhost:${httpServerAddr.port}`);
-            fifthClient.on('connect', () => {
-              fifthClient.emit('joinGame', { roomId: 'leave-room', playerId: 'player4' });
-            });
-            fifthClient.on('joinedGame', (data) => {
-              expect(data).toBeDefined();
-              expect(data.roomId).toBe('leave-room');
-              expect(data.playerId).toBe('player4');
-              fifthClient.disconnect();
-              done();
-            });
-            fifthClient.on('joinRejected', () => {
-              // Should not be called
-              done(new Error('5th player was incorrectly rejected after a player left'));
-            });
-          }, 200); // Wait a bit for the disconnect to propagate
-        }
-      });
-    });
+  client.on('error', (err) => {
+    client.close();
+    done(err);
   });
 });

@@ -1,0 +1,27 @@
+[dotenv@17.2.3] injecting env (2) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Server running on port 6000
+Connected to MongoDB
+User connected: cLUOvi-GzwI0hNQ5AAAB
+User disconnected: cLUOvi-GzwI0hNQ5AAAB
+User connected: oCHB9-qd3o958z95AAAD
+[dotenv@17.2.3] injecting env (2) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Server running on port 6000
+Connected to MongoDB
+User connected: t2T0NBbNE2QbkkMNAAAB
+User disconnected: t2T0NBbNE2QbkkMNAAAB
+User connected: gPVIYZc9w5KQ7nscAAAD
+User disconnected: gPVIYZc9w5KQ7nscAAAD
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+Server running on port 6000
+Connected to MongoDB
+User connected: _YlqgvtcK9_rqcTVAAAB
+User disconnected: _YlqgvtcK9_rqcTVAAAB
+User connected: D4BNvf-dPUHTcedxAAAD
+User disconnected: D4BNvf-dPUHTcedxAAAD
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Server running on port 6000
+Connected to MongoDB
+User connected: zbBwhBqZsEuoH_HhAAAB
+User disconnected: zbBwhBqZsEuoH_HhAAAB
+User connected: xIozDizrlkEqCDhcAAAD
+User disconnected: xIozDizrlkEqCDhcAAAD
