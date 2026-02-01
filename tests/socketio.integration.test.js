@@ -1,4 +1,3 @@
-const { spawn } = require('child_process');
 const path = require('path');
 const Client = require('socket.io-client');
 const fs = require('fs');
@@ -8,6 +7,32 @@ require('dotenv').config();
 const out = fs.openSync('./server-test.log', 'a'); // 'a' for append mode
 let serverProcess;
 const SERVER_URL = 'http://localhost:5000'; // Match the PORT in server.js
+
+let adminToken;
+
+beforeAll((done) => {
+  axios.post(`${SERVER_URL}/api/auth/login`, {
+    email: process.env.TEST_USER,
+    password: process.env.TEST_PASSWORD
+  })
+  .then(res => {
+    adminToken = res.data.token;
+    done();
+  })
+  .catch(done);
+});
+
+function cleanupRoom(roomCode) {
+  return axios.delete(`${SERVER_URL}/api/rooms/${roomCode}`, {
+    headers: { Authorization: `Bearer ${adminToken}` }
+  })
+  .catch(err => {
+    if (err.response) {
+      console.log('Delete room error response:', err.response.data);
+    }
+    throw err;
+  });
+}
 
 test('should connect to backend Socket.io server', (done) => {
   const client = Client(SERVER_URL);
@@ -36,24 +61,67 @@ test('should create a room and receive roomCreated event', (done) => {
     createdRoomCode = data.roomCode;
     client.close();
 
-
-    // Cleanup: log in as admin and delete the created room via API
-    axios.post(`${SERVER_URL}/api/auth/login`, {
-      email: process.env.TEST_USER,
-      password: process.env.TEST_PASSWORD
-    })
-    .then(res => {
-      const token = res.data.token;
-      return axios.delete(`${SERVER_URL}/api/rooms/${createdRoomCode}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-    })
-    .then(() => done())
-    .catch(err => done(err));
+    cleanupRoom(createdRoomCode)
+      .then(() => done())
+      .catch(done);
   });
 
   client.on('error', (err) => {
     client.close();
     done(err);
   });
+});
+
+test('should allow a user to join a created room', (done) => {
+  const client1 = Client(SERVER_URL);
+  const client2 = Client(SERVER_URL);
+  const testUser1 = { userId: '507f1f77bcf86cd799439012', email: 'test2@example.com' };
+  const testUser2 = { userId: '507f1f77bcf86cd799439013', email: 'test3@example.com' };
+  let createdRoomCode = null;
+
+  client1.on('connect', () => {
+    client1.emit('createRoom', testUser1);
+  });
+
+  client1.on('roomCreated', (data) => {
+    createdRoomCode = data.roomCode;
+    client2.emit('joinRoom', { roomCode: createdRoomCode, userId: testUser2.userId, email: testUser2.email });
+  });
+
+  client2.on('roomJoined', (data) => {
+    expect(data).toBeDefined();
+    expect(data.game).toBeDefined();
+    expect(data.game.players.length).toBeGreaterThanOrEqual(2);
+    client1.close();
+    client2.close();
+    cleanupRoom(createdRoomCode)
+      .then(() => done())
+      .catch(done);
+  });
+
+  
+  client2.on('error', (err) => {
+    client1.close();
+    client2.close();
+    done(err);
+  });
+});
+
+test('should not allow joining a non-existent room', (done) => {
+  const client = Client(SERVER_URL);
+  const testUser = { userId: '507f1f77bcf86cd799439014', email: 'test4@example.com' };
+  client.on('connect', () => {
+    client.emit('joinRoom', { roomCode: 'NONEXISTENTROOM', userId: testUser.userId, email: testUser.email });
+  });
+
+  client.on('error', (err) => {
+    expect(err).toBeDefined();
+    expect(err.message).toMatch(/room not found/i);
+    client.close();
+    done();
+  });
+  setTimeout(() => {
+    client.close();
+    done(new Error('No error received when joining a non-existent room'));
+  }, 2000);
 });
