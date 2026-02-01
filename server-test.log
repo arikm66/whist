@@ -33,3 +33,9 @@ User connected: UdFFc4e6KFp3nt5LAAAB
 User disconnected: UdFFc4e6KFp3nt5LAAAB
 User connected: pfcTWHQjJr3GrCSzAAAD
 User disconnected: pfcTWHQjJr3GrCSzAAAD
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Server running on port 6000
+Connected to MongoDB
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Server running on port 6000
+Connected to MongoDB
