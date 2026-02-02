@@ -1,0 +1,25 @@
+[2026-02-02T16:03:01.547Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:03:01.552Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:03:02.090Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:09:59.291Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:09:59.295Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:09:59.932Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:10:00.061Z] Room created by user1: JXQEVM
+[2026-02-02T16:10:00.148Z] User2 joined room: JXQEVM
+[2026-02-02T16:10:00.224Z] User3 joined room: JXQEVM
+[2026-02-02T16:10:00.295Z] User4 joined room: JXQEVM
+[2026-02-02T16:13:07.304Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:13:07.309Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:13:07.954Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:13:08.077Z] Room created by user1: LZIVLF
+[2026-02-02T16:13:08.163Z] User2 joined room: LZIVLF
+[2026-02-02T16:13:08.239Z] User3 joined room: LZIVLF
+[2026-02-02T16:13:08.313Z] User4 joined room: LZIVLF
+[2026-02-02T16:19:18.795Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:19:18.799Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:19:19.462Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:19:19.496Z] All 4 clients connected
+[2026-02-02T16:19:19.581Z] Room created by user1: XHLA7B
+[2026-02-02T16:19:19.674Z] User2 joined room: XHLA7B
+[2026-02-02T16:19:19.759Z] User3 joined room: XHLA7B
+[2026-02-02T16:19:19.840Z] User4 joined room: XHLA7B

@@ -1,8 +1,14 @@
+const fs = require('fs');
+const path = require('path');
 const Client = require('socket.io-client');
 const axios = require('axios');
 require('dotenv').config();
 
 const SERVER_URL = 'http://localhost:5000'; // Match the PORT in server.js
+const TEST_LOG_PATH = path.join(__dirname, 'test-debug.log');
+function testLog(msg) {
+  fs.appendFileSync(TEST_LOG_PATH, `[${new Date().toISOString()}] ${msg}\n`);
+}
 
 let adminToken;
 
@@ -24,7 +30,7 @@ function cleanupRoom(roomCode) {
   })
   .catch(err => {
     if (err.response) {
-      console.log('Delete room error response:', err.response.data);
+      testLog(`Delete room error response: ${JSON.stringify(err.response.data)}`);
     }
     throw err;
   });
@@ -124,103 +130,3 @@ describe('Room Operations', () => {
   });
 });
 
-describe('End-to-End: Whist Full Game', () => {
-  const users = [
-    { email: process.env.TEST_USER1, password: process.env.TEST_PASSWORD },
-    { email: process.env.TEST_USER2, password: process.env.TEST_PASSWORD },
-    { email: process.env.TEST_USER3, password: process.env.TEST_PASSWORD },
-    { email: process.env.TEST_USER4, password: process.env.TEST_PASSWORD }
-  ];
-
-  let tokens = [];
-  beforeAll(async () => {
-    for (const user of users) {
-      if (!user.email || !user.password) {
-        throw new Error('Please provide credentials for four test users in your .env file as TEST_USER1, TEST_PASSWORD, etc.');
-      }
-      const res = await axios.post(`${SERVER_URL}/api/auth/login`, {
-        email: user.email,
-        password: user.password
-      });
-      tokens.push(res.data.token);
-    }
-  });
-
-  let clients = [];
-  let createdRoomCode = null;
-  afterAll(async () => {
-    clients.forEach(client => client.close());
-    if (createdRoomCode && !process.env.SKIP_ROOM_CLEANUP) {
-      try {
-        await cleanupRoom(createdRoomCode);
-      } catch (err) {
-        // Log but do not throw to avoid failing the suite on cleanup
-        console.error('Room cleanup failed:', err.message || err);
-      }
-    }
-  });
-
-  test('connects four socket clients', async () => {
-    for (let i = 0; i < 4; i++) {
-      const client = Client(SERVER_URL, {
-        auth: { token: tokens[i] }
-      });
-      clients.push(client);
-      await new Promise((resolve, reject) => {
-        client.on('connect', resolve);
-        client.on('connect_error', reject);
-      });
-      expect(client.connected).toBe(true);
-    }
-  });
-
-  test('creates room and allows others to join', async () => {
-    // Use valid MongoDB ObjectId strings for userId
-    const userIds = [
-      '507f1f77bcf86cd799439011',
-      '507f1f77bcf86cd799439012',
-      '507f1f77bcf86cd799439013',
-      '507f1f77bcf86cd799439014'
-    ];
-
-    // TEST_USER1 creates the room
-    const user1 = { userId: userIds[0], email: users[0].email };
-    let roomCode;
-    await new Promise((resolve, reject) => {
-      clients[0].emit('createRoom', user1);
-      clients[0].on('roomCreated', (data) => {
-        try {
-          expect(data).toBeDefined();
-          expect(data.roomCode).toBeDefined();
-          expect(data.game).toBeDefined();
-          expect(data.game.players[0].userId).toBe(user1.userId);
-          roomCode = data.roomCode;
-          createdRoomCode = data.roomCode;
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
-      clients[0].on('error', reject);
-    });
-
-    // Other users join the room
-    for (let i = 1; i < 4; i++) {
-      const joinUser = { userId: userIds[i], email: users[i].email };
-      await new Promise((resolve, reject) => {
-        clients[i].emit('joinRoom', { roomCode, userId: joinUser.userId, email: joinUser.email });
-        clients[i].on('roomJoined', (data) => {
-          try {
-            expect(data).toBeDefined();
-            expect(data.game).toBeDefined();
-            expect(data.game.players.some(p => p.userId === joinUser.userId)).toBe(true);
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        });
-        clients[i].on('error', reject);
-      });
-    }
-  });
-});
