@@ -150,7 +150,7 @@ describe('End-to-End: Whist Full Game', () => {
   let createdRoomCode = null;
   afterAll(async () => {
     clients.forEach(client => client.close());
-    if (createdRoomCode) {
+    if (createdRoomCode && !process.env.SKIP_ROOM_CLEANUP) {
       try {
         await cleanupRoom(createdRoomCode);
       } catch (err) {
