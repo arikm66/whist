@@ -142,7 +142,7 @@ describe('E2E Whist Game', () => {
         }
     });
 
-    test('dealer in created room is correct', async () => {
+    test('dealer in created room is valid', async () => {
         expect(roomCode).toBeTruthy();
         // Get the rooms list from the server
         let dealer;
