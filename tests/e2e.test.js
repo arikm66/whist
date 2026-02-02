@@ -14,6 +14,7 @@ describe('E2E Whist Game', () => {
     testLog(`===== Starting E2E Whist Game tests`);
     let tokens = [];
     let clients = [];
+    let roomCode;
     const users = [
       {
         email: process.env.TEST_USER1,
@@ -37,16 +38,34 @@ describe('E2E Whist Game', () => {
       }
     ];
 
-    afterAll(() => {
-        if (clients && clients.length) {
-            clients.forEach(client => {
-                try {
-                    client.close();
-                } catch (err) {
-                    // Ignore errors on close
-                }
-            });
+    afterAll(async () => {
+      if (clients && clients.length) {
+        clients.forEach(client => {
+          try {
+            client.close();
+          } catch (err) {
+            // Ignore errors on close
+          }
+        });
+      }
+      // Delete the room if it was created and SKIP_ROOM_CLEANUP is not set
+      if (roomCode && !process.env.SKIP_ROOM_CLEANUP) {
+        try {
+          const adminRes = await axios.post(`${SERVER_URL}/api/auth/login`, {
+            email: process.env.TEST_ADMIN_USER,
+            password: process.env.TEST_ADMIN_PASSWORD
+          });
+          const adminToken = adminRes.data.token;
+          await axios.delete(`${SERVER_URL}/api/rooms/${roomCode}`, {
+            headers: { Authorization: `Bearer ${adminToken}` }
+          });
+          testLog(`Room ${roomCode} deleted in afterAll.`);
+        } catch (err) {
+          testLog(`Room cleanup failed: ${err.message || err}`);
         }
+      } else if (roomCode) {
+        testLog(`Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.`);
+      }
     });
 
     test('logs in 4 players', async () => {
@@ -85,23 +104,22 @@ describe('E2E Whist Game', () => {
 
     test('user1 creates a room and all four players join', async () => {
         expect(clients).toHaveLength(4);
-        let roomCode;
         await new Promise((resolve, reject) => {
-        clients[0].emit('createRoom', { userId: users[0].userId, email: users[0].email });
-        clients[0].on('roomCreated', (data) => {
-            try {
-            expect(data).toBeDefined();
-            expect(data.roomCode).toBeDefined();
-            expect(data.game).toBeDefined();
-            expect(data.game.players[0].userId).toBe(users[0].userId);
-            roomCode = data.roomCode;
-            testLog(`Room created by user1: ${roomCode}`);
-            resolve();
-            } catch (err) {
-            reject(err);
-            }
-        });
-        clients[0].on('error', reject);
+            clients[0].emit('createRoom', { userId: users[0].userId, email: users[0].email });
+            clients[0].on('roomCreated', (data) => {
+                try {
+                expect(data).toBeDefined();
+                expect(data.roomCode).toBeDefined();
+                expect(data.game).toBeDefined();
+                expect(data.game.players[0].userId).toBe(users[0].userId);
+                roomCode = data.roomCode;
+                testLog(`Room created by user1: ${roomCode}`);
+                resolve();
+                } catch (err) {
+                reject(err);
+                }
+            });
+            clients[0].on('error', reject);
         });
 
         // Other users join the room

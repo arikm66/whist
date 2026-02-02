@@ -54,3 +54,29 @@
 [2026-02-02T16:36:06.803Z] User2 joined room: 9QRC8F
 [2026-02-02T16:36:06.871Z] User3 joined room: 9QRC8F
 [2026-02-02T16:36:06.940Z] User4 joined room: 9QRC8F
+[2026-02-02T16:40:37.835Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:40:37.840Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:40:38.452Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:40:38.494Z] All 4 clients connected
+[2026-02-02T16:40:38.595Z] Room created by user1: A7DF84
+[2026-02-02T16:40:38.667Z] User2 joined room: A7DF84
+[2026-02-02T16:40:38.733Z] User3 joined room: A7DF84
+[2026-02-02T16:40:38.800Z] User4 joined room: A7DF84
+[2026-02-02T16:44:41.096Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:44:41.100Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:44:41.775Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:44:41.810Z] All 4 clients connected
+[2026-02-02T16:44:41.907Z] Room created by user1: JYWE0R
+[2026-02-02T16:44:42.005Z] User2 joined room: JYWE0R
+[2026-02-02T16:44:42.071Z] User3 joined room: JYWE0R
+[2026-02-02T16:44:42.151Z] User4 joined room: JYWE0R
+[2026-02-02T16:44:42.880Z] Room JYWE0R deleted in afterAll.
+[2026-02-02T16:47:44.333Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:47:44.337Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:47:44.980Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:47:45.017Z] All 4 clients connected
+[2026-02-02T16:47:45.122Z] Room created by user1: YR4C8W
+[2026-02-02T16:47:45.211Z] User2 joined room: YR4C8W
+[2026-02-02T16:47:45.286Z] User3 joined room: YR4C8W
+[2026-02-02T16:47:45.359Z] User4 joined room: YR4C8W
+[2026-02-02T16:47:45.363Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
