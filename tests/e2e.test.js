@@ -141,4 +141,37 @@ describe('E2E Whist Game', () => {
         });
         }
     });
+
+    test('dealer in created room is correct', async () => {
+        expect(roomCode).toBeTruthy();
+        // Get the rooms list from the server
+        let dealer;
+        await new Promise((resolve, reject) => {
+          clients[0].emit('getRooms', {});
+          clients[0].on('roomsList', (data) => {
+            try {
+              // data may be { rooms: [...] } or just an array
+              const rooms = Array.isArray(data) ? data : data.rooms;
+              expect(rooms).toBeDefined();
+              // Log keys of each room to debug missing fields
+              rooms.forEach((room, idx) => {
+                testLog(`Room ${idx} keys: ${Object.keys(room).join(', ')}`);
+              });
+              const foundRoom = rooms.find(r => r.roomCode === roomCode);
+              expect(foundRoom).toBeDefined();
+              dealer = foundRoom.dealer;
+              expect(dealer).toBeDefined();
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          });
+          clients[0].on('error', reject);
+        });
+        // Check that dealer is a valid player index (0-3)
+        expect(typeof dealer).toBe('number');
+        expect(dealer).toBeGreaterThanOrEqual(0);
+        expect(dealer).toBeLessThan(4);
+        testLog(`Dealer for room ${roomCode} is: ${dealer}`);
+    });
 });

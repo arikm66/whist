@@ -35,7 +35,7 @@ router.delete('/:roomCode', auth, async (req, res) => {
       io.to(roomCode).emit('roomClosed', { roomCode });
       // Also refresh room list for all clients
       const Game = require('../models/Game');
-      Game.find({}).select('roomCode players status createdAt').then(rooms => {
+      Game.find({}).select('roomCode players status dealer createdAt').then(rooms => {
         io.emit('roomsList', { rooms });
       });
     }

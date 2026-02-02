@@ -1,82 +1,42 @@
-[2026-02-02T16:03:01.547Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:03:01.552Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:03:02.090Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:09:59.291Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:09:59.295Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:09:59.932Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:10:00.061Z] Room created by user1: JXQEVM
-[2026-02-02T16:10:00.148Z] User2 joined room: JXQEVM
-[2026-02-02T16:10:00.224Z] User3 joined room: JXQEVM
-[2026-02-02T16:10:00.295Z] User4 joined room: JXQEVM
-[2026-02-02T16:13:07.304Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:13:07.309Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:13:07.954Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:13:08.077Z] Room created by user1: LZIVLF
-[2026-02-02T16:13:08.163Z] User2 joined room: LZIVLF
-[2026-02-02T16:13:08.239Z] User3 joined room: LZIVLF
-[2026-02-02T16:13:08.313Z] User4 joined room: LZIVLF
-[2026-02-02T16:19:18.795Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:19:18.799Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:19:19.462Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:19:19.496Z] All 4 clients connected
-[2026-02-02T16:19:19.581Z] Room created by user1: XHLA7B
-[2026-02-02T16:19:19.674Z] User2 joined room: XHLA7B
-[2026-02-02T16:19:19.759Z] User3 joined room: XHLA7B
-[2026-02-02T16:19:19.840Z] User4 joined room: XHLA7B
-[2026-02-02T16:29:25.001Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:29:25.007Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:29:25.678Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:29:35.826Z] Room created by user1: H97X40
-[2026-02-02T16:29:35.909Z] User2 joined room: H97X40
-[2026-02-02T16:29:35.992Z] User3 joined room: H97X40
-[2026-02-02T16:29:36.069Z] User4 joined room: H97X40
-[2026-02-02T16:31:30.977Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:31:30.982Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:31:31.692Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:31:31.726Z] All 4 clients connected
-[2026-02-02T16:31:31.810Z] Room created by user1: VIYDAR
-[2026-02-02T16:31:31.928Z] User2 joined room: VIYDAR
-[2026-02-02T16:31:32.000Z] User3 joined room: VIYDAR
-[2026-02-02T16:31:32.070Z] User4 joined room: VIYDAR
-[2026-02-02T16:35:49.715Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:35:49.720Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:35:50.413Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:35:50.448Z] All 4 clients connected
-[2026-02-02T16:35:50.542Z] Room created by user1: Y49JSB
-[2026-02-02T16:35:50.631Z] User2 joined room: Y49JSB
-[2026-02-02T16:35:50.705Z] User3 joined room: Y49JSB
-[2026-02-02T16:35:50.798Z] User4 joined room: Y49JSB
-[2026-02-02T16:36:05.947Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:36:05.951Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:36:06.497Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:36:06.534Z] All 4 clients connected
-[2026-02-02T16:36:06.732Z] Room created by user1: 9QRC8F
-[2026-02-02T16:36:06.803Z] User2 joined room: 9QRC8F
-[2026-02-02T16:36:06.871Z] User3 joined room: 9QRC8F
-[2026-02-02T16:36:06.940Z] User4 joined room: 9QRC8F
-[2026-02-02T16:40:37.835Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:40:37.840Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:40:38.452Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:40:38.494Z] All 4 clients connected
-[2026-02-02T16:40:38.595Z] Room created by user1: A7DF84
-[2026-02-02T16:40:38.667Z] User2 joined room: A7DF84
-[2026-02-02T16:40:38.733Z] User3 joined room: A7DF84
-[2026-02-02T16:40:38.800Z] User4 joined room: A7DF84
-[2026-02-02T16:44:41.096Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:44:41.100Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:44:41.775Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:44:41.810Z] All 4 clients connected
-[2026-02-02T16:44:41.907Z] Room created by user1: JYWE0R
-[2026-02-02T16:44:42.005Z] User2 joined room: JYWE0R
-[2026-02-02T16:44:42.071Z] User3 joined room: JYWE0R
-[2026-02-02T16:44:42.151Z] User4 joined room: JYWE0R
-[2026-02-02T16:44:42.880Z] Room JYWE0R deleted in afterAll.
-[2026-02-02T16:47:44.333Z] ===== Starting E2E Whist Game tests
-[2026-02-02T16:47:44.337Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
-[2026-02-02T16:47:44.980Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
-[2026-02-02T16:47:45.017Z] All 4 clients connected
-[2026-02-02T16:47:45.122Z] Room created by user1: YR4C8W
-[2026-02-02T16:47:45.211Z] User2 joined room: YR4C8W
-[2026-02-02T16:47:45.286Z] User3 joined room: YR4C8W
-[2026-02-02T16:47:45.359Z] User4 joined room: YR4C8W
-[2026-02-02T16:47:45.363Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-02T18:13:37.156Z] ===== Starting E2E Whist Game tests
+[2026-02-02T18:13:37.161Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T18:13:37.778Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T18:13:37.812Z] All 4 clients connected
+[2026-02-02T18:13:37.998Z] Room created by user1: FBGMTZ
+[2026-02-02T18:13:38.070Z] User2 joined room: FBGMTZ
+[2026-02-02T18:13:38.139Z] User3 joined room: FBGMTZ
+[2026-02-02T18:13:38.211Z] User4 joined room: FBGMTZ
+[2026-02-02T18:13:38.290Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:13:38.290Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:13:38.291Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:13:38.291Z] Fetched rooms list dealers: 0, 0, 0
+[2026-02-02T18:13:38.291Z] Full rooms array: [{"_id":"6980e2a4b9290120463f157c","roomCode":"V0AEPH","players":[{"userId":"507f1f77bcf86cd799439011","email":"test.user1@whist-game.com","position":0,"hand":["3S","4S","10S","8H","9H","6C","8C","9C","10C","3D","8D","10D","QD"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2a4b9290120463f157d"},{"userId":"507f1f77bcf86cd799439012","email":"test.user2@whist-game.com","position":1,"hand":["5S","6S","QS","4H","7H","JH","JC","QC","KC","7D","JD","KD","AD"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2a4b9290120463f1580"},{"userId":"507f1f77bcf86cd799439013","email":"test.user3@whist-game.com","position":2,"hand":["7S","9S","JS","KS","2H","QH","KH","AH","2C","AC","4D","6D","9D"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2a4b9290120463f1586"},{"userId":"507f1f77bcf86cd799439014","email":"test.user4@whist-game.com","position":3,"hand":["2S","8S","AS","3H","5H","6H","10H","3C","4C","5C","7C","2D","5D"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2a4b9290120463f158e"}],"status":"auction","dealer":0,"createdAt":"2026-02-02T17:45:08.020Z"},{"_id":"6980e2d2b9290120463f15aa","roomCode":"A1TEAL","players":[{"userId":"507f1f77bcf86cd799439011","email":"test.user1@whist-game.com","position":0,"hand":["6S","8S","QS","KS","6H","8H","5C","4D","6D","7D","9D","QD","AD"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2d2b9290120463f15ab"},{"userId":"507f1f77bcf86cd799439012","email":"test.user2@whist-game.com","position":1,"hand":["4S","5S","7S","JS","AS","4H","9H","AH","3C","JC","KC","10D","KD"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2d2b9290120463f15ae"},{"userId":"507f1f77bcf86cd799439013","email":"test.user3@whist-game.com","position":2,"hand":["9S","10S","2H","7H","QH","2C","4C","8C","9C","10C","AC","2D","JD"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2d2b9290120463f15b8"},{"userId":"507f1f77bcf86cd799439014","email":"test.user4@whist-game.com","position":3,"hand":["2S","3S","3H","5H","10H","JH","KH","6C","7C","QC","3D","5D","8D"],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e2d3b9290120463f15c4"}],"status":"auction","dealer":0,"createdAt":"2026-02-02T17:45:54.835Z"},{"_id":"6980e9513ef00c6d9f8430ce","roomCode":"FBGMTZ","players":[{"userId":"507f1f77bcf86cd799439011","email":"test.user1@whist-game.com","position":0,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9513ef00c6d9f8430cf"},{"userId":"507f1f77bcf86cd799439012","email":"test.user2@whist-game.com","position":1,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430d2"},{"userId":"507f1f77bcf86cd799439013","email":"test.user3@whist-game.com","position":2,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430e0"},{"userId":"507f1f77bcf86cd799439014","email":"test.user4@whist-game.com","position":3,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430f0"}],"status":"waiting","dealer":0,"createdAt":"2026-02-02T18:13:37.924Z"}]
+[2026-02-02T18:13:38.291Z] Fetched rooms list, found room: {"_id":"6980e9513ef00c6d9f8430ce","roomCode":"FBGMTZ","players":[{"userId":"507f1f77bcf86cd799439011","email":"test.user1@whist-game.com","position":0,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9513ef00c6d9f8430cf"},{"userId":"507f1f77bcf86cd799439012","email":"test.user2@whist-game.com","position":1,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430d2"},{"userId":"507f1f77bcf86cd799439013","email":"test.user3@whist-game.com","position":2,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430e0"},{"userId":"507f1f77bcf86cd799439014","email":"test.user4@whist-game.com","position":3,"hand":[],"tricksWon":0,"frishCards":[],"readyForFrish":false,"_id":"6980e9523ef00c6d9f8430f0"}],"status":"waiting","dealer":0,"createdAt":"2026-02-02T18:13:37.924Z"}
+[2026-02-02T18:13:38.292Z] Dealer for room FBGMTZ is: 0
+[2026-02-02T18:13:38.578Z] Room FBGMTZ deleted in afterAll.
+[2026-02-02T18:18:07.589Z] ===== Starting E2E Whist Game tests
+[2026-02-02T18:18:07.594Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T18:18:08.232Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T18:18:08.267Z] All 4 clients connected
+[2026-02-02T18:18:08.363Z] Room created by user1: EWGSMM
+[2026-02-02T18:18:08.448Z] User2 joined room: EWGSMM
+[2026-02-02T18:18:08.515Z] User3 joined room: EWGSMM
+[2026-02-02T18:18:08.583Z] User4 joined room: EWGSMM
+[2026-02-02T18:18:08.659Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:18:08.660Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:18:08.660Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:18:08.661Z] Dealer for room EWGSMM is: 0
+[2026-02-02T18:18:08.970Z] Room EWGSMM deleted in afterAll.
+[2026-02-02T18:28:43.747Z] ===== Starting E2E Whist Game tests
+[2026-02-02T18:28:43.752Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T18:28:44.408Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T18:28:44.446Z] All 4 clients connected
+[2026-02-02T18:28:44.647Z] Room created by user1: HD80OR
+[2026-02-02T18:28:44.723Z] User2 joined room: HD80OR
+[2026-02-02T18:28:44.795Z] User3 joined room: HD80OR
+[2026-02-02T18:28:44.868Z] User4 joined room: HD80OR
+[2026-02-02T18:28:44.946Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:28:44.946Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:28:44.947Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:28:44.949Z] Dealer for room HD80OR is: 0
+[2026-02-02T18:28:44.952Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.

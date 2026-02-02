@@ -232,7 +232,7 @@ const { appendRoomLog } = require('../../utils/logToFile');
 
 async function broadcastRoomsList(io) {
   try {
-    const rooms = await Game.find({}).select('roomCode players status createdAt');
+    const rooms = await Game.find({}).select('roomCode players status dealer createdAt');
     io.emit('roomsList', { rooms });
   } catch (error) {
     console.error('Broadcast rooms list error:', error);
