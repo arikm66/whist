@@ -147,8 +147,17 @@ describe('End-to-End: Whist Full Game', () => {
   });
 
   let clients = [];
-  afterAll(() => {
+  let createdRoomCode = null;
+  afterAll(async () => {
     clients.forEach(client => client.close());
+    if (createdRoomCode) {
+      try {
+        await cleanupRoom(createdRoomCode);
+      } catch (err) {
+        // Log but do not throw to avoid failing the suite on cleanup
+        console.error('Room cleanup failed:', err.message || err);
+      }
+    }
   });
 
   test('connects four socket clients', async () => {
@@ -162,6 +171,56 @@ describe('End-to-End: Whist Full Game', () => {
         client.on('connect_error', reject);
       });
       expect(client.connected).toBe(true);
+    }
+  });
+
+  test('creates room and allows others to join', async () => {
+    // Use valid MongoDB ObjectId strings for userId
+    const userIds = [
+      '507f1f77bcf86cd799439011',
+      '507f1f77bcf86cd799439012',
+      '507f1f77bcf86cd799439013',
+      '507f1f77bcf86cd799439014'
+    ];
+
+    // TEST_USER1 creates the room
+    const user1 = { userId: userIds[0], email: users[0].email };
+    let roomCode;
+    await new Promise((resolve, reject) => {
+      clients[0].emit('createRoom', user1);
+      clients[0].on('roomCreated', (data) => {
+        try {
+          expect(data).toBeDefined();
+          expect(data.roomCode).toBeDefined();
+          expect(data.game).toBeDefined();
+          expect(data.game.players[0].userId).toBe(user1.userId);
+          roomCode = data.roomCode;
+          createdRoomCode = data.roomCode;
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+      clients[0].on('error', reject);
+    });
+
+    // Other users join the room
+    for (let i = 1; i < 4; i++) {
+      const joinUser = { userId: userIds[i], email: users[i].email };
+      await new Promise((resolve, reject) => {
+        clients[i].emit('joinRoom', { roomCode, userId: joinUser.userId, email: joinUser.email });
+        clients[i].on('roomJoined', (data) => {
+          try {
+            expect(data).toBeDefined();
+            expect(data.game).toBeDefined();
+            expect(data.game.players.some(p => p.userId === joinUser.userId)).toBe(true);
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
+        });
+        clients[i].on('error', reject);
+      });
     }
   });
 });
