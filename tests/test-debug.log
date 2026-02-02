@@ -23,3 +23,34 @@
 [2026-02-02T16:19:19.674Z] User2 joined room: XHLA7B
 [2026-02-02T16:19:19.759Z] User3 joined room: XHLA7B
 [2026-02-02T16:19:19.840Z] User4 joined room: XHLA7B
+[2026-02-02T16:29:25.001Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:29:25.007Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:29:25.678Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:29:35.826Z] Room created by user1: H97X40
+[2026-02-02T16:29:35.909Z] User2 joined room: H97X40
+[2026-02-02T16:29:35.992Z] User3 joined room: H97X40
+[2026-02-02T16:29:36.069Z] User4 joined room: H97X40
+[2026-02-02T16:31:30.977Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:31:30.982Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:31:31.692Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:31:31.726Z] All 4 clients connected
+[2026-02-02T16:31:31.810Z] Room created by user1: VIYDAR
+[2026-02-02T16:31:31.928Z] User2 joined room: VIYDAR
+[2026-02-02T16:31:32.000Z] User3 joined room: VIYDAR
+[2026-02-02T16:31:32.070Z] User4 joined room: VIYDAR
+[2026-02-02T16:35:49.715Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:35:49.720Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:35:50.413Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:35:50.448Z] All 4 clients connected
+[2026-02-02T16:35:50.542Z] Room created by user1: Y49JSB
+[2026-02-02T16:35:50.631Z] User2 joined room: Y49JSB
+[2026-02-02T16:35:50.705Z] User3 joined room: Y49JSB
+[2026-02-02T16:35:50.798Z] User4 joined room: Y49JSB
+[2026-02-02T16:36:05.947Z] ===== Starting E2E Whist Game tests
+[2026-02-02T16:36:05.951Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T16:36:06.497Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T16:36:06.534Z] All 4 clients connected
+[2026-02-02T16:36:06.732Z] Room created by user1: 9QRC8F
+[2026-02-02T16:36:06.803Z] User2 joined room: 9QRC8F
+[2026-02-02T16:36:06.871Z] User3 joined room: 9QRC8F
+[2026-02-02T16:36:06.940Z] User4 joined room: 9QRC8F

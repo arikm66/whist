@@ -37,6 +37,18 @@ describe('E2E Whist Game', () => {
       }
     ];
 
+    afterAll(() => {
+        if (clients && clients.length) {
+            clients.forEach(client => {
+                try {
+                    client.close();
+                } catch (err) {
+                    // Ignore errors on close
+                }
+            });
+        }
+    });
+
     test('logs in 4 players', async () => {
       expect(users.every(u => u.email && u.password && u.userId)).toBe(true);
 
@@ -72,6 +84,7 @@ describe('E2E Whist Game', () => {
     });
 
     test('user1 creates a room and all four players join', async () => {
+        expect(clients).toHaveLength(4);
         let roomCode;
         await new Promise((resolve, reject) => {
         clients[0].emit('createRoom', { userId: users[0].userId, email: users[0].email });
@@ -109,8 +122,5 @@ describe('E2E Whist Game', () => {
             clients[i].on('error', reject);
         });
         }
-
-        // Clean up: close all clients
-        clients.forEach(client => client.close());
     });
 });
