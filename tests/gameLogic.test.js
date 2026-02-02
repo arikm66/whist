@@ -13,6 +13,8 @@ const {
   calculateRoundScore
 } = require('../utils/gameLogic');
 
+const { completeFrishPhase } = require('../sockets/utils/socketUtils');
+
 describe('Deck Generation and Shuffling', () => {
   describe('generateDeck', () => {
     test('generates a standard 52-card deck', () => {
@@ -360,5 +362,169 @@ describe('Scoring Logic', () => {
         expect(calculateRoundScore(2, 7, 13)).toBe(-50); // -10 * 5
       });
     });
+  });
+});
+
+describe('completeFrishPhase (socketUtils)', () => {
+  test('exchanges frish cards and sorts hands', () => {
+    // Mock game state
+    const game = {
+      players: [
+        { userId: 1, hand: ['2H', '3D', '4S', '5C', '6H', '7D', '8H', '9C', '10S', 'JH', 'QD', 'KC', 'AS'], frishCards: ['2H', '3D', '4S'], readyForFrish: true },
+        { userId: 2, hand: ['2D', '3H', '4C', '5S', '6D', '7C', '8S', '9H', '10C', 'JS', 'QC', 'KH', 'AD'], frishCards: ['2D', '3H', '4C'], readyForFrish: true },
+        { userId: 3, hand: ['2C', '3S', '4H', '5D', '6C', '7S', '8D', '9S', '10H', 'JC', 'QS', 'KD', 'AH'], frishCards: ['2C', '3S', '4H'], readyForFrish: true },
+        { userId: 4, hand: ['2S', '3C', '4D', '5H', '6S', '7H', '8C', '9D', '10D', 'JD', 'QH', 'KS', 'AC'], frishCards: ['2S', '3C', '4D'], readyForFrish: true }
+      ],
+      readyForFrishCount: 4,
+      status: 'frish',
+      auctionBids: [],
+      auctionCurrentBidder: 0,
+      auctionWinner: null,
+      auctionHighestBid: null,
+      auctionPassed: [],
+      auctionFinalRaise: false,
+      bids: [null, null, null, null],
+      currentBidder: 0,
+      minBid: 1,
+      lastBid: 0
+    };
+    const roomCode = 'TESTROOM';
+    const io = { to: () => ({ emit: jest.fn() }) };
+    const activeGames = new Map();
+    const sortHand = arr => [...arr].sort();
+    const logs = [];
+    const appendRoomLog = (room, msg) => logs.push({ room, msg });
+    // Import the function under test
+    const { completeFrishPhase } = require('../sockets/utils/socketUtils');
+
+    completeFrishPhase(game, roomCode, io, activeGames, sortHand, appendRoomLog);
+
+    // After frish, each player should have given their frishCards to the previous player (N-1, wrap around)
+    expect(game.players[0].hand).toEqual(sortHand([
+      // Original hand minus own frishCards
+      '5C', '6H', '7D', '8H', '9C', '10S', 'JH', 'QD', 'KC', 'AS',
+      // Plus frishCards from player 4
+      '2S', '3C', '4D'
+    ]));
+    expect(game.players[1].hand).toEqual(sortHand([
+      '5S', '6D', '7C', '8S', '9H', '10C', 'JS', 'QC', 'KH', 'AD',
+      '2H', '3D', '4S'
+    ]));
+    expect(game.players[2].hand).toEqual(sortHand([
+      '5D', '6C', '7S', '8D', '9S', '10H', 'JC', 'QS', 'KD', 'AH',
+      '2D', '3H', '4C'
+    ]));
+    expect(game.players[3].hand).toEqual(sortHand([
+      '5H', '6S', '7H', '8C', '9D', '10D', 'JD', 'QH', 'KS', 'AC',
+      '2C', '3S', '4H'
+    ]));
+    // All hands should be sorted
+    game.players.forEach(p => {
+      const sorted = sortHand(p.hand);
+      expect(p.hand).toEqual(sorted);
+    });
+    // Frish-related flags and arrays should be reset
+    game.players.forEach(p => {
+      expect(p.readyForFrish).toBe(false);
+      expect(p.frishCards).toEqual([]);
+    });
+    expect(game.readyForFrishCount).toBe(0);
+    // Status should be set to auction
+    expect(game.status).toBe('auction');
+    // Auction/bidding fields should be reset
+    expect(game.auctionBids).toEqual([]);
+    expect(game.auctionCurrentBidder).toBe(0);
+    expect(game.auctionWinner).toBe(null);
+    expect(game.auctionHighestBid).toBe(null);
+    expect(game.auctionPassed).toEqual([]);
+    expect(game.auctionFinalRaise).toBe(false);
+    expect(game.bids).toEqual([null, null, null, null]);
+    expect(game.currentBidder).toBe(0);
+    expect(game.minBid).toBe(1);
+    expect(game.lastBid).toBe(0);
+    // Logs should contain frish and auction messages
+    expect(logs.some(l => l.msg.includes('Frish cards exchanged'))).toBe(true);
+    expect(logs.some(l => l.msg.includes('Frish phase complete'))).toBe(true);
+  });
+});
+
+describe('completeFrishPhase (socketUtils)', () => {
+  test('exchanges frish cards and sorts hands', () => {
+    // Mock game state
+    const game = {
+      players: [
+        { userId: 1, hand: ['2H', '3D', '4S', '5C', '6H', '7D', '8H', '9C', '10S', 'JH', 'QD', 'KC', 'AS'], frishCards: ['2H', '3D', '4S'], readyForFrish: true },
+        { userId: 2, hand: ['2D', '3H', '4C', '5S', '6D', '7C', '8S', '9H', '10C', 'JS', 'QC', 'KH', 'AD'], frishCards: ['2D', '3H', '4C'], readyForFrish: true },
+        { userId: 3, hand: ['2C', '3S', '4H', '5D', '6C', '7S', '8D', '9S', '10H', 'JC', 'QS', 'KD', 'AH'], frishCards: ['2C', '3S', '4H'], readyForFrish: true },
+        { userId: 4, hand: ['2S', '3C', '4D', '5H', '6S', '7H', '8C', '9D', '10D', 'JD', 'QH', 'KS', 'AC'], frishCards: ['2S', '3C', '4D'], readyForFrish: true }
+      ],
+      readyForFrishCount: 4,
+      status: 'frish',
+      auctionBids: [],
+      auctionCurrentBidder: 0,
+      auctionWinner: null,
+      auctionHighestBid: null,
+      auctionPassed: [],
+      auctionFinalRaise: false,
+      bids: [null, null, null, null],
+      currentBidder: 0,
+      minBid: 1,
+      lastBid: 0
+    };
+    const roomCode = 'TESTROOM';
+    const io = { to: () => ({ emit: jest.fn() }) };
+    const activeGames = new Map();
+    const sortHand = arr => [...arr].sort();
+    const logs = [];
+    const appendRoomLog = (room, msg) => logs.push({ room, msg });
+
+    completeFrishPhase(game, roomCode, io, activeGames, sortHand, appendRoomLog);
+
+    // After frish, each player should have given their frishCards to the previous player (N-1, wrap around)
+    expect(game.players[0].hand).toEqual(sortHand([
+      // Original hand minus own frishCards
+      '5C', '6H', '7D', '8H', '9C', '10S', 'JH', 'QD', 'KC', 'AS',
+      // Plus frishCards from player 4
+      '2S', '3C', '4D'
+    ]));
+    expect(game.players[1].hand).toEqual(sortHand([
+      '5S', '6D', '7C', '8S', '9H', '10C', 'JS', 'QC', 'KH', 'AD',
+      '2H', '3D', '4S'
+    ]));
+    expect(game.players[2].hand).toEqual(sortHand([
+      '5D', '6C', '7S', '8D', '9S', '10H', 'JC', 'QS', 'KD', 'AH',
+      '2D', '3H', '4C'
+    ]));
+    expect(game.players[3].hand).toEqual(sortHand([
+      '5H', '6S', '7H', '8C', '9D', '10D', 'JD', 'QH', 'KS', 'AC',
+      '2C', '3S', '4H'
+    ]));
+    // All hands should be sorted
+    game.players.forEach(p => {
+      const sorted = sortHand(p.hand);
+      expect(p.hand).toEqual(sorted);
+    });
+    // Frish-related flags and arrays should be reset
+    game.players.forEach(p => {
+      expect(p.readyForFrish).toBe(false);
+      expect(p.frishCards).toEqual([]);
+    });
+    expect(game.readyForFrishCount).toBe(0);
+    // Status should be set to auction
+    expect(game.status).toBe('auction');
+    // Auction/bidding fields should be reset
+    expect(game.auctionBids).toEqual([]);
+    expect(game.auctionCurrentBidder).toBe(0);
+    expect(game.auctionWinner).toBe(null);
+    expect(game.auctionHighestBid).toBe(null);
+    expect(game.auctionPassed).toEqual([]);
+    expect(game.auctionFinalRaise).toBe(false);
+    expect(game.bids).toEqual([null, null, null, null]);
+    expect(game.currentBidder).toBe(0);
+    expect(game.minBid).toBe(1);
+    expect(game.lastBid).toBe(0);
+    // Logs should contain frish and auction messages
+    expect(logs.some(l => l.msg.includes('Frish cards exchanged'))).toBe(true);
+    expect(logs.some(l => l.msg.includes('Frish phase complete'))).toBe(true);
   });
 });
