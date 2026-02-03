@@ -232,8 +232,12 @@ const { appendRoomLog } = require('../../utils/logToFile');
 
 async function broadcastRoomsList(io) {
   try {
-    const rooms = await Game.find({}).select('roomCode players status dealer createdAt');
-    io.emit('roomsList', { rooms });
+    const rooms = await Game.find({}).select('roomCode players status dealer createdAt').lean();
+    const sanitizedRooms = rooms.map(room => ({
+        ...room,
+        players: room.players.map(p => ({ ...p, hand: [] }))
+    }));
+    io.emit('roomsList', { rooms: sanitizedRooms });
   } catch (error) {
     console.error('Broadcast rooms list error:', error);
     appendRoomLog('lobby', `Error broadcasting rooms list: ${error.message}`);

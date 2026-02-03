@@ -35,9 +35,12 @@ router.delete('/:roomCode', auth, async (req, res) => {
       io.to(roomCode).emit('roomClosed', { roomCode });
       // Also refresh room list for all clients
       const Game = require('../models/Game');
-      Game.find({}).select('roomCode players status dealer createdAt').then(rooms => {
-        io.emit('roomsList', { rooms });
-      });
+      const rooms = await Game.find({}).select('roomCode players status dealer createdAt').lean();
+      const sanitizedRooms = rooms.map(room => ({
+        ...room,
+        players: room.players.map(p => ({ ...p, hand: [] }))
+      }));
+      io.emit('roomsList', { rooms: sanitizedRooms });
     }
 
     res.json({ msg: 'Room deleted', roomCode });

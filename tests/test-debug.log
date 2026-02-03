@@ -152,3 +152,13 @@
 [2026-02-03T04:45:12.151Z] Dealer for room G2AGMH is: 0
 [2026-02-03T04:45:12.156Z] Player 1 placed first auction bid: 5 C
 [2026-02-03T04:45:12.418Z] Room G2AGMH deleted in afterAll.
+[2026-02-03T05:27:24.947Z] ===== Starting E2E Whist Game tests
+[2026-02-03T05:27:25.586Z] Successfully logged in 4 test users
+[2026-02-03T05:27:25.623Z] All 4 clients connected
+[2026-02-03T05:27:25.817Z] Room created by user1: B8QRXX
+[2026-02-03T05:27:25.893Z] User2 joined room: B8QRXX
+[2026-02-03T05:27:25.961Z] User3 joined room: B8QRXX
+[2026-02-03T05:27:26.030Z] User4 joined room: B8QRXX
+[2026-02-03T05:27:26.106Z] Dealer for room B8QRXX is: 0
+[2026-02-03T05:27:26.111Z] Player 1 placed first auction bid: 5 C
+[2026-02-03T05:27:26.113Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.

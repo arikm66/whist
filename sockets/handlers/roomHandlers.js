@@ -139,8 +139,12 @@ function registerRoomHandlers(io, socket, activeGames) {
   // Get Rooms
   socket.on('getRooms', async () => {
     try {
-      const rooms = await Game.find({}).select('roomCode players status dealer createdAt');
-      socket.emit('roomsList', { rooms });
+      const rooms = await Game.find({}).select('roomCode players status dealer createdAt').lean();
+      const sanitizedRooms = rooms.map(room => ({
+        ...room,
+        players: room.players.map(p => ({ ...p, hand: [] }))
+      }));
+      socket.emit('roomsList', { rooms: sanitizedRooms });
     } catch (error) {
       appendRoomLog('lobby', `Invalid action: Failed to fetch rooms (socketId: ${socket.id})`);
       socket.emit('error', { message: 'Failed to fetch rooms' });
