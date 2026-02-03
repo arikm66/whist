@@ -40,3 +40,115 @@
 [2026-02-02T18:28:44.947Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
 [2026-02-02T18:28:44.949Z] Dealer for room HD80OR is: 0
 [2026-02-02T18:28:44.952Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-02T18:54:24.517Z] ===== Starting E2E Whist Game tests
+[2026-02-02T18:54:24.524Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T18:54:25.178Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T18:54:25.215Z] All 4 clients connected
+[2026-02-02T18:54:25.310Z] Room created by user1: ZMOC7H
+[2026-02-02T18:54:25.398Z] User2 joined room: ZMOC7H
+[2026-02-02T18:54:25.471Z] User3 joined room: ZMOC7H
+[2026-02-02T18:54:25.539Z] User4 joined room: ZMOC7H
+[2026-02-02T18:54:25.614Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:54:25.614Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:54:25.614Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:54:25.614Z] Room 3 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T18:54:25.615Z] Dealer for room ZMOC7H is: 0
+[2026-02-02T18:54:25.882Z] Room ZMOC7H deleted in afterAll.
+[2026-02-02T19:00:20.400Z] ===== Starting E2E Whist Game tests
+[2026-02-02T19:00:20.405Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T19:00:21.023Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T19:00:21.061Z] All 4 clients connected
+[2026-02-02T19:00:21.152Z] Room created by user1: P179WE
+[2026-02-02T19:00:21.254Z] User2 joined room: P179WE
+[2026-02-02T19:00:21.328Z] User3 joined room: P179WE
+[2026-02-02T19:00:21.404Z] User4 joined room: P179WE
+[2026-02-02T19:00:21.485Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.486Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.486Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.486Z] Room 3 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.488Z] Dealer for room P179WE is: 0
+[2026-02-02T19:00:21.974Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.975Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.975Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:21.976Z] Room 3 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:00:31.804Z] Room P179WE deleted in afterAll.
+[2026-02-02T19:04:50.232Z] ===== Starting E2E Whist Game tests
+[2026-02-02T19:04:50.237Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T19:04:50.861Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T19:04:50.897Z] All 4 clients connected
+[2026-02-02T19:04:51.085Z] Room created by user1: QYBEVT
+[2026-02-02T19:04:51.165Z] User2 joined room: QYBEVT
+[2026-02-02T19:04:51.246Z] User3 joined room: QYBEVT
+[2026-02-02T19:04:51.322Z] User4 joined room: QYBEVT
+[2026-02-02T19:04:51.395Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:04:51.395Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:04:51.395Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:04:51.395Z] Room 3 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:04:51.396Z] Dealer for room QYBEVT is: 0
+[2026-02-02T19:04:51.413Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-02T19:07:31.464Z] ===== Starting E2E Whist Game tests
+[2026-02-02T19:07:31.469Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T19:07:32.118Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T19:07:32.155Z] All 4 clients connected
+[2026-02-02T19:07:32.341Z] Room created by user1: 44YGYF
+[2026-02-02T19:07:32.422Z] User2 joined room: 44YGYF
+[2026-02-02T19:07:32.496Z] User3 joined room: 44YGYF
+[2026-02-02T19:07:32.566Z] User4 joined room: 44YGYF
+[2026-02-02T19:07:32.644Z] Room 0 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:07:32.644Z] Room 1 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:07:32.644Z] Room 2 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:07:32.644Z] Room 3 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:07:32.645Z] Room 4 keys: _id, roomCode, players, status, dealer, createdAt
+[2026-02-02T19:07:32.645Z] Dealer for room 44YGYF is: 0
+[2026-02-02T19:07:32.666Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-02T19:09:08.542Z] ===== Starting E2E Whist Game tests
+[2026-02-02T19:09:08.547Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-02T19:09:09.098Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-02T19:09:09.141Z] All 4 clients connected
+[2026-02-02T19:09:09.239Z] Room created by user1: YWPKFG
+[2026-02-02T19:09:09.323Z] User2 joined room: YWPKFG
+[2026-02-02T19:09:09.393Z] User3 joined room: YWPKFG
+[2026-02-02T19:09:09.461Z] User4 joined room: YWPKFG
+[2026-02-02T19:09:09.532Z] Dealer for room YWPKFG is: 0
+[2026-02-02T19:09:09.631Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-03T04:34:40.437Z] ===== Starting E2E Whist Game tests
+[2026-02-03T04:34:40.443Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-03T04:34:41.286Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-03T04:34:41.321Z] All 4 clients connected
+[2026-02-03T04:34:41.524Z] Room created by user1: YC9H1F
+[2026-02-03T04:34:41.605Z] User2 joined room: YC9H1F
+[2026-02-03T04:34:41.677Z] User3 joined room: YC9H1F
+[2026-02-03T04:34:41.746Z] User4 joined room: YC9H1F
+[2026-02-03T04:34:41.820Z] Dealer for room YC9H1F is: 0
+[2026-02-03T04:34:41.840Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-03T04:35:49.074Z] ===== Starting E2E Whist Game tests
+[2026-02-03T04:35:49.079Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-03T04:35:49.697Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-03T04:35:49.728Z] All 4 clients connected
+[2026-02-03T04:35:49.917Z] Room created by user1: 19P2PF
+[2026-02-03T04:35:49.999Z] User2 joined room: 19P2PF
+[2026-02-03T04:35:50.072Z] User3 joined room: 19P2PF
+[2026-02-03T04:35:50.145Z] User4 joined room: 19P2PF
+[2026-02-03T04:35:50.237Z] Dealer for room 19P2PF is: 0
+[2026-02-03T04:35:50.264Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-03T04:43:20.645Z] ===== Starting E2E Whist Game tests
+[2026-02-03T04:43:20.655Z] Starting login for 4 test users: test.user1@whist-game.com, test.user2@whist-game.com, test.user3@whist-game.com, test.user4@whist-game.com
+[2026-02-03T04:43:21.250Z] Successfully logged in 4 test users with tokens: User1: eyJhbGciOi..., User2: eyJhbGciOi..., User3: eyJhbGciOi..., User4: eyJhbGciOi...
+[2026-02-03T04:43:21.284Z] All 4 clients connected
+[2026-02-03T04:43:21.495Z] Room created by user1: I6DFYG
+[2026-02-03T04:43:21.589Z] User2 joined room: I6DFYG
+[2026-02-03T04:43:21.658Z] User3 joined room: I6DFYG
+[2026-02-03T04:43:21.728Z] User4 joined room: I6DFYG
+[2026-02-03T04:43:21.810Z] Dealer for room I6DFYG is: 0
+[2026-02-03T04:43:21.817Z] Player 1 placed first auction bid: 5 C
+[2026-02-03T04:43:22.085Z] Room I6DFYG deleted in afterAll.
+[2026-02-03T04:45:11.119Z] ===== Starting E2E Whist Game tests
+[2026-02-03T04:45:11.721Z] Successfully logged in 4 test users
+[2026-02-03T04:45:11.754Z] All 4 clients connected
+[2026-02-03T04:45:11.845Z] Room created by user1: G2AGMH
+[2026-02-03T04:45:11.933Z] User2 joined room: G2AGMH
+[2026-02-03T04:45:12.003Z] User3 joined room: G2AGMH
+[2026-02-03T04:45:12.074Z] User4 joined room: G2AGMH
+[2026-02-03T04:45:12.151Z] Dealer for room G2AGMH is: 0
+[2026-02-03T04:45:12.156Z] Player 1 placed first auction bid: 5 C
+[2026-02-03T04:45:12.418Z] Room G2AGMH deleted in afterAll.

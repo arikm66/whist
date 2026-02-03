@@ -59,8 +59,8 @@ export default function AuctionUI({
                 <p><strong>Select Quantity:</strong></p>
                 <div className="auction-quantity-grid">
                   {Array.from(
-                    { length: game.players[0].hand.length - Math.max(1, game.players[0].hand.length - 8) + 1 },
-                    (_, i) => Math.max(1, game.players[0].hand.length - 8) + i
+                    { length: 9 },
+                    (_, i) => i + 5
                   ).map((num) => {
                     const isSelected = Number(auctionBid.quantity) === num;
                     return (

@@ -15,6 +15,7 @@ describe('E2E Whist Game', () => {
     let tokens = [];
     let clients = [];
     let roomCode;
+    let dealer;
     const users = [
       {
         email: process.env.TEST_USER1,
@@ -71,7 +72,6 @@ describe('E2E Whist Game', () => {
     test('logs in 4 players', async () => {
       expect(users.every(u => u.email && u.password && u.userId)).toBe(true);
 
-      testLog(`Starting login for 4 test users: ${users.map(u => u.email).join(', ')}`);
       tokens = [];
       for (const user of users) {
         const res = await axios.post(`${SERVER_URL}/api/auth/login`, {
@@ -82,7 +82,7 @@ describe('E2E Whist Game', () => {
         tokens.push(res.data.token);
       }
       expect(tokens).toHaveLength(4);
-      testLog(`Successfully logged in 4 test users with tokens: ${tokens.map((t, i) => `User${i+1}: ${t.substring(0,10)}...`).join(', ')}`);
+      testLog(`Successfully logged in 4 test users`);
     });
 
     test('connects 4 socket clients', async () => {
@@ -145,7 +145,6 @@ describe('E2E Whist Game', () => {
     test('dealer in created room is valid', async () => {
         expect(roomCode).toBeTruthy();
         // Get the rooms list from the server
-        let dealer;
         await new Promise((resolve, reject) => {
           clients[0].emit('getRooms', {});
           clients[0].on('roomsList', (data) => {
@@ -153,10 +152,6 @@ describe('E2E Whist Game', () => {
               // data may be { rooms: [...] } or just an array
               const rooms = Array.isArray(data) ? data : data.rooms;
               expect(rooms).toBeDefined();
-              // Log keys of each room to debug missing fields
-              rooms.forEach((room, idx) => {
-                testLog(`Room ${idx} keys: ${Object.keys(room).join(', ')}`);
-              });
               const foundRoom = rooms.find(r => r.roomCode === roomCode);
               expect(foundRoom).toBeDefined();
               dealer = foundRoom.dealer;
@@ -173,5 +168,33 @@ describe('E2E Whist Game', () => {
         expect(dealer).toBeGreaterThanOrEqual(0);
         expect(dealer).toBeLessThan(4);
         testLog(`Dealer for room ${roomCode} is: ${dealer}`);
+    });
+
+    test('player after dealer can place first auction bid', async () => {
+        expect(typeof dealer).toBe('number');
+        const firstBidderIdx = (dealer + 1) % 4;
+        const bidValue = 5;
+        const bidSuit = 'C';
+        await new Promise((resolve, reject) => {
+            clients[firstBidderIdx].emit('placeAuctionBid', {
+                roomCode,
+                userId: users[firstBidderIdx].userId,
+                quantity: bidValue,
+                suit: bidSuit
+            });
+            clients[firstBidderIdx].on('auctionBidPlaced', (data) => {
+                try {
+                    expect(data).toBeDefined();
+                    expect(data.position).toBe(firstBidderIdx);
+                    expect(data.bid.quantity).toBe(bidValue);
+                    expect(data.bid.suit).toBe(bidSuit);
+                    testLog(`Player ${firstBidderIdx} placed first auction bid: ${bidValue} ${bidSuit}`);
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
+            clients[firstBidderIdx].on('error', reject);
+        });
     });
 });
