@@ -63,7 +63,7 @@ function registerGameHandlers(io, socket, activeGames) {
         game.currentTurn = game.auctionWinner; // Auction winner leads first trick
         game.currentTrick = [];
         game.leadSuit = null;
-        await game.save();
+        game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
         activeGames.set(roomCode, game);
         game.players.forEach(p => {
           const filteredGame = getFilteredGameForPlayer(game, p.userId);
@@ -72,7 +72,7 @@ function registerGameHandlers(io, socket, activeGames) {
       } else {
         // Move to next bidder
         game.currentBidder = (game.currentBidder + 1) % 4;
-        await game.save();
+        game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
         activeGames.set(roomCode, game);
         game.players.forEach(p => {
           const filteredGame = getFilteredGameForPlayer(game, p.userId);
@@ -143,7 +143,7 @@ function registerGameHandlers(io, socket, activeGames) {
           if (game.players[0].hand.length === 0) {
             await endRound(game, roomCode, io);
           } else {
-            await game.save();
+            game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
             activeGames.set(roomCode, game);
             game.players.forEach(p => {
               const filteredGame = getFilteredGameForPlayer(game, p.userId);
@@ -154,7 +154,7 @@ function registerGameHandlers(io, socket, activeGames) {
       } else {
         // Next player's turn
         game.currentTurn = (game.currentTurn + 1) % 4;
-        await game.save();
+        game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
         activeGames.set(roomCode, game);
         game.players.forEach(p => {
           const filteredGame = getFilteredGameForPlayer(game, p.userId);

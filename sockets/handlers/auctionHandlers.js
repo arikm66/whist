@@ -71,7 +71,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
   // Pass during auction phase
   socket.on('passAuction', async ({ roomCode, userId }) => {
     try {
-      const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+      let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
       if (!game) {
         appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
         socket.emit('error', { message: 'Game not found' });
@@ -103,7 +103,8 @@ function registerAuctionHandlers(io, socket, activeGames) {
       if ((!game.auctionBids || game.auctionBids.length === 0) && game.auctionPassed.length === 4) {
         appendRoomLog(roomCode, 'Auction completed: All players passed, entering frish phase.');
         game.status = 'frish';
-        await game.save();
+        const updateData = game.toObject ? game.toObject() : game;
+        game = await Game.findByIdAndUpdate(game._id, updateData, { new: true });
         activeGames.set(roomCode, game);
         // Emit filtered game to each player
         game.players.forEach(p => {
@@ -125,7 +126,8 @@ function registerAuctionHandlers(io, socket, activeGames) {
         game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
         game.lastBid = 0;
         game.auctionFinalRaise = false;
-        await game.save();
+        const updateData = game.toObject ? game.toObject() : game;
+        game = await Game.findByIdAndUpdate(game._id, updateData, { new: true });
         activeGames.set(roomCode, game);
         // Emit filtered game to each player
         game.players.forEach(p => {
@@ -187,7 +189,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
           player.frishCards.push(frishCard);
           appendRoomLog(roomCode, `Frish card selected: Player ${player.position}, userId=${userId}, card=${frishCard}`);
         }
-      await game.save();
+      game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
       activeGames.set(roomCode, game);
       // Emit frish selection counts to all players
       const frishCounts = game.players.map(p => ({ userId: p.userId, count: Array.isArray(p.frishCards) ? p.frishCards.length : 0 }));
@@ -245,7 +247,7 @@ function registerAuctionHandlers(io, socket, activeGames) {
       if (readyCount === 4) {
         completeFrishPhase(game, roomCode, io, activeGames, sortHand, appendRoomLog);
       }
-      await game.save();
+      game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
       activeGames.set(roomCode, game);
       // Emit filtered game to each player for frishReady
       game.players.forEach(p => {

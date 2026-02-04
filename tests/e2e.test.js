@@ -197,4 +197,69 @@ describe('E2E Whist Game', () => {
             clients[firstBidderIdx].on('error', reject);
         });
     });
+    test('next 4 players pass auction completing auction phase', async () => {
+        expect(typeof dealer).toBe('number');
+        const firstBidderIdx = (dealer + 1) % 4;
+        
+        // First 3 players pass (expecting auctionPassed events)
+        for (let i = 1; i <= 3; i++) {
+            const bidderIdx = (firstBidderIdx + i) % 4;
+            
+            // Add small delay to ensure server processes previous action
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error(`Timeout: Player ${bidderIdx} never got turn to pass`));
+                }, 5000);
+                
+                clients[bidderIdx].once('auctionPassed', (data) => {
+                    clearTimeout(timeout);
+                    try {
+                        expect(data).toBeDefined();
+                        expect(data.position).toBe(bidderIdx);
+                        testLog(`Player ${bidderIdx} passed auction (pass ${i} of 3)`);
+                        resolve();
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+                
+                clients[bidderIdx].emit('passAuction', {
+                    roomCode,
+                    userId: users[bidderIdx].userId
+                });
+            });
+        }
+        
+        // 4th pass: auction winner passes, triggering auctionComplete
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                reject(new Error('Timeout: Auction did not complete when winner passed'));
+            }, 5000);
+            
+            // Listen for auctionComplete from all clients
+            clients[0].once('auctionComplete', (data) => {
+                clearTimeout(timeout);
+                try {
+                    expect(data).toBeDefined();
+                    expect(data.game).toBeDefined();
+                    expect(data.game.status).toBe('bidding');
+                    expect(data.game.auctionWinner).toBe(firstBidderIdx);
+                    testLog(`Auction completed, winner: Player ${firstBidderIdx}, game status: ${data.game.status}`);
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
+            
+            // Auction winner (firstBidderIdx) passes to end auction
+            clients[firstBidderIdx].emit('passAuction', {
+                roomCode,
+                userId: users[firstBidderIdx].userId
+            });
+        });
+    });
 });

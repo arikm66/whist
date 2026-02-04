@@ -112,7 +112,7 @@ function registerRoomHandlers(io, socket, activeGames) {
         game.players = game.players.filter(p => p.userId.toString() !== userId.toString());
         if (game.status === 'playing' || game.status === 'auction') {
           game.status = 'finished';
-          await game.save();
+          game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
           game.players.forEach(p => {
             const filteredGame = getFilteredGameForPlayer(game, p.userId);
             io.to(p.userId.toString()).emit('gameFinished', { game: filteredGame });

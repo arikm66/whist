@@ -126,7 +126,7 @@ async function endRound(game, roomCode, io) {
   // Check if game complete (e.g., after 5 rounds)
   if (game.round > 5) {
     game.status = 'finished';
-    await game.save();
+    game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
     game.players.forEach(p => {
       const filteredGame = getFilteredGameForPlayer(game, p.userId);
       io.to(p.userId.toString()).emit('gameFinished', { game: filteredGame });
@@ -159,7 +159,8 @@ async function endRound(game, roomCode, io) {
     game.auctionBids = [];
     game.auctionFinalRaise = false;
     game.trumpSuit = null;
-    await game.save();
+    const updateData = game.toObject ? game.toObject() : game;
+    game = await Game.findByIdAndUpdate(game._id, updateData, { new: true });
     game.players.forEach(p => {
       const filteredGame = getFilteredGameForPlayer(game, p.userId);
       io.to(p.userId.toString()).emit('newRound', { game: filteredGame });
@@ -177,7 +178,8 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
     if (!game.auctionFinalRaise) {
       game.auctionFinalRaise = true;
       game.auctionCurrentBidder = winner;
-      await game.save();
+      const updateData = game.toObject ? game.toObject() : game;
+      game = await Game.findByIdAndUpdate(game._id, updateData, { new: true });
       activeGames.set(roomCode, game);
       io.to(roomCode).emit('auctionNextBidder', { game });
       return;
@@ -208,7 +210,7 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
     game.minBid = game.players[0].hand.length <= 5 ? 1 : 0;
     game.lastBid = 0;
     game.auctionFinalRaise = false; // Reset for next round
-    await game.save();
+    game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
     activeGames.set(roomCode, game);
     appendRoomLog(roomCode, `Auction completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), bid ${game.auctionHighestBid.quantity} ${game.auctionHighestBid.suit}`);
     game.players.forEach(p => {
@@ -220,7 +222,7 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
 
   // Update current bidder and continue auction
   game.auctionCurrentBidder = nextBidder;
-  await game.save();
+  game = await Game.findByIdAndUpdate(game._id, game.toObject(), { new: true });
   activeGames.set(roomCode, game);
   game.players.forEach(p => {
     const filteredGame = getFilteredGameForPlayer(game, p.userId);
@@ -253,7 +255,7 @@ async function startGame(roomCode, io, activeGames) {
   const { dealCards, sortHand } = require('../../utils/gameLogic');
   const { appendRoomLog } = require('../../utils/logToFile');
   try {
-    const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+    let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
     if (game.dealer === undefined) {
       game.dealer = 0;
     }
@@ -275,7 +277,8 @@ async function startGame(roomCode, io, activeGames) {
     game.auctionPassed = [];
     game.auctionBids = [];
     game.trumpSuit = null;
-    await game.save();
+    const updateData = game.toObject ? game.toObject() : game;
+    game = await Game.findByIdAndUpdate(game._id, updateData, { new: true });
     activeGames.set(roomCode, game);
     game.players.forEach(p => {
       const filteredGame = getFilteredGameForPlayer(game, p.userId);
