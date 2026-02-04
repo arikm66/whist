@@ -13,23 +13,19 @@ class GameTestSetup {
     this.users = [
       {
         email: process.env.TEST_USER1,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439011'
+        password: process.env.TEST_PASSWORD
       },
       {
         email: process.env.TEST_USER2,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439012'
+        password: process.env.TEST_PASSWORD
       },
       {
         email: process.env.TEST_USER3,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439013'
+        password: process.env.TEST_PASSWORD
       },
       {
         email: process.env.TEST_USER4,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439014'
+        password: process.env.TEST_PASSWORD
       }
     ];
     this.tokens = [];
@@ -51,6 +47,8 @@ class GameTestSetup {
         password: user.password
       });
       this.tokens.push(res.data.token);
+      // Update user object with actual userId from server
+      user.userId = res.data.user.id;
     }
     testLog(`Successfully logged in ${this.tokens.length} test users`);
     return this.tokens;

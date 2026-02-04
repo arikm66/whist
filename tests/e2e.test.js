@@ -8,11 +8,13 @@ const {
   passAuctionFinal,
   delay
 } = require('./helpers/socketHelpers');
+const { calculateTrickBid } = require('./helpers/biddingHelper');
 
 describe('E2E Whist Game', () => {
     testLog(`===== Starting E2E Whist Game tests`);
     const setup = createTestSetup();
     let dealer;
+    const playerHands = [null, null, null, null]; // Store each player's hand
 
     afterAll(async () => {
       const skipCleanup = process.env.SKIP_ROOM_CLEANUP === '1';
@@ -39,9 +41,33 @@ describe('E2E Whist Game', () => {
 
     describe('Room Creation & Setup', () => {
         test('user1 creates a room and all four players join', async () => {
+            // Set up listeners for gameStarted event before creating room
+            const gameStartedPromises = [];
+            for (let i = 0; i < 4; i++) {
+                const promise = new Promise((resolve) => {
+                    setup.getClient(i).once('gameStarted', (data) => {
+                        // Each player receives filtered game with only their own hand
+                        playerHands[i] = data.game.players[i].hand;
+                        testLog(`Player ${i} received hand with ${playerHands[i].length} cards`);
+                        resolve();
+                    });
+                });
+                gameStartedPromises.push(promise);
+            }
+
             const roomCode = await setup.createRoomAndJoin();
             expect(roomCode).toBeDefined();
             expect(roomCode).toBeTruthy();
+
+            // Wait for all players to receive their gameStarted event
+            await Promise.all(gameStartedPromises);
+
+            // Verify each player received a 13-card hand
+            for (let i = 0; i < 4; i++) {
+                expect(playerHands[i]).toBeDefined();
+                expect(playerHands[i]).toHaveLength(13);
+                testLog(`Player ${i} hand: ${playerHands[i].join(', ')}`);
+            }
         });
 
         test('dealer in created room is valid', async () => {
@@ -119,6 +145,17 @@ describe('E2E Whist Game', () => {
             expect(completeData.game).toBeDefined();
             expect(completeData.game.status).toBe('bidding');
             expect(completeData.game.auctionWinner).toBe(firstBidderIdx);
+
+            // Log recommended bids with trump suit
+            const trumpSuit = completeData.game.trumpSuit; // Can be 'S', 'H', 'D', 'C', or null
+            testLog(`--- Auction Complete: Winner Player ${firstBidderIdx}, Trump: ${trumpSuit || 'NT'} ---`);
+            testLog('--- Recommended Bids (With Trump) ---');
+            for (let i = 0; i < 4; i++) {
+                if (playerHands[i]) {
+                    const { bid, reasoning } = calculateTrickBid(playerHands[i], trumpSuit);
+                    testLog(`Player ${i}: Bid ${bid} tricks (${reasoning})`);
+                }
+            }
         });
     });
 

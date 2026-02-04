@@ -161,3 +161,192 @@
 [2026-02-04T15:36:07.806Z] Auction completed, winner: Player 1, status: bidding
 [2026-02-04T15:36:07.813Z] Closed 4 socket clients
 [2026-02-04T15:36:07.813Z] Room cleanup skipped for RUJH3J
+[2026-02-04T16:21:37.644Z] ===== Starting E2E Whist Game tests
+[2026-02-04T16:21:38.217Z] Successfully logged in 4 test users
+[2026-02-04T16:21:38.218Z] Successfully logged in 4 test users
+[2026-02-04T16:21:38.252Z] All 4 clients connected
+[2026-02-04T16:21:38.253Z] All 4 clients connected
+[2026-02-04T16:21:38.466Z] Room created by test.user1@whist-game.com: FGEVJ9
+[2026-02-04T16:21:38.538Z] test.user2@whist-game.com joined room: FGEVJ9
+[2026-02-04T16:21:38.620Z] test.user3@whist-game.com joined room: FGEVJ9
+[2026-02-04T16:21:38.689Z] test.user4@whist-game.com joined room: FGEVJ9
+[2026-02-04T16:21:38.689Z] Room FGEVJ9 created with 4 players
+[2026-02-04T16:21:38.766Z] Player 0 received hand with 13 cards
+[2026-02-04T16:21:38.766Z] Player 1 received hand with 13 cards
+[2026-02-04T16:21:38.767Z] Player 2 received hand with 13 cards
+[2026-02-04T16:21:38.767Z] Player 3 received hand with 13 cards
+[2026-02-04T16:21:38.768Z] Player 0 hand: 3S, 10S, QS, AS, 3H, 10H, KH, 5C, 7C, 9C, QC, KC, JD
+[2026-02-04T16:21:38.768Z] Player 1 hand: 2S, 5S, KS, 5H, 6H, 7H, 8H, QH, 2C, 4C, 10C, 2D, 8D
+[2026-02-04T16:21:38.768Z] Player 2 hand: 4S, 6S, 7S, 8S, 2H, AH, 3C, 8C, JC, AC, 6D, 10D, KD
+[2026-02-04T16:21:38.769Z] Player 3 hand: 9S, JS, 4H, 9H, JH, 6C, 3D, 4D, 5D, 7D, 9D, QD, AD
+[2026-02-04T16:21:38.833Z] Dealer for room FGEVJ9 is: 0
+[2026-02-04T16:21:38.837Z] Player placed auction bid: 5 C
+[2026-02-04T16:21:38.838Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T16:21:38.949Z] Player 2 passed auction
+[2026-02-04T16:21:38.949Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T16:21:39.056Z] Player 3 passed auction
+[2026-02-04T16:21:39.057Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T16:21:39.164Z] Player 0 passed auction
+[2026-02-04T16:21:39.165Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T16:21:39.346Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T16:21:39.354Z] Closed 4 socket clients
+[2026-02-04T16:21:39.355Z] Room cleanup skipped for FGEVJ9
+[2026-02-04T16:25:20.883Z] ===== Starting E2E Whist Game tests
+[2026-02-04T16:25:21.513Z] Successfully logged in 4 test users
+[2026-02-04T16:25:21.514Z] Successfully logged in 4 test users
+[2026-02-04T16:25:21.545Z] All 4 clients connected
+[2026-02-04T16:25:21.546Z] All 4 clients connected
+[2026-02-04T16:25:21.760Z] Room created by test.user1@whist-game.com: Q7YDS8
+[2026-02-04T16:25:21.849Z] test.user2@whist-game.com joined room: Q7YDS8
+[2026-02-04T16:25:21.920Z] test.user3@whist-game.com joined room: Q7YDS8
+[2026-02-04T16:25:21.988Z] test.user4@whist-game.com joined room: Q7YDS8
+[2026-02-04T16:25:21.988Z] Room Q7YDS8 created with 4 players
+[2026-02-04T16:25:22.073Z] Player 0 received hand with 13 cards
+[2026-02-04T16:25:22.075Z] Player 1 received hand with 13 cards
+[2026-02-04T16:25:22.077Z] Player 2 received hand with 13 cards
+[2026-02-04T16:25:22.079Z] Player 3 received hand with 13 cards
+[2026-02-04T16:25:22.082Z] Player 0 hand: 3S, 6S, 7S, JS, KH, 3C, 7C, 8C, QC, 4D, 7D, 8D, 9D
+[2026-02-04T16:25:22.084Z] Player 1 hand: 2S, 9S, 10S, 2H, 5H, 10H, 5C, 9C, JC, KC, 5D, 6D, AD
+[2026-02-04T16:25:22.086Z] Player 2 hand: 4S, 8S, QS, AS, 7H, JH, QH, AH, 2C, 6C, JD, QD, KD
+[2026-02-04T16:25:22.088Z] Player 3 hand: 5S, KS, 3H, 4H, 6H, 8H, 9H, 4C, 10C, AC, 2D, 3D, 10D
+[2026-02-04T16:25:22.088Z] --- Recommended Bids (No Trump) ---
+[2026-02-04T16:25:22.091Z] Player 0: Bid 1 tricks (3 High Cards)
+[2026-02-04T16:25:22.091Z] Player 1: Bid 2 tricks (5 High Cards)
+[2026-02-04T16:25:22.092Z] Player 2: Bid 4 tricks (8 High Cards)
+[2026-02-04T16:25:22.092Z] Player 3: Bid 1 tricks (4 High Cards)
+[2026-02-04T16:25:22.162Z] Dealer for room Q7YDS8 is: 0
+[2026-02-04T16:25:22.168Z] Player placed auction bid: 5 C
+[2026-02-04T16:25:22.170Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T16:25:22.284Z] Player 2 passed auction
+[2026-02-04T16:25:22.285Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T16:25:22.395Z] Player 3 passed auction
+[2026-02-04T16:25:22.397Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T16:25:22.513Z] Player 0 passed auction
+[2026-02-04T16:25:22.514Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T16:25:22.690Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T16:25:22.690Z] --- Auction Complete: Winner Player 1, Trump: C ---
+[2026-02-04T16:25:22.690Z] --- Recommended Bids (With Trump) ---
+[2026-02-04T16:25:22.691Z] Player 0: Bid 2 tricks (3 High Cards + 4 Trumps + 1 Singleton)
+[2026-02-04T16:25:22.691Z] Player 1: Bid 2 tricks (5 High Cards + 4 Trumps)
+[2026-02-04T16:25:22.691Z] Player 2: Bid 4 tricks (8 High Cards + 2 Trumps)
+[2026-02-04T16:25:22.691Z] Player 3: Bid 2 tricks (4 High Cards + 3 Trumps)
+[2026-02-04T16:25:22.693Z] Closed 4 socket clients
+[2026-02-04T16:25:22.693Z] Room cleanup skipped for Q7YDS8
+[2026-02-04T16:49:23.375Z] ===== Starting E2E Whist Game tests
+[2026-02-04T16:49:24.057Z] Successfully logged in 4 test users
+[2026-02-04T16:49:24.058Z] Successfully logged in 4 test users
+[2026-02-04T16:49:24.090Z] All 4 clients connected
+[2026-02-04T16:49:24.091Z] All 4 clients connected
+[2026-02-04T16:49:24.285Z] Room created by test.user1@whist-game.com: XHWHTZ
+[2026-02-04T16:49:24.371Z] test.user2@whist-game.com joined room: XHWHTZ
+[2026-02-04T16:49:24.438Z] test.user3@whist-game.com joined room: XHWHTZ
+[2026-02-04T16:49:24.506Z] test.user4@whist-game.com joined room: XHWHTZ
+[2026-02-04T16:49:24.506Z] Room XHWHTZ created with 4 players
+[2026-02-04T16:49:24.584Z] Player 0 received hand with 13 cards
+[2026-02-04T16:49:24.584Z] Player 1 received hand with 13 cards
+[2026-02-04T16:49:24.584Z] Player 2 received hand with 13 cards
+[2026-02-04T16:49:24.585Z] Player 3 received hand with 13 cards
+[2026-02-04T16:49:24.585Z] Player 0 hand: 5S, 8S, AS, 2H, KH, 9C, 10C, 2D, 4D, 5D, 6D, 9D, JD
+[2026-02-04T16:49:24.586Z] Player 1 hand: 4S, 3H, 9H, QH, 2C, 3C, 4C, 5C, 7C, JC, AC, 7D, 8D
+[2026-02-04T16:49:24.586Z] Player 2 hand: 2S, 6S, 7S, 9S, JS, 7H, 8H, 10H, 6C, 8C, KC, 10D, KD
+[2026-02-04T16:49:24.587Z] Player 3 hand: 3S, 10S, QS, KS, 4H, 5H, 6H, JH, AH, QC, 3D, QD, AD
+[2026-02-04T16:49:24.587Z] --- Recommended Bids (No Trump) ---
+[2026-02-04T16:49:24.588Z] Player 0: Bid 1 tricks (4 High Cards)
+[2026-02-04T16:49:24.588Z] Player 1: Bid 1 tricks (3 High Cards)
+[2026-02-04T16:49:24.588Z] Player 2: Bid 1 tricks (5 High Cards)
+[2026-02-04T16:49:24.588Z] Player 3: Bid 4 tricks (8 High Cards)
+[2026-02-04T16:49:24.654Z] Dealer for room XHWHTZ is: 0
+[2026-02-04T16:49:24.664Z] Player placed auction bid: 5 C
+[2026-02-04T16:49:24.665Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T16:49:24.783Z] Player 2 passed auction
+[2026-02-04T16:49:24.783Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T16:49:24.892Z] Player 3 passed auction
+[2026-02-04T16:49:24.892Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T16:49:25.000Z] Player 0 passed auction
+[2026-02-04T16:49:25.000Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T16:49:25.179Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T16:49:25.179Z] --- Auction Complete: Winner Player 1, Trump: C ---
+[2026-02-04T16:49:25.179Z] --- Recommended Bids (With Trump) ---
+[2026-02-04T16:49:25.180Z] Player 0: Bid 1 tricks (4 High Cards + 2 Trumps)
+[2026-02-04T16:49:25.180Z] Player 1: Bid 3 tricks (3 High Cards + Long Trump (7) + 1 Singleton)
+[2026-02-04T16:49:25.180Z] Player 2: Bid 2 tricks (5 High Cards + 3 Trumps)
+[2026-02-04T16:49:25.180Z] Player 3: Bid 4 tricks (8 High Cards + 1 Trump)
+[2026-02-04T16:49:25.182Z] Closed 4 socket clients
+[2026-02-04T16:49:25.183Z] Room cleanup skipped for XHWHTZ
+[2026-02-04T16:57:52.148Z] ===== Starting E2E Whist Game tests
+[2026-02-04T16:57:52.775Z] Successfully logged in 4 test users
+[2026-02-04T16:57:52.776Z] Successfully logged in 4 test users
+[2026-02-04T16:57:52.832Z] All 4 clients connected
+[2026-02-04T16:57:52.833Z] All 4 clients connected
+[2026-02-04T16:57:53.002Z] Room created by test.user1@whist-game.com: CLXDWD
+[2026-02-04T16:57:53.079Z] test.user2@whist-game.com joined room: CLXDWD
+[2026-02-04T16:57:53.149Z] test.user3@whist-game.com joined room: CLXDWD
+[2026-02-04T16:57:53.216Z] test.user4@whist-game.com joined room: CLXDWD
+[2026-02-04T16:57:53.216Z] Room CLXDWD created with 4 players
+[2026-02-04T16:57:53.293Z] Player 0 received hand with 13 cards
+[2026-02-04T16:57:53.294Z] Player 1 received hand with 13 cards
+[2026-02-04T16:57:53.295Z] Player 2 received hand with 13 cards
+[2026-02-04T16:57:53.296Z] Player 3 received hand with 13 cards
+[2026-02-04T16:57:53.297Z] Player 0 hand: 4S, 6S, 9S, 3H, 6H, 7H, 9H, 10H, 9C, QC, 2D, JD, AD
+[2026-02-04T16:57:53.298Z] Player 1 hand: 3S, 5S, 8S, 4H, 8H, AH, 3C, 7C, JC, AC, 9D, 10D, KD
+[2026-02-04T16:57:53.299Z] Player 2 hand: 7S, 10S, QS, KS, 2H, JH, QH, 4C, 5C, 6C, 8C, 3D, 4D
+[2026-02-04T16:57:53.300Z] Player 3 hand: 2S, JS, AS, 5H, KH, 2C, 10C, KC, 5D, 6D, 7D, 8D, QD
+[2026-02-04T16:57:53.300Z] --- Recommended Bids (No Trump) ---
+[2026-02-04T16:57:53.302Z] Player 0: Bid 1 tricks (4 High Cards)
+[2026-02-04T16:57:53.302Z] Player 1: Bid 2 tricks (5 High Cards)
+[2026-02-04T16:57:53.303Z] Player 2: Bid 1 tricks (5 High Cards)
+[2026-02-04T16:57:53.303Z] Player 3: Bid 2 tricks (6 High Cards)
+[2026-02-04T16:57:53.371Z] Dealer for room CLXDWD is: 0
+[2026-02-04T16:57:53.375Z] Player placed auction bid: 5 C
+[2026-02-04T16:57:53.376Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T16:57:53.486Z] Player 2 passed auction
+[2026-02-04T16:57:53.487Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T16:57:53.593Z] Player 3 passed auction
+[2026-02-04T16:57:53.593Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T16:57:53.701Z] Player 0 passed auction
+[2026-02-04T16:57:53.702Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T16:57:53.890Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T16:57:53.893Z] --- Auction Complete: Winner Player 1, Trump: C ---
+[2026-02-04T16:57:53.894Z] --- Recommended Bids (With Trump) ---
+[2026-02-04T16:57:53.895Z] Player 0: Bid 1 tricks (4 High Cards + 2 Trumps)
+[2026-02-04T16:57:53.895Z] Player 1: Bid 3 tricks (5 High Cards + 4 Trumps)
+[2026-02-04T16:57:53.896Z] Player 2: Bid 2 tricks (5 High Cards + 4 Trumps)
+[2026-02-04T16:57:53.897Z] Player 3: Bid 3 tricks (6 High Cards + 3 Trumps)
+[2026-02-04T16:57:53.905Z] Closed 4 socket clients
+[2026-02-04T16:57:53.906Z] Room cleanup skipped for CLXDWD
+[2026-02-04T17:00:30.731Z] ===== Starting E2E Whist Game tests
+[2026-02-04T17:00:31.400Z] Successfully logged in 4 test users
+[2026-02-04T17:00:31.401Z] Successfully logged in 4 test users
+[2026-02-04T17:00:31.432Z] All 4 clients connected
+[2026-02-04T17:00:31.433Z] All 4 clients connected
+[2026-02-04T17:00:31.526Z] Room created by test.user1@whist-game.com: UD7LO8
+[2026-02-04T17:00:31.612Z] test.user2@whist-game.com joined room: UD7LO8
+[2026-02-04T17:00:31.688Z] test.user3@whist-game.com joined room: UD7LO8
+[2026-02-04T17:00:31.762Z] test.user4@whist-game.com joined room: UD7LO8
+[2026-02-04T17:00:31.763Z] Room UD7LO8 created with 4 players
+[2026-02-04T17:00:31.863Z] Player 0 received hand with 13 cards
+[2026-02-04T17:00:31.864Z] Player 1 received hand with 13 cards
+[2026-02-04T17:00:31.864Z] Player 2 received hand with 13 cards
+[2026-02-04T17:00:31.865Z] Player 3 received hand with 13 cards
+[2026-02-04T17:00:31.865Z] Player 0 hand: 2S, 3S, 7S, 8S, 7H, 8H, 9H, JH, 3C, 6C, QC, 7D, 8D
+[2026-02-04T17:00:31.866Z] Player 1 hand: 5S, AS, 2H, 4H, 5H, 10H, QH, 2C, 9C, JC, 9D, JD, AD
+[2026-02-04T17:00:31.866Z] Player 2 hand: 6S, 10S, JS, KS, 6H, AH, 5C, 7C, 8C, 10C, KC, AC, 10D
+[2026-02-04T17:00:31.866Z] Player 3 hand: 4S, 9S, QS, 3H, KH, 4C, 2D, 3D, 4D, 5D, 6D, QD, KD
+[2026-02-04T17:00:31.931Z] Dealer for room UD7LO8 is: 0
+[2026-02-04T17:00:31.941Z] Player placed auction bid: 5 C
+[2026-02-04T17:00:31.942Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T17:00:32.049Z] Player 2 passed auction
+[2026-02-04T17:00:32.049Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T17:00:32.155Z] Player 3 passed auction
+[2026-02-04T17:00:32.155Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T17:00:32.261Z] Player 0 passed auction
+[2026-02-04T17:00:32.261Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T17:00:32.444Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T17:00:32.445Z] --- Auction Complete: Winner Player 1, Trump: C ---
+[2026-02-04T17:00:32.445Z] --- Recommended Bids (With Trump) ---
+[2026-02-04T17:00:32.447Z] Player 0: Bid 0 tricks (2 High Cards + 3 Trumps)
+[2026-02-04T17:00:32.447Z] Player 1: Bid 2 tricks (6 High Cards + 3 Trumps)
+[2026-02-04T17:00:32.448Z] Player 2: Bid 5 tricks (8 High Cards + Long Trump (6) + 1 Singleton)
+[2026-02-04T17:00:32.448Z] Player 3: Bid 2 tricks (4 High Cards + 1 Trump)
+[2026-02-04T17:00:32.452Z] Closed 4 socket clients
+[2026-02-04T17:00:32.453Z] Room cleanup skipped for UD7LO8

@@ -42,7 +42,15 @@ function registerRoomHandlers(io, socket, activeGames) {
         socket.emit('error', { message: 'Room not found' });
         return;
       }
-      const existingPlayer = game.players.find(p => p.userId.toString() === userId.toString());
+      
+      // Check if player is already in the game (allow rejoin)
+      // Try multiple comparison methods to handle different userId formats
+      const existingPlayer = game.players.find(p => {
+        const pUserId = p.userId.toString();
+        const reqUserId = userId.toString();
+        return pUserId === reqUserId || p.email === email;
+      });
+      
       if (existingPlayer) {
         socket.join(roomCode);
         socket.join(userId.toString());
@@ -50,16 +58,19 @@ function registerRoomHandlers(io, socket, activeGames) {
         socket._userId = userId;
         const filteredGame = getFilteredGameForPlayer(game, userId);
         socket.emit('roomJoined', { game: filteredGame });
+        appendRoomLog(roomCode, `Player rejoined: ${userId} ${email}`);
+        return;
+      }
+      
+      // New player joining - check restrictions
+      if (game.status !== 'waiting') {
+        appendRoomLog(roomCode, `Invalid action: Game already started, new player cannot join (userId: ${userId})`);
+        socket.emit('error', { message: 'Game already started' });
         return;
       }
       if (game.players.length >= 4) {
         appendRoomLog(roomCode, `Invalid action: Room is full (userId: ${userId})`);
         socket.emit('error', { message: 'Room is full' });
-        return;
-      }
-      if (game.status !== 'waiting') {
-        appendRoomLog(roomCode, `Invalid action: Game already started (userId: ${userId})`);
-        socket.emit('error', { message: 'Game already started' });
         return;
       }
       const newPlayer = {
