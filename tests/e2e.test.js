@@ -1,173 +1,62 @@
-const fs = require('fs');
-const path = require('path');
-const Client = require('socket.io-client');
-const axios = require('axios');
 require('dotenv').config();
-
-const SERVER_URL = 'http://localhost:5000'; // Match the PORT in server.js
-const TEST_LOG_PATH = path.join(__dirname, 'test-debug.log');
-function testLog(msg) {
-  fs.appendFileSync(TEST_LOG_PATH, `[${new Date().toISOString()}] ${msg}\n`);
-}
+const { createTestSetup } = require('./helpers/testSetup');
+const {
+  testLog,
+  getRoomsList,
+  placeAuctionBid,
+  passAuction,
+  passAuctionFinal,
+  delay
+} = require('./helpers/socketHelpers');
 
 describe('E2E Whist Game', () => {
     testLog(`===== Starting E2E Whist Game tests`);
-    let tokens = [];
-    let clients = [];
-    let roomCode;
+    const setup = createTestSetup();
     let dealer;
-    const users = [
-      {
-        email: process.env.TEST_USER1,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439011'
-      },
-      {
-        email: process.env.TEST_USER2,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439012'
-      },
-      {
-        email: process.env.TEST_USER3,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439013'
-      },
-      {
-        email: process.env.TEST_USER4,
-        password: process.env.TEST_PASSWORD,
-        userId: '507f1f77bcf86cd799439014'
-      }
-    ];
 
     afterAll(async () => {
-      if (clients && clients.length) {
-        clients.forEach(client => {
-          try {
-            client.close();
-          } catch (err) {
-            // Ignore errors on close
-          }
-        });
-      }
-      // Delete the room if it was created and SKIP_ROOM_CLEANUP is not set
-      if (roomCode && !process.env.SKIP_ROOM_CLEANUP) {
-        try {
-          const adminRes = await axios.post(`${SERVER_URL}/api/auth/login`, {
-            email: process.env.TEST_ADMIN_USER,
-            password: process.env.TEST_ADMIN_PASSWORD
-          });
-          const adminToken = adminRes.data.token;
-          await axios.delete(`${SERVER_URL}/api/rooms/${roomCode}`, {
-            headers: { Authorization: `Bearer ${adminToken}` }
-          });
-          testLog(`Room ${roomCode} deleted in afterAll.`);
-        } catch (err) {
-          testLog(`Room cleanup failed: ${err.message || err}`);
-        }
-      } else if (roomCode) {
-        testLog(`Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.`);
-      }
+      const skipCleanup = process.env.SKIP_ROOM_CLEANUP === '1';
+      await setup.cleanup(skipCleanup);
     });
 
     test('logs in 4 players', async () => {
-      expect(users.every(u => u.email && u.password && u.userId)).toBe(true);
-
-      tokens = [];
-      for (const user of users) {
-        const res = await axios.post(`${SERVER_URL}/api/auth/login`, {
-          email: user.email,
-          password: user.password
-        });
-        expect(res.data.token).toBeDefined();
-        tokens.push(res.data.token);
-      }
+      const tokens = await setup.loginAllUsers();
       expect(tokens).toHaveLength(4);
+      expect(tokens.every(t => t)).toBe(true);
       testLog(`Successfully logged in 4 test users`);
     });
 
     test('connects 4 socket clients', async () => {
-        expect(tokens).toHaveLength(4);
-        clients = [];
-        for (let i = 0; i < 4; i++) {
-            clients.push(Client(SERVER_URL, { auth: { token: tokens[i] } }));
-        }
-        // Wait for all clients to connect
-        for (let i = 0; i < 4; i++) {
-            await new Promise((resolve, reject) => {
-                clients[i].on('connect', resolve);
-                clients[i].on('connect_error', reject);
-            });
-            expect(clients[i].connected).toBe(true);
-        }
+        const clients = await setup.connectAllClients();
+        expect(clients).toHaveLength(4);
+        clients.forEach((client) => {
+            expect(client.connected).toBe(true);
+        });
         testLog('All 4 clients connected');
     });
 
     test('user1 creates a room and all four players join', async () => {
-        expect(clients).toHaveLength(4);
-        await new Promise((resolve, reject) => {
-            clients[0].emit('createRoom', { userId: users[0].userId, email: users[0].email });
-            clients[0].on('roomCreated', (data) => {
-                try {
-                expect(data).toBeDefined();
-                expect(data.roomCode).toBeDefined();
-                expect(data.game).toBeDefined();
-                expect(data.game.players[0].userId).toBe(users[0].userId);
-                roomCode = data.roomCode;
-                testLog(`Room created by user1: ${roomCode}`);
-                resolve();
-                } catch (err) {
-                reject(err);
-                }
-            });
-            clients[0].on('error', reject);
-        });
-
-        // Other users join the room
-        for (let i = 1; i < 4; i++) {
-        await new Promise((resolve, reject) => {
-            clients[i].emit('joinRoom', { roomCode, userId: users[i].userId, email: users[i].email });
-            clients[i].on('roomJoined', (data) => {
-            try {
-                expect(data).toBeDefined();
-                expect(data.game).toBeDefined();
-                expect(data.game.players.some(p => p.userId === users[i].userId)).toBe(true);
-                testLog(`User${i+1} joined room: ${roomCode}`);
-                resolve();
-            } catch (err) {
-                reject(err);
-            }
-            });
-            clients[i].on('error', reject);
-        });
-        }
+        const roomCode = await setup.createRoomAndJoin();
+        expect(roomCode).toBeDefined();
+        expect(roomCode).toBeTruthy();
     });
 
     test('dealer in created room is valid', async () => {
-        expect(roomCode).toBeTruthy();
-        // Get the rooms list from the server
-        await new Promise((resolve, reject) => {
-          clients[0].emit('getRooms', {});
-          clients[0].on('roomsList', (data) => {
-            try {
-              // data may be { rooms: [...] } or just an array
-              const rooms = Array.isArray(data) ? data : data.rooms;
-              expect(rooms).toBeDefined();
-              const foundRoom = rooms.find(r => r.roomCode === roomCode);
-              expect(foundRoom).toBeDefined();
-              dealer = foundRoom.dealer;
-              expect(dealer).toBeDefined();
-              resolve();
-            } catch (err) {
-              reject(err);
-            }
-          });
-          clients[0].on('error', reject);
-        });
-        // Check that dealer is a valid player index (0-3)
+        expect(setup.roomCode).toBeTruthy();
+        
+        const rooms = await getRoomsList(setup.getClient(0));
+        expect(rooms).toBeDefined();
+        
+        const foundRoom = rooms.find(r => r.roomCode === setup.roomCode);
+        expect(foundRoom).toBeDefined();
+        
+        dealer = foundRoom.dealer;
+        expect(dealer).toBeDefined();
         expect(typeof dealer).toBe('number');
         expect(dealer).toBeGreaterThanOrEqual(0);
         expect(dealer).toBeLessThan(4);
-        testLog(`Dealer for room ${roomCode} is: ${dealer}`);
+        
+        testLog(`Dealer for room ${setup.roomCode} is: ${dealer}`);
     });
 
     test('player after dealer can place first auction bid', async () => {
@@ -175,28 +64,22 @@ describe('E2E Whist Game', () => {
         const firstBidderIdx = (dealer + 1) % 4;
         const bidValue = 5;
         const bidSuit = 'C';
-        await new Promise((resolve, reject) => {
-            clients[firstBidderIdx].emit('placeAuctionBid', {
-                roomCode,
-                userId: users[firstBidderIdx].userId,
-                quantity: bidValue,
-                suit: bidSuit
-            });
-            clients[firstBidderIdx].on('auctionBidPlaced', (data) => {
-                try {
-                    expect(data).toBeDefined();
-                    expect(data.position).toBe(firstBidderIdx);
-                    expect(data.bid.quantity).toBe(bidValue);
-                    expect(data.bid.suit).toBe(bidSuit);
-                    testLog(`Player ${firstBidderIdx} placed first auction bid: ${bidValue} ${bidSuit}`);
-                    resolve();
-                } catch (err) {
-                    reject(err);
-                }
-            });
-            clients[firstBidderIdx].on('error', reject);
-        });
+        
+        const bidData = await placeAuctionBid(
+            setup.getClient(firstBidderIdx),
+            setup.roomCode,
+            setup.getUser(firstBidderIdx).userId,
+            bidValue,
+            bidSuit
+        );
+        
+        expect(bidData).toBeDefined();
+        expect(bidData.position).toBe(firstBidderIdx);
+        expect(bidData.bid.quantity).toBe(bidValue);
+        expect(bidData.bid.suit).toBe(bidSuit);
+        testLog(`Player ${firstBidderIdx} placed first auction bid: ${bidValue} ${bidSuit}`);
     });
+
     test('next 4 players pass auction completing auction phase', async () => {
         expect(typeof dealer).toBe('number');
         const firstBidderIdx = (dealer + 1) % 4;
@@ -204,62 +87,32 @@ describe('E2E Whist Game', () => {
         // First 3 players pass (expecting auctionPassed events)
         for (let i = 1; i <= 3; i++) {
             const bidderIdx = (firstBidderIdx + i) % 4;
+            await delay(100);
             
-            // Add small delay to ensure server processes previous action
-            await new Promise(resolve => setTimeout(resolve, 100));
+            const passData = await passAuction(
+                setup.getClient(bidderIdx),
+                setup.roomCode,
+                setup.getUser(bidderIdx).userId,
+                bidderIdx
+            );
             
-            await new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    reject(new Error(`Timeout: Player ${bidderIdx} never got turn to pass`));
-                }, 5000);
-                
-                clients[bidderIdx].once('auctionPassed', (data) => {
-                    clearTimeout(timeout);
-                    try {
-                        expect(data).toBeDefined();
-                        expect(data.position).toBe(bidderIdx);
-                        testLog(`Player ${bidderIdx} passed auction (pass ${i} of 3)`);
-                        resolve();
-                    } catch (err) {
-                        reject(err);
-                    }
-                });
-                
-                clients[bidderIdx].emit('passAuction', {
-                    roomCode,
-                    userId: users[bidderIdx].userId
-                });
-            });
+            expect(passData).toBeDefined();
+            expect(passData.position).toBe(bidderIdx);
+            testLog(`Player ${bidderIdx} passed auction (pass ${i} of 3)`);
         }
         
         // 4th pass: auction winner passes, triggering auctionComplete
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await delay(100);
         
-        await new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                reject(new Error('Timeout: Auction did not complete when winner passed'));
-            }, 5000);
-            
-            // Listen for auctionComplete from all clients
-            clients[0].once('auctionComplete', (data) => {
-                clearTimeout(timeout);
-                try {
-                    expect(data).toBeDefined();
-                    expect(data.game).toBeDefined();
-                    expect(data.game.status).toBe('bidding');
-                    expect(data.game.auctionWinner).toBe(firstBidderIdx);
-                    testLog(`Auction completed, winner: Player ${firstBidderIdx}, game status: ${data.game.status}`);
-                    resolve();
-                } catch (err) {
-                    reject(err);
-                }
-            });
-            
-            // Auction winner (firstBidderIdx) passes to end auction
-            clients[firstBidderIdx].emit('passAuction', {
-                roomCode,
-                userId: users[firstBidderIdx].userId
-            });
-        });
+        const completeData = await passAuctionFinal(
+            setup.getClient(firstBidderIdx),
+            setup.roomCode,
+            setup.getUser(firstBidderIdx).userId
+        );
+        
+        expect(completeData).toBeDefined();
+        expect(completeData.game).toBeDefined();
+        expect(completeData.game.status).toBe('bidding');
+        expect(completeData.game.auctionWinner).toBe(firstBidderIdx);
     });
 });

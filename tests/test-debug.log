@@ -66,3 +66,70 @@
 [2026-02-04T12:15:46.575Z] Player 0 passed auction (pass 3 of 3)
 [2026-02-04T12:15:46.759Z] Auction completed, winner: Player 1, game status: bidding
 [2026-02-04T12:15:46.766Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-04T13:58:11.275Z] ===== Starting E2E Whist Game tests
+[2026-02-04T13:58:12.104Z] Successfully logged in 4 test users
+[2026-02-04T13:58:12.137Z] All 4 clients connected
+[2026-02-04T13:58:12.336Z] Room created by user1: MAVVWK
+[2026-02-04T13:58:12.409Z] User2 joined room: MAVVWK
+[2026-02-04T13:58:12.480Z] User3 joined room: MAVVWK
+[2026-02-04T13:58:12.548Z] User4 joined room: MAVVWK
+[2026-02-04T13:58:12.559Z] Dealer for room MAVVWK is: 0
+[2026-02-04T13:58:12.564Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T13:58:12.679Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T13:58:12.789Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T13:58:12.897Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T13:58:13.085Z] Auction completed, winner: Player 1, game status: bidding
+[2026-02-04T13:58:13.411Z] Room MAVVWK deleted in afterAll.
+[2026-02-04T14:17:48.464Z] ===== Starting E2E Whist Game tests
+[2026-02-04T14:17:49.120Z] Successfully logged in 4 test users
+[2026-02-04T14:17:49.152Z] All 4 clients connected
+[2026-02-04T14:17:49.365Z] Room created by test.user1@whist-game.com: SG0Y9R
+[2026-02-04T14:17:49.448Z] test.user2@whist-game.com joined room: SG0Y9R
+[2026-02-04T14:17:49.524Z] test.user3@whist-game.com joined room: SG0Y9R
+[2026-02-04T14:17:49.593Z] test.user4@whist-game.com joined room: SG0Y9R
+[2026-02-04T14:17:49.666Z] Dealer for room SG0Y9R is: 0
+[2026-02-04T14:17:49.672Z] Player placed auction bid: 5 C
+[2026-02-04T14:17:49.672Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T14:17:49.795Z] Player 2 passed auction
+[2026-02-04T14:17:49.796Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T14:17:49.916Z] Player 3 passed auction
+[2026-02-04T14:17:49.917Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T14:17:50.022Z] Player 0 passed auction
+[2026-02-04T14:17:50.023Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T14:17:50.203Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T14:17:50.213Z] Room cleanup skipped due to SKIP_ROOM_CLEANUP env variable.
+[2026-02-04T14:22:07.576Z] Room created by test1@example.com: WB0TDX
+[2026-02-04T14:22:08.016Z] Room created by test2@example.com: HWYTZD
+[2026-02-04T14:22:08.086Z] test3@example.com joined room: HWYTZD
+[2026-02-04T14:24:53.067Z] Room created by test1@example.com: 8KQMWA
+[2026-02-04T14:24:53.416Z] Room created by test2@example.com: 8QYBWI
+[2026-02-04T14:24:53.514Z] test3@example.com joined room: 8QYBWI
+[2026-02-04T14:27:32.392Z] Room created by test1@example.com: 8KT0I3
+[2026-02-04T14:27:32.853Z] Room created by test2@example.com: QFG7DM
+[2026-02-04T14:27:32.937Z] test3@example.com joined room: QFG7DM
+[2026-02-04T14:54:40.890Z] Room created by test1@example.com: KZ2KQU
+[2026-02-04T14:54:41.331Z] Room created by test2@example.com: AVOJQM
+[2026-02-04T14:54:41.415Z] test3@example.com joined room: AVOJQM
+[2026-02-04T14:54:49.187Z] ===== Starting E2E Whist Game tests
+[2026-02-04T14:54:49.808Z] Successfully logged in 4 test users
+[2026-02-04T14:54:49.809Z] Successfully logged in 4 test users
+[2026-02-04T14:54:49.846Z] All 4 clients connected
+[2026-02-04T14:54:49.847Z] All 4 clients connected
+[2026-02-04T14:54:49.916Z] Room created by test.user1@whist-game.com: 2LMJM3
+[2026-02-04T14:54:50.024Z] test.user2@whist-game.com joined room: 2LMJM3
+[2026-02-04T14:54:50.102Z] test.user3@whist-game.com joined room: 2LMJM3
+[2026-02-04T14:54:50.182Z] test.user4@whist-game.com joined room: 2LMJM3
+[2026-02-04T14:54:50.182Z] Room 2LMJM3 created with 4 players
+[2026-02-04T14:54:50.285Z] Dealer for room 2LMJM3 is: 0
+[2026-02-04T14:54:50.296Z] Player placed auction bid: 5 C
+[2026-02-04T14:54:50.297Z] Player 1 placed first auction bid: 5 C
+[2026-02-04T14:54:50.409Z] Player 2 passed auction
+[2026-02-04T14:54:50.410Z] Player 2 passed auction (pass 1 of 3)
+[2026-02-04T14:54:50.513Z] Player 3 passed auction
+[2026-02-04T14:54:50.514Z] Player 3 passed auction (pass 2 of 3)
+[2026-02-04T14:54:50.623Z] Player 0 passed auction
+[2026-02-04T14:54:50.624Z] Player 0 passed auction (pass 3 of 3)
+[2026-02-04T14:54:50.804Z] Auction completed, winner: Player 1, status: bidding
+[2026-02-04T14:54:50.810Z] Closed 4 socket clients
+[2026-02-04T14:54:50.958Z] Admin logged in
+[2026-02-04T14:54:51.158Z] Room 2LMJM3 deleted
