@@ -133,3 +133,9 @@
 [2026-02-04T14:54:50.810Z] Closed 4 socket clients
 [2026-02-04T14:54:50.958Z] Admin logged in
 [2026-02-04T14:54:51.158Z] Room 2LMJM3 deleted
+[2026-02-04T15:30:25.247Z] Admin logged in
+[2026-02-04T15:30:25.389Z] Room created by test1@example.com: XLF2G1
+[2026-02-04T15:30:25.610Z] Room XLF2G1 deleted
+[2026-02-04T15:30:25.718Z] Room created by test2@example.com: KDGN3C
+[2026-02-04T15:30:25.823Z] test3@example.com joined room: KDGN3C
+[2026-02-04T15:30:26.017Z] Room KDGN3C deleted

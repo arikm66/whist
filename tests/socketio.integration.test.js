@@ -1,6 +1,6 @@
 const Client = require('socket.io-client');
-const axios = require('axios');
 require('dotenv').config();
+const { createTestSetup, SERVER_URL } = require('./helpers/testSetup');
 const {
   testLog,
   emitAndWait,
@@ -9,33 +9,11 @@ const {
   joinRoom
 } = require('./helpers/socketHelpers');
 
-const SERVER_URL = 'http://localhost:5000'; // Match the PORT in server.js
+const setup = createTestSetup();
 
-let adminToken;
-
-beforeAll((done) => {
-  axios.post(`${SERVER_URL}/api/auth/login`, {
-    email: process.env.TEST_ADMIN_USER,
-    password: process.env.TEST_ADMIN_PASSWORD
-  })
-  .then(res => {
-    adminToken = res.data.token;
-    done();
-  })
-  .catch(done);
+beforeAll(async () => {
+  await setup.loginAdmin();
 });
-
-function cleanupRoom(roomCode) {
-  return axios.delete(`${SERVER_URL}/api/rooms/${roomCode}`, {
-    headers: { Authorization: `Bearer ${adminToken}` }
-  })
-  .catch(err => {
-    if (err.response) {
-      testLog(`Delete room error response: ${JSON.stringify(err.response.data)}`);
-    }
-    throw err;
-  });
-}
 
 describe('Socket.io Connection', () => {
   test('should connect to backend Socket.io server', (done) => {
@@ -65,7 +43,7 @@ describe('Room Operations', () => {
     expect(data.game.players[0].userId).toBe(testUser.userId);
     
     client.close();
-    await cleanupRoom(data.roomCode);
+    await setup.deleteRoom(data.roomCode);
   });
 
   test('should allow a user to join a created room', async () => {
@@ -86,7 +64,7 @@ describe('Room Operations', () => {
     
     client1.close();
     client2.close();
-    await cleanupRoom(createdRoomCode);
+    await setup.deleteRoom(createdRoomCode);
   });
 
   test('should not allow joining a non-existent room', async () => {
