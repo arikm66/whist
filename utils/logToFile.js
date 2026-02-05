@@ -6,33 +6,38 @@ if (!fs.existsSync(LOG_DIR)) {
   fs.mkdirSync(LOG_DIR, { recursive: true });
 }
 
+// Helper function to append a timestamped log entry to a file
+function appendLogEntry(filePath, message, flag = 'a') {
+  const timestamp = new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' });
+  const entry = `[${timestamp}] ${message}\n`;
+  
+  if (flag === 'w') {
+    fs.writeFileSync(filePath, entry, { flag });
+  } else {
+    fs.appendFile(filePath, entry, err => {
+      if (err) {
+        console.error('Failed to write to log file:', err);
+      }
+    });
+  }
+}
+
 // Create a log file for a room
 function createRoomLog(roomCode) {
   const filePath = path.join(LOG_DIR, `room-${roomCode}.log`);
-  const entry = `[${new Date().toISOString()}] Room created\n`;
-  fs.writeFileSync(filePath, entry, { flag: 'w' });
+  appendLogEntry(filePath, 'Room created', 'w');
 }
 
 // Append a message to a room's log file
 function appendRoomLog(roomCode, message) {
   const filePath = path.join(LOG_DIR, `room-${roomCode}.log`);
-  const entry = `[${new Date().toISOString()}] ${message}\n`;
-  fs.appendFile(filePath, entry, err => {
-    if (err) {
-      console.error('Failed to write to room log file:', err);
-    }
-  });
+  appendLogEntry(filePath, message);
 }
 
 // Mark the room log as closed/finished
 function closeRoomLog(roomCode, reason = 'Room closed') {
   const filePath = path.join(LOG_DIR, `room-${roomCode}.log`);
-  const entry = `[${new Date().toISOString()}] ${reason}\n`;
-  fs.appendFile(filePath, entry, err => {
-    if (err) {
-      console.error('Failed to close room log file:', err);
-    }
-  });
+  appendLogEntry(filePath, reason);
 }
 
 module.exports = {

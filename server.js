@@ -58,6 +58,6 @@ global.activeGames = activeGames;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[${new Date().toLocaleTimeString()}] Development mode - Timestamp logging enabled`);
+    console.log(`[${new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' })}] Development mode - Timestamp logging enabled`);
   }
 });

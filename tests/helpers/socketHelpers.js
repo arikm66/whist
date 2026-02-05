@@ -4,7 +4,7 @@ const path = require('path');
 const TEST_LOG_PATH = path.join(__dirname, '..', 'test-debug.log');
 
 function testLog(msg) {
-  fs.appendFileSync(TEST_LOG_PATH, `[${new Date().toISOString()}] ${msg}\n`);
+  fs.appendFileSync(TEST_LOG_PATH, `[${new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' })}] ${msg}\n`);
 }
 
 /**
