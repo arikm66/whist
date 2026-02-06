@@ -152,3 +152,34 @@
 [2026-02-06 06:08:49.972 GMT+2] Closed 4 socket clients
 [2026-02-06 06:08:50.104 GMT+2] Admin logged in
 [2026-02-06 06:08:50.308 GMT+2] Room SXEN5L deleted
+[2026-02-06 15:50:12.537 GMT+2] =================================================
+[2026-02-06 15:50:12.538 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 15:50:12.538 GMT+2] =================================================
+[2026-02-06 15:50:13.273 GMT+2] Successfully logged in 4 test users
+[2026-02-06 15:50:13.274 GMT+2] Successfully logged in 4 test users
+[2026-02-06 15:50:13.305 GMT+2] All 4 clients connected
+[2026-02-06 15:50:13.306 GMT+2] All 4 clients connected
+[2026-02-06 15:50:13.534 GMT+2] Room created by test.user1@whist-game.com: F87KIT
+[2026-02-06 15:50:13.626 GMT+2] test.user2@whist-game.com joined room: F87KIT
+[2026-02-06 15:50:13.702 GMT+2] test.user3@whist-game.com joined room: F87KIT
+[2026-02-06 15:50:13.774 GMT+2] test.user4@whist-game.com joined room: F87KIT
+[2026-02-06 15:50:13.775 GMT+2] Room F87KIT created with 4 players
+[2026-02-06 15:50:13.864 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 15:50:13.865 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 15:50:13.865 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 15:50:13.866 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 15:50:13.866 GMT+2] Player 0 hand: 4S, 9S, AS, 6H, 7H, 6C, JC, QC, KC, AC, 4D, 8D, AD
+[2026-02-06 15:50:13.867 GMT+2] Player 1 hand: 2S, 5S, 8S, 4H, 9H, 2C, 3C, 4C, 7C, 8C, 3D, 10D, JD
+[2026-02-06 15:50:13.867 GMT+2] Player 2 hand: 7S, 10S, JS, 8H, JH, KH, AH, 10C, 2D, 5D, 6D, QD, KD
+[2026-02-06 15:50:13.868 GMT+2] Player 3 hand: 3S, 6S, QS, KS, 2H, 3H, 5H, 10H, QH, 5C, 9C, 7D, 9D
+[2026-02-06 15:50:13.937 GMT+2] Dealer for room F87KIT is: 0
+[2026-02-06 15:50:13.939 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 15:50:13.940 GMT+2] Player 1 decides to pass (best: 1 D, current high: none)
+[2026-02-06 15:50:14.020 GMT+2] Player 2 bids 6 tricks with D
+[2026-02-06 15:50:14.112 GMT+2] Player 3 decides to pass (best: 3 NT, current high: 6 D)
+[2026-02-06 15:50:14.191 GMT+2] Player 0 decides to pass (best: 6 C, current high: 6 D)
+[2026-02-06 15:50:14.282 GMT+2] Player 2 decides to pass (best: 6 D, current high: 6 D)
+[2026-02-06 15:50:14.365 GMT+2] Auction phase completed: Player 2 won with 6 D
+[2026-02-06 15:50:14.368 GMT+2] Closed 4 socket clients
+[2026-02-06 15:50:14.503 GMT+2] Admin logged in
+[2026-02-06 15:50:14.717 GMT+2] Room F87KIT deleted

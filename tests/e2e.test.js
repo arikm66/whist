@@ -195,7 +195,13 @@ describe('E2E Whist Game', () => {
                 setup.getClient(i).off('auctionNextBidder', auctionNextBidderHandlers[i]);
             }
             
-            testLog(`Auction phase completed: ${result.type}`);
+            if (result.type === 'complete') {
+                const winningBid = result.game.auctionHighestBid;
+                const winner = result.game.auctionWinner;
+                testLog(`Auction phase completed: Player ${winner} won with ${winningBid.quantity} ${winningBid.suit}`);
+            } else {
+                testLog(`Auction phase completed: Frish - all players passed`);
+            }
             expect(result.type).toBeDefined();
         });
     });
