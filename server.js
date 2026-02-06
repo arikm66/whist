@@ -58,7 +58,7 @@ global.activeGames = activeGames;
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[${formatTimestamp()}] Development mode - Timestamp logging enabled`);
+  if (process.env.TRICK_DELAY_MS) {
+    console.log(`[${formatTimestamp()}] TRICK_DELAY_MS set to ${process.env.TRICK_DELAY_MS}ms`);
   }
 });

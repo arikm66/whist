@@ -9,6 +9,7 @@ const {
   delay
 } = require('./helpers/socketHelpers');
 const { calculateTrickBid } = require('./helpers/biddingHelper');
+const { calculateCardToPlay } = require('./helpers/playingHelper');
 
 // Helper to compare auction bids (C < D < H < S < NT)
 function compareAuctionBids(bid1, bid2) {
@@ -297,7 +298,144 @@ describe('E2E Whist Game', () => {
         });
     });
 
+    describe('Playing Phase', () => {
+        test('all players play their cards through all tricks', async () => {
+            expect(currentGame.status).toBe('playing');
+            expect(currentGame.currentTurn).toBeDefined();
+            
+            const totalTricks = playerHands[0].length;
+            testLog(`Starting playing phase: ${totalTricks} tricks to play, trump: ${currentGame.trumpSuit || 'NT'}`);
+            testLog(`Bids: [${currentGame.bids.join(', ')}]`);
+            
+            const nextPlayerHandlers = [];
+            const nextTrickHandlers = [];
+            let tricksCompleted = 0;
+            
+            // Track tricks won by each player
+            const tricksWon = [0, 0, 0, 0];
+            
+            // Helper to convert string card ("4S") to object {rank: "4", suit: "S"}
+            const parseCard = (cardStr) => {
+                return {
+                    rank: cardStr.slice(0, -1),
+                    suit: cardStr.slice(-1)
+                };
+            };
+            
+            // Helper to convert object card to string
+            const cardToString = (card) => `${card.rank}${card.suit}`;
+            
+            // Set up single trickComplete handler (not per player, as all receive same event)
+            setup.getClient(0).on('trickComplete', (data) => {
+                tricksCompleted++;
+                const winner = data.winner;
+                tricksWon[winner]++;
+                testLog(`Trick ${tricksCompleted}/${totalTricks} won by Player ${winner} (now has ${tricksWon[winner]} tricks)`);
+            });
+            
+            // Helper function to play a card
+            const processPlayTurn = (playerIdx, game) => {
+                const client = setup.getClient(playerIdx);
+                const user = setup.getUser(playerIdx);
+                
+                // Get current state
+                const myHandStrings = playerHands[playerIdx];
+                const myBid = game.bids[playerIdx];
+                const myTricksWon = tricksWon[playerIdx];
+                const currentTrick = game.currentTrick || [];
+                
+                if (myHandStrings.length === 0) {
+                    testLog(`Player ${playerIdx} has no cards left`);
+                    return;
+                }
+                
+                // Convert string cards to objects for the helper
+                const myHandObjects = myHandStrings.map(parseCard);
+                const currentTrickObjects = currentTrick.map(tc => parseCard(tc.card));
+                
+                // Calculate which card to play
+                const result = calculateCardToPlay(
+                    myHandObjects,
+                    currentTrickObjects,
+                    game.trumpSuit,
+                    myBid,
+                    myTricksWon
+                );
+                
+                const cardToPlay = result.card;
+                const cardString = cardToString(cardToPlay);
+                testLog(`Player ${playerIdx} plays ${cardString} - ${result.reasoning}`);
+                
+                // Remove card from hand (as string)
+                const cardIndex = myHandStrings.indexOf(cardString);
+                if (cardIndex !== -1) {
+                    myHandStrings.splice(cardIndex, 1);
+                }
+                
+                // Play the card (server expects string format)
+                client.emit('playCard', {
+                    roomCode: setup.roomCode,
+                    userId: user.userId,
+                    card: cardString
+                });
+            };
+            
+            // Set up handlers for each player
+            for (let i = 0; i < 4; i++) {
+                const cardPlayedHandler = (data) => {
+                    if (data.game.currentTurn === i) {
+                        processPlayTurn(i, data.game);
+                    }
+                };
+                
+                const nextTrickHandler = (data) => {
+                    if (data.game.currentTurn === i) {
+                        processPlayTurn(i, data.game);
+                    }
+                };
+                
+                nextPlayerHandlers.push(cardPlayedHandler);
+                nextTrickHandlers.push(nextTrickHandler);
+                
+                setup.getClient(i).on('cardPlayed', cardPlayedHandler);
+                setup.getClient(i).on('nextTrick', nextTrickHandler);
+            }
+            
+            // Start the first play
+            testLog(`First player: Player ${currentGame.currentTurn}`);
+            processPlayTurn(currentGame.currentTurn, currentGame);
+            
+            // Wait for round to complete
+            const result = await new Promise((resolve) => {
+                setup.getClient(0).once('roundEnded', (data) => {
+                    resolve(data.game);
+                });
+            });
+            
+            // Clean up listeners
+            setup.getClient(0).off('trickComplete'); // Remove single trickComplete handler
+            for (let i = 0; i < 4; i++) {
+                setup.getClient(i).off('cardPlayed', nextPlayerHandlers[i]);
+                setup.getClient(i).off('nextTrick', nextTrickHandlers[i]);
+            }
+            
+            // Update current game state
+            currentGame = result;
+            
+            testLog(`Playing phase completed. Tricks won: [${tricksWon.join(', ')}]`);
+            testLog(`Scores: [${result.scores.map(s => s.score).join(', ')}]`);
+            
+            // Verify all tricks were played
+            expect(tricksCompleted).toBe(totalTricks);
+            expect(tricksWon.reduce((a, b) => a + b, 0)).toBe(totalTricks);
+            
+            // Verify hands are empty
+            for (let i = 0; i < 4; i++) {
+                expect(playerHands[i].length).toBe(0);
+            }
+        }, 60000); // 60 second timeout for 13 tricks with 3s delays
+    });
+
     // TODO: Add more describe blocks as tests are added
-    // describe('Playing Phase', () => { ... });
     // describe('Scoring & Round Completion', () => { ... });
 });

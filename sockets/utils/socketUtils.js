@@ -107,17 +107,24 @@ async function endRound(game, roomCode, io) {
   const bidsAndTricks = game.players.map((player, idx) => {
     const bid = game.bids[idx];
     const tricks = player.tricksWon;
-    return `Player ${idx} (${player?.email || player?.userId}): Bid ${bid}, Tricks ${tricks}`;
-  }).join('; ');
+    return `${idx}: [${tricks}/${bid}]`;
+  }).join(', ');
   appendRoomLog(roomCode, `Round ended: Round ${game.round}`);
   appendRoomLog(roomCode, `Bids and tricks: ${bidsAndTricks}`);
 
   // Log latest scores for all players
   const scoreLines = game.scores.map(s => {
-    const player = game.players[s.position];
-    return `Player ${s.position} (${player?.email || player?.userId}): ${s.score}`;
-  }).join('; ');
-  appendRoomLog(roomCode, `Scores after round ${game.round}: ${scoreLines}`);
+    return `${s.position}: [${s.score}]`;
+  }).join(', ');
+  
+  // Convert round number to ordinal (1st, 2nd, 3rd, etc.)
+  const getOrdinal = (n) => {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  };
+  
+  appendRoomLog(roomCode, `Scores after ${getOrdinal(game.round)} round: ${scoreLines}`);
 
   // Emit round summary to all players
   io.to(roomCode).emit('roundEnded', { roundSummary, game });

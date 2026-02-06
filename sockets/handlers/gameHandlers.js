@@ -125,7 +125,8 @@ function registerGameHandlers(io, socket, activeGames) {
         const winner = determineTrickWinner(game.currentTrick, game.trumpSuit, game.leadSuit);
         game.players[winner].tricksWon++;
         const trickCards = game.currentTrick.map(tc => `P${tc.position}: ${tc.card}`).join(', ');
-        appendRoomLog(roomCode, `Trick completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), cards: ${trickCards}`);
+        const trickNumber = 13 - game.players[0].hand.length;
+        appendRoomLog(roomCode, `Trick ${trickNumber}/13 completed: Winner is Player ${winner} (${game.players[winner]?.email || game.players[winner]?.userId}), cards: ${trickCards}`);
         game.players.forEach(p => {
           const filteredGame = getFilteredGameForPlayer(game, p.userId);
           io.to(p.userId.toString()).emit('trickComplete', { 
@@ -135,6 +136,7 @@ function registerGameHandlers(io, socket, activeGames) {
           });
         });
         // Reset for next trick
+        const trickDelay = parseInt(process.env.TRICK_DELAY_MS || '3000', 10);
         setTimeout(async () => {
           game.currentTrick = [];
           game.leadSuit = null;
@@ -150,7 +152,7 @@ function registerGameHandlers(io, socket, activeGames) {
               io.to(p.userId.toString()).emit('nextTrick', { game: filteredGame });
             });
           }
-        }, 3000);
+        }, trickDelay);
       } else {
         // Next player's turn
         game.currentTurn = (game.currentTurn + 1) % 4;
