@@ -1,4 +1,3 @@
-require('dotenv').config();
 const { createTestSetup } = require('./helpers/testSetup');
 const {
   testLog,
@@ -195,10 +194,13 @@ describe('E2E Whist Game', () => {
                 setup.getClient(i).off('auctionNextBidder', auctionNextBidderHandlers[i]);
             }
             
+            // Update current game state
+            currentGame = result.game;
+            
             if (result.type === 'complete') {
                 const winningBid = result.game.auctionHighestBid;
                 const winner = result.game.auctionWinner;
-                testLog(`Auction phase completed: Player ${winner} won with ${winningBid.quantity} ${winningBid.suit}`);
+                testLog(`Auction phase completed: Player ${winner} won auction with ${winningBid.quantity} ${winningBid.suit}`);
             } else {
                 testLog(`Auction phase completed: Frish - all players passed`);
             }
@@ -206,8 +208,96 @@ describe('E2E Whist Game', () => {
         });
     });
 
+    describe('Bidding Phase', () => {
+        test('all players place their bids', async () => {
+            // Skip if auction ended in frish
+            if (currentGame.status === 'frish') {
+                testLog('Skipping bidding phase - auction ended in frish');
+                return;
+            }
+            
+            expect(currentGame.status).toBe('bidding');
+            expect(currentGame.currentBidder).toBeDefined();
+            
+            const nextBidderHandlers = [];
+            
+            // Helper function to calculate and place bid
+            const processBiddingTurn = (playerIdx, game) => {
+                // Skip if this player already placed a bid
+                if (game.bids[playerIdx] !== null && game.bids[playerIdx] !== undefined) {
+                    testLog(`Player ${playerIdx} already placed bid: ${game.bids[playerIdx]}, skipping`);
+                    return;
+                }
+                
+                const client = setup.getClient(playerIdx);
+                const user = setup.getUser(playerIdx);
+                
+                // Get trump suit (null for NT)
+                const trumpSuit = game.trumpSuit;
+                
+                // Calculate recommended bid based on hand and trump suit
+                const result = calculateTrickBid(playerHands[playerIdx], trumpSuit);
+                let myBid = result.bid;
+                
+                // Check if this is the last bidder and bid would be forbidden
+                const tricksAvailable = playerHands[playerIdx].length;
+                const currentBidSum = game.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
+                const lastBidderPos = (game.auctionWinner + 3) % 4;
+                
+                if (playerIdx === lastBidderPos && currentBidSum + myBid === tricksAvailable) {
+                    testLog(`Player ${playerIdx} bid ${myBid} is forbidden (total would be ${tricksAvailable}), using alternative: ${result.alternativeBid}`);
+                    myBid = result.alternativeBid;
+                }
+                
+                testLog(`Player ${playerIdx} bids ${myBid} tricks`);
+                client.emit('placeBid', {
+                    roomCode: setup.roomCode,
+                    userId: user.userId,
+                    bid: myBid
+                });
+            };
+            
+            // Set up handlers for each player
+            for (let i = 0; i < 4; i++) {
+                const handler = (data) => {
+                    if (data.game.currentBidder === i) {
+                        processBiddingTurn(i, data.game);
+                    }
+                };
+                
+                nextBidderHandlers.push(handler);
+                setup.getClient(i).on('nextBidder', handler);
+            }
+            
+            // Trigger the first bidder
+            testLog(`Starting bidding phase, first bidder: Player ${currentGame.currentBidder}`);
+            processBiddingTurn(currentGame.currentBidder, currentGame);
+            
+            // Wait for bidding to complete
+            const result = await new Promise((resolve) => {
+                setup.getClient(0).once('biddingComplete', (data) => {
+                    resolve(data.game);
+                });
+            });
+            
+            // Clean up listeners
+            for (let i = 0; i < 4; i++) {
+                setup.getClient(i).off('nextBidder', nextBidderHandlers[i]);
+            }
+            
+            // Update current game state
+            currentGame = result;
+            
+            const bidSum = result.bids.reduce((sum, b) => sum + (typeof b === 'number' ? b : 0), 0);
+            const tricksAvailable = playerHands[0].length;
+            const roundType = bidSum > tricksAvailable ? 'over-round' : bidSum < tricksAvailable ? 'under-round' : 'exact';
+            testLog(`Bidding phase completed. Bids: [${result.bids.join(', ')}], Sum: ${bidSum}/${tricksAvailable} (${roundType})`);
+            expect(result.status).toBe('playing');
+            expect(result.bids.filter(b => b !== null).length).toBe(4);
+        });
+    });
+
     // TODO: Add more describe blocks as tests are added
-    // describe('Bidding Phase', () => { ... });
     // describe('Playing Phase', () => { ... });
     // describe('Scoring & Round Completion', () => { ... });
 });

@@ -150,9 +150,17 @@ function calculateTrickBid(hand, trumpSuit) {
   // Ensure bid is within valid range (0 to hand size)
   const finalBid = Math.max(0, Math.min(recommendedBid, hand.length));
 
+  // Calculate alternative bid (for when finalBid is forbidden in last bidder scenario)
+  // If we rounded down from X.6+, prefer higher alternative; otherwise prefer lower
+  const preferHigher = (adjustedValue - finalBid) > 0.5;
+  const alternativeBid = preferHigher 
+    ? Math.min(finalBid + 1, hand.length)  // Prefer higher, cap at hand size
+    : Math.max(finalBid - 1, 0);            // Prefer lower, floor at 0
+
   return {
     bid: finalBid,
-    reasoning: reasoning
+    reasoning: reasoning,
+    alternativeBid: alternativeBid
   };
 }
 

@@ -8,7 +8,7 @@ function registerGameHandlers(io, socket, activeGames) {
   // Place bid during bidding phase
   socket.on('placeBid', async ({ roomCode, userId, bid }) => {
     try {
-      const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+      let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
       if (!game) {
         socket.emit('error', { message: 'Game not found' });
         return;
@@ -89,7 +89,7 @@ function registerGameHandlers(io, socket, activeGames) {
   // Play a card
   socket.on('playCard', async ({ roomCode, userId, card }) => {
     try {
-      const game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
+      let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
       if (!game) {
         appendRoomLog(roomCode, `Invalid action: Game not found (userId: ${userId})`);
         socket.emit('error', { message: 'Game not found' });

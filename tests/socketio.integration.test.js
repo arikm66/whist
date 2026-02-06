@@ -1,5 +1,4 @@
 const Client = require('socket.io-client');
-require('dotenv').config();
 const { createTestSetup, SERVER_URL } = require('./helpers/testSetup');
 const {
   testLog,

@@ -1,6 +1,12 @@
 const Client = require('socket.io-client');
 const axios = require('axios');
+
+// Suppress dotenv console output
+const originalLog = console.log;
+console.log = () => {};
 require('dotenv').config();
+console.log = originalLog;
+
 const { testLog, waitForConnections, createRoom, joinRoom } = require('./socketHelpers');
 
 const SERVER_URL = process.env.SERVER_URL || 'http://localhost:5000';
