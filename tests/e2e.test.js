@@ -113,7 +113,6 @@ describe('E2E Whist Game', () => {
                 const handler = (data) => {
                     // Check if it's my turn based on the updated game state
                     if (data.game.auctionCurrentBidder === i) {
-                        testLog(`Player ${i} received turn via auctionNextBidder event`);
                         
                         // TODO: Implement player logic (bid or pass)
                         

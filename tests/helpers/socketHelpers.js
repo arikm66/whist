@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const { formatTimestamp } = require('../../utils/constants');
 
 const TEST_LOG_PATH = path.join(__dirname, '..', 'test-debug.log');
 
 function testLog(msg) {
-  fs.appendFileSync(TEST_LOG_PATH, `[${new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' })}] ${msg}\n`);
+  fs.appendFileSync(TEST_LOG_PATH, `[${formatTimestamp()}] ${msg}\n`);
 }
 
 /**

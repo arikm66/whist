@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const { formatTimestamp } = require('./utils/constants');
 
 const { createServer } = require('http');
 const { Server } = require('socket.io');
@@ -58,6 +59,6 @@ global.activeGames = activeGames;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[${new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' })}] Development mode - Timestamp logging enabled`);
+    console.log(`[${formatTimestamp()}] Development mode - Timestamp logging enabled`);
   }
 });

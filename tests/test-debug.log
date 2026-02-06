@@ -1,32 +1,29 @@
-[2026-02-05T05:22:14.457Z] =================================================
-[2026-02-05T05:22:14.457Z] =====     Starting E2E Whist Game tests     =====
-[2026-02-05T05:22:14.458Z] =================================================
-[2026-02-05T05:22:14.997Z] Successfully logged in 4 test users
-[2026-02-05T05:22:14.998Z] Successfully logged in 4 test users
-[2026-02-05T05:22:15.035Z] All 4 clients connected
-[2026-02-05T05:22:15.036Z] All 4 clients connected
-[2026-02-05T05:22:15.216Z] Room created by test.user1@whist-game.com: N55M3Y
-[2026-02-05T05:22:15.285Z] test.user2@whist-game.com joined room: N55M3Y
-[2026-02-05T05:22:15.352Z] test.user3@whist-game.com joined room: N55M3Y
-[2026-02-05T05:22:15.419Z] test.user4@whist-game.com joined room: N55M3Y
-[2026-02-05T05:22:15.419Z] Room N55M3Y created with 4 players
-[2026-02-05T05:22:15.491Z] Player 0 received hand with 13 cards
-[2026-02-05T05:22:15.492Z] Player 1 received hand with 13 cards
-[2026-02-05T05:22:15.492Z] Player 2 received hand with 13 cards
-[2026-02-05T05:22:15.493Z] Player 3 received hand with 13 cards
-[2026-02-05T05:22:15.494Z] Player 0 hand: 8S, 9S, 10S, AS, QH, 2C, 3C, 10C, JC, 3D, 5D, 7D, 10D
-[2026-02-05T05:22:15.494Z] Player 1 hand: 2S, 4S, KS, 3H, JH, KH, AH, 4C, 5C, 4D, 9D, JD, KD
-[2026-02-05T05:22:15.494Z] Player 2 hand: 5S, 6S, 7S, JS, 5H, 6H, 8H, 9H, 7C, KC, AC, 2D, 8D
-[2026-02-05T05:22:15.495Z] Player 3 hand: 3S, QS, 2H, 4H, 7H, 10H, 6C, 8C, 9C, QC, 6D, QD, AD
-[2026-02-05T05:22:15.560Z] Dealer for room N55M3Y is: 0
-[2026-02-05T05:22:15.561Z] Starting auction, first bidder: Player 1
-[2026-02-05T05:22:15.561Z] Player 1 decides to pass
-[2026-02-05T05:22:15.631Z] Player 2 received turn via auctionNextBidder event
-[2026-02-05T05:22:15.632Z] Player 2 decides to pass
-[2026-02-05T05:22:15.704Z] Player 3 received turn via auctionNextBidder event
-[2026-02-05T05:22:15.704Z] Player 3 decides to pass
-[2026-02-05T05:22:15.774Z] Player 0 received turn via auctionNextBidder event
-[2026-02-05T05:22:15.774Z] Player 0 decides to pass
-[2026-02-05T05:22:15.842Z] Auction phase completed: frish
-[2026-02-05T05:22:15.845Z] Closed 4 socket clients
-[2026-02-05T05:22:15.845Z] Room cleanup skipped for N55M3Y
+[2026-02-06 04:54:04.597 GMT+2] =================================================
+[2026-02-06 04:54:04.598 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 04:54:04.599 GMT+2] =================================================
+[2026-02-06 04:54:05.300 GMT+2] Successfully logged in 4 test users
+[2026-02-06 04:54:05.303 GMT+2] Successfully logged in 4 test users
+[2026-02-06 04:54:05.369 GMT+2] All 4 clients connected
+[2026-02-06 04:54:05.370 GMT+2] All 4 clients connected
+[2026-02-06 04:54:05.568 GMT+2] Room created by test.user1@whist-game.com: N22TPK
+[2026-02-06 04:54:05.658 GMT+2] test.user2@whist-game.com joined room: N22TPK
+[2026-02-06 04:54:05.735 GMT+2] test.user3@whist-game.com joined room: N22TPK
+[2026-02-06 04:54:05.815 GMT+2] test.user4@whist-game.com joined room: N22TPK
+[2026-02-06 04:54:05.815 GMT+2] Room N22TPK created with 4 players
+[2026-02-06 04:54:05.898 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 04:54:05.900 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 04:54:05.903 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 04:54:05.905 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 04:54:05.907 GMT+2] Player 0 hand: 4S, 5S, 7S, 8S, 2H, 10H, KH, 2C, 6C, QC, 4D, 8D, 10D
+[2026-02-06 04:54:05.909 GMT+2] Player 1 hand: 9S, 10S, JS, KS, 4H, 6H, 5C, 7C, 3D, 6D, 7D, 9D, AD
+[2026-02-06 04:54:05.911 GMT+2] Player 2 hand: 2S, QS, 7H, 8H, QH, AH, 9C, 10C, JC, AC, 2D, JD, QD
+[2026-02-06 04:54:05.914 GMT+2] Player 3 hand: 3S, 6S, AS, 3H, 5H, 9H, JH, 3C, 4C, 8C, KC, 5D, KD
+[2026-02-06 04:54:05.931 GMT+2] Dealer for room N22TPK is: 0
+[2026-02-06 04:54:05.936 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 04:54:05.937 GMT+2] Player 1 decides to pass
+[2026-02-06 04:54:06.017 GMT+2] Player 2 decides to pass
+[2026-02-06 04:54:06.088 GMT+2] Player 3 decides to pass
+[2026-02-06 04:54:06.163 GMT+2] Player 0 decides to pass
+[2026-02-06 04:54:06.241 GMT+2] Auction phase completed: frish
+[2026-02-06 04:54:06.244 GMT+2] Closed 4 socket clients
+[2026-02-06 04:54:06.244 GMT+2] Room cleanup skipped for N22TPK

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { formatTimestamp } = require('./constants');
 
 const LOG_DIR = path.join(__dirname, '../logs');
 if (!fs.existsSync(LOG_DIR)) {
@@ -8,7 +9,7 @@ if (!fs.existsSync(LOG_DIR)) {
 
 // Helper function to append a timestamped log entry to a file
 function appendLogEntry(filePath, message, flag = 'a') {
-  const timestamp = new Date().toLocaleString('en-US', { hour12: false, timeZoneName: 'short' });
+  const timestamp = formatTimestamp();
   const entry = `[${timestamp}] ${message}\n`;
   
   if (flag === 'w') {
