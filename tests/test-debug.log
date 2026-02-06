@@ -1,29 +1,122 @@
-[2026-02-06 04:54:04.597 GMT+2] =================================================
-[2026-02-06 04:54:04.598 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 04:54:04.599 GMT+2] =================================================
-[2026-02-06 04:54:05.300 GMT+2] Successfully logged in 4 test users
-[2026-02-06 04:54:05.303 GMT+2] Successfully logged in 4 test users
-[2026-02-06 04:54:05.369 GMT+2] All 4 clients connected
-[2026-02-06 04:54:05.370 GMT+2] All 4 clients connected
-[2026-02-06 04:54:05.568 GMT+2] Room created by test.user1@whist-game.com: N22TPK
-[2026-02-06 04:54:05.658 GMT+2] test.user2@whist-game.com joined room: N22TPK
-[2026-02-06 04:54:05.735 GMT+2] test.user3@whist-game.com joined room: N22TPK
-[2026-02-06 04:54:05.815 GMT+2] test.user4@whist-game.com joined room: N22TPK
-[2026-02-06 04:54:05.815 GMT+2] Room N22TPK created with 4 players
-[2026-02-06 04:54:05.898 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 04:54:05.900 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 04:54:05.903 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 04:54:05.905 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 04:54:05.907 GMT+2] Player 0 hand: 4S, 5S, 7S, 8S, 2H, 10H, KH, 2C, 6C, QC, 4D, 8D, 10D
-[2026-02-06 04:54:05.909 GMT+2] Player 1 hand: 9S, 10S, JS, KS, 4H, 6H, 5C, 7C, 3D, 6D, 7D, 9D, AD
-[2026-02-06 04:54:05.911 GMT+2] Player 2 hand: 2S, QS, 7H, 8H, QH, AH, 9C, 10C, JC, AC, 2D, JD, QD
-[2026-02-06 04:54:05.914 GMT+2] Player 3 hand: 3S, 6S, AS, 3H, 5H, 9H, JH, 3C, 4C, 8C, KC, 5D, KD
-[2026-02-06 04:54:05.931 GMT+2] Dealer for room N22TPK is: 0
-[2026-02-06 04:54:05.936 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 04:54:05.937 GMT+2] Player 1 decides to pass
-[2026-02-06 04:54:06.017 GMT+2] Player 2 decides to pass
-[2026-02-06 04:54:06.088 GMT+2] Player 3 decides to pass
-[2026-02-06 04:54:06.163 GMT+2] Player 0 decides to pass
-[2026-02-06 04:54:06.241 GMT+2] Auction phase completed: frish
-[2026-02-06 04:54:06.244 GMT+2] Closed 4 socket clients
-[2026-02-06 04:54:06.244 GMT+2] Room cleanup skipped for N22TPK
+[2026-02-06 05:46:57.648 GMT+2] =================================================
+[2026-02-06 05:46:57.649 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 05:46:57.649 GMT+2] =================================================
+[2026-02-06 05:46:58.271 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:46:58.273 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:46:58.306 GMT+2] All 4 clients connected
+[2026-02-06 05:46:58.307 GMT+2] All 4 clients connected
+[2026-02-06 05:46:58.531 GMT+2] Room created by test.user1@whist-game.com: 1CK6UT
+[2026-02-06 05:46:58.617 GMT+2] test.user2@whist-game.com joined room: 1CK6UT
+[2026-02-06 05:46:58.686 GMT+2] test.user3@whist-game.com joined room: 1CK6UT
+[2026-02-06 05:46:58.763 GMT+2] test.user4@whist-game.com joined room: 1CK6UT
+[2026-02-06 05:46:58.764 GMT+2] Room 1CK6UT created with 4 players
+[2026-02-06 05:46:58.859 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 05:46:58.860 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 05:46:58.862 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 05:46:58.865 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 05:46:58.867 GMT+2] Player 0 hand: 4S, 8S, KS, 7H, QH, 10C, JC, QC, KC, AC, 5D, 9D, KD
+[2026-02-06 05:46:58.868 GMT+2] Player 1 hand: 2S, 5S, JS, QS, 5H, 9H, 3C, 7C, 9C, 2D, 3D, 7D, 10D
+[2026-02-06 05:46:58.870 GMT+2] Player 2 hand: 3S, 6S, 7S, 10S, 2H, 6H, KH, 5C, 4D, 6D, 8D, QD, AD
+[2026-02-06 05:46:58.871 GMT+2] Player 3 hand: 9S, AS, 3H, 4H, 8H, 10H, JH, AH, 2C, 4C, 6C, 8C, JD
+[2026-02-06 05:46:58.942 GMT+2] Dealer for room 1CK6UT is: 0
+[2026-02-06 05:46:58.944 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 05:46:58.946 GMT+2] Player 1 decides to pass (best bid 2 < minimum 5)
+[2026-02-06 05:46:59.019 GMT+2] Player 2 decides to pass (best: 4 D, current high: none)
+[2026-02-06 05:46:59.093 GMT+2] Player 3 decides to pass (best: 4 H, current high: none)
+[2026-02-06 05:46:59.168 GMT+2] Player 0 bids 6 tricks with NT
+[2026-02-06 05:46:59.271 GMT+2] Auction phase completed: complete
+[2026-02-06 05:46:59.281 GMT+2] Closed 4 socket clients
+[2026-02-06 05:46:59.282 GMT+2] Room cleanup skipped for 1CK6UT
+[2026-02-06 05:49:57.439 GMT+2] =================================================
+[2026-02-06 05:49:57.440 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 05:49:57.440 GMT+2] =================================================
+[2026-02-06 05:49:57.997 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:49:57.998 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:49:58.040 GMT+2] All 4 clients connected
+[2026-02-06 05:49:58.041 GMT+2] All 4 clients connected
+[2026-02-06 05:49:58.124 GMT+2] Room created by test.user1@whist-game.com: Q37CB7
+[2026-02-06 05:49:58.215 GMT+2] test.user2@whist-game.com joined room: Q37CB7
+[2026-02-06 05:49:58.284 GMT+2] test.user3@whist-game.com joined room: Q37CB7
+[2026-02-06 05:49:58.354 GMT+2] test.user4@whist-game.com joined room: Q37CB7
+[2026-02-06 05:49:58.355 GMT+2] Room Q37CB7 created with 4 players
+[2026-02-06 05:49:58.432 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 05:49:58.432 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 05:49:58.433 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 05:49:58.433 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 05:49:58.434 GMT+2] Player 0 hand: 7S, 8S, 10S, JS, QS, 7H, 8H, 10H, JH, 4C, 3D, 8D, KD
+[2026-02-06 05:49:58.435 GMT+2] Player 1 hand: 4S, 5S, 6S, KS, QH, KH, 2C, 6C, 7C, KC, 6D, 10D, JD
+[2026-02-06 05:49:58.435 GMT+2] Player 2 hand: 2H, 3H, 3C, 5C, 8C, 9C, 10C, JC, AC, 2D, 5D, 7D, 9D
+[2026-02-06 05:49:58.435 GMT+2] Player 3 hand: 2S, 3S, 9S, AS, 4H, 5H, 6H, 9H, AH, QC, 4D, QD, AD
+[2026-02-06 05:49:58.502 GMT+2] Dealer for room Q37CB7 is: 0
+[2026-02-06 05:49:58.505 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 05:49:58.508 GMT+2] Player 1 decides to pass (best bid 4 < minimum 5)
+[2026-02-06 05:49:58.590 GMT+2] Player 2 decides to pass (best: 3 C, current high: none)
+[2026-02-06 05:49:58.663 GMT+2] Player 3 bids 5 tricks with NT
+[2026-02-06 05:49:58.745 GMT+2] Player 0 decides to pass (best: 4 S, current high: 5 NT)
+[2026-02-06 05:49:58.819 GMT+2] Player 3 decides to pass (best: 5 NT, current high: 5 NT)
+[2026-02-06 05:49:58.892 GMT+2] Auction phase completed: complete
+[2026-02-06 05:49:58.898 GMT+2] Closed 4 socket clients
+[2026-02-06 05:49:59.034 GMT+2] Admin logged in
+[2026-02-06 05:49:59.231 GMT+2] Room Q37CB7 deleted
+[2026-02-06 05:50:09.000 GMT+2] =================================================
+[2026-02-06 05:50:09.001 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 05:50:09.001 GMT+2] =================================================
+[2026-02-06 05:50:09.564 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:50:09.565 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:50:09.602 GMT+2] All 4 clients connected
+[2026-02-06 05:50:09.603 GMT+2] All 4 clients connected
+[2026-02-06 05:50:09.788 GMT+2] Room created by test.user1@whist-game.com: KD1K2B
+[2026-02-06 05:50:09.857 GMT+2] test.user2@whist-game.com joined room: KD1K2B
+[2026-02-06 05:50:09.936 GMT+2] test.user3@whist-game.com joined room: KD1K2B
+[2026-02-06 05:50:10.002 GMT+2] test.user4@whist-game.com joined room: KD1K2B
+[2026-02-06 05:50:10.003 GMT+2] Room KD1K2B created with 4 players
+[2026-02-06 05:50:10.075 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 05:50:10.076 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 05:50:10.076 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 05:50:10.076 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 05:50:10.077 GMT+2] Player 0 hand: 2S, 3S, 4S, 6S, 7S, QS, 10H, JC, AC, 3D, 4D, 8D, AD
+[2026-02-06 05:50:10.077 GMT+2] Player 1 hand: 9S, 10S, JS, 3H, 6H, 8H, 2C, 3C, 6C, 2D, 7D, 9D, 10D
+[2026-02-06 05:50:10.077 GMT+2] Player 2 hand: KS, AS, 2H, 4H, 5H, 7H, 9H, JH, KH, 5C, 8C, 6D, JD
+[2026-02-06 05:50:10.078 GMT+2] Player 3 hand: 5S, 8S, QH, AH, 4C, 7C, 9C, 10C, QC, KC, 5D, QD, KD
+[2026-02-06 05:50:10.144 GMT+2] Dealer for room KD1K2B is: 0
+[2026-02-06 05:50:10.147 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 05:50:10.149 GMT+2] Player 1 decides to pass (best bid 1 < minimum 5)
+[2026-02-06 05:50:10.227 GMT+2] Player 2 bids 5 tricks with H
+[2026-02-06 05:50:10.299 GMT+2] Player 3 bids 6 tricks with C
+[2026-02-06 05:50:10.371 GMT+2] Player 0 decides to pass (best: 4 S, current high: 6 C)
+[2026-02-06 05:50:10.445 GMT+2] Player 2 decides to pass (best: 5 H, current high: 6 C)
+[2026-02-06 05:50:10.519 GMT+2] Player 3 decides to pass (best: 6 C, current high: 6 C)
+[2026-02-06 05:50:10.598 GMT+2] Auction phase completed: complete
+[2026-02-06 05:50:10.605 GMT+2] Closed 4 socket clients
+[2026-02-06 05:50:10.745 GMT+2] Admin logged in
+[2026-02-06 05:50:10.940 GMT+2] Room KD1K2B deleted
+[2026-02-06 05:50:16.097 GMT+2] =================================================
+[2026-02-06 05:50:16.098 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 05:50:16.098 GMT+2] =================================================
+[2026-02-06 05:50:16.659 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:50:16.661 GMT+2] Successfully logged in 4 test users
+[2026-02-06 05:50:16.697 GMT+2] All 4 clients connected
+[2026-02-06 05:50:16.698 GMT+2] All 4 clients connected
+[2026-02-06 05:50:16.866 GMT+2] Room created by test.user1@whist-game.com: MOFRI4
+[2026-02-06 05:50:16.939 GMT+2] test.user2@whist-game.com joined room: MOFRI4
+[2026-02-06 05:50:17.015 GMT+2] test.user3@whist-game.com joined room: MOFRI4
+[2026-02-06 05:50:17.085 GMT+2] test.user4@whist-game.com joined room: MOFRI4
+[2026-02-06 05:50:17.086 GMT+2] Room MOFRI4 created with 4 players
+[2026-02-06 05:50:17.156 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 05:50:17.157 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 05:50:17.157 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 05:50:17.157 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 05:50:17.158 GMT+2] Player 0 hand: 8S, AS, 2H, 3H, 8H, KH, 3C, 5C, 7C, QC, AC, 5D, QD
+[2026-02-06 05:50:17.158 GMT+2] Player 1 hand: 3S, 4S, 7S, 9S, 4H, JH, 2C, 6C, 3D, 4D, 8D, 10D, JD
+[2026-02-06 05:50:17.159 GMT+2] Player 2 hand: JS, QS, KS, 5H, 6H, QH, 4C, 8C, 9C, 10C, 2D, 6D, KD
+[2026-02-06 05:50:17.159 GMT+2] Player 3 hand: 2S, 5S, 6S, 10S, 7H, 9H, 10H, AH, JC, KC, 7D, 9D, AD
+[2026-02-06 05:50:17.223 GMT+2] Dealer for room MOFRI4 is: 0
+[2026-02-06 05:50:17.225 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 05:50:17.226 GMT+2] Player 1 decides to pass (best bid 2 < minimum 5)
+[2026-02-06 05:50:17.296 GMT+2] Player 2 decides to pass (best: 4 NT, current high: none)
+[2026-02-06 05:50:17.366 GMT+2] Player 3 decides to pass (best: 4 NT, current high: none)
+[2026-02-06 05:50:17.435 GMT+2] Player 0 bids 5 tricks with C
+[2026-02-06 05:50:17.506 GMT+2] Auction phase completed: complete
+[2026-02-06 05:50:17.510 GMT+2] Closed 4 socket clients
+[2026-02-06 05:50:17.634 GMT+2] Admin logged in
+[2026-02-06 05:50:17.829 GMT+2] Room MOFRI4 deleted

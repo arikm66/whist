@@ -170,8 +170,8 @@ function runSimulation(rounds = 50) {
   console.log(separator);
   console.log('');
   
-  const { sum, bids, hands } = simulateRound('S'); // Spades as trump
-  console.log('Trump: Spades');
+  const { sum, bids, hands } = simulateRound('S'); // S as trump
+  console.log('Trump: S');
   console.log('');
   
   hands.forEach((hand, idx) => {

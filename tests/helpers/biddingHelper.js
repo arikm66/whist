@@ -3,7 +3,7 @@
  * 
  * Card Format: "AS" = Ace of Spades, "KH" = King of Hearts, etc.
  * Ranks: A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2
- * Suits: S (Spades), H (Hearts), D (Diamonds), C (Clubs)
+ * Suits: S, H, D, C
  */
 
 // Card values represent expected trick-winning potential (out of 1 trick per card)
