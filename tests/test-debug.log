@@ -1,532 +1,105 @@
-[2026-02-06 18:54:32.323 GMT+2] =================================================
-[2026-02-06 18:54:32.323 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 18:54:32.324 GMT+2] =================================================
-[2026-02-06 18:54:32.928 GMT+2] Successfully logged in 4 test users
-[2026-02-06 18:54:32.930 GMT+2] Successfully logged in 4 test users
-[2026-02-06 18:54:32.962 GMT+2] All 4 clients connected
-[2026-02-06 18:54:32.963 GMT+2] All 4 clients connected
-[2026-02-06 18:54:33.037 GMT+2] Room created by test.user1@whist-game.com: SO5GKK
-[2026-02-06 18:54:33.104 GMT+2] test.user2@whist-game.com joined room: SO5GKK
-[2026-02-06 18:54:33.171 GMT+2] test.user3@whist-game.com joined room: SO5GKK
-[2026-02-06 18:54:33.241 GMT+2] test.user4@whist-game.com joined room: SO5GKK
-[2026-02-06 18:54:33.242 GMT+2] Room SO5GKK created with 4 players
-[2026-02-06 18:54:33.321 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 18:54:33.321 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 18:54:33.322 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 18:54:33.322 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 18:54:33.323 GMT+2] Player 0 hand: 5S, 10S, 2H, 3H, 4H, 5H, 8C, 9C, AC, 4D, 10D, JD, KD
-[2026-02-06 18:54:33.324 GMT+2] Player 1 hand: 2S, 4S, 8S, 9S, KS, 9H, JH, 2C, 6C, JC, 7D, 8D, 9D
-[2026-02-06 18:54:33.324 GMT+2] Player 2 hand: AS, 7H, 8H, 10H, QH, KH, AH, 4C, 5C, 2D, 3D, 5D, 6D
-[2026-02-06 18:54:33.325 GMT+2] Player 3 hand: 3S, 6S, 7S, JS, QS, 6H, 3C, 7C, 10C, QC, KC, QD, AD
-[2026-02-06 18:54:33.391 GMT+2] Dealer for room SO5GKK is: 0
-[2026-02-06 18:54:33.392 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 18:54:33.393 GMT+2] Player 1 decides to pass (best: 3 S, current high: none)
-[2026-02-06 18:54:33.463 GMT+2] Player 2 bids 5 tricks with H
-[2026-02-06 18:54:33.534 GMT+2] Player 3 bids 5 tricks with NT
-[2026-02-06 18:54:33.606 GMT+2] Player 0 decides to pass (best: 3 NT, current high: 5 NT)
-[2026-02-06 18:54:33.678 GMT+2] Player 2 decides to pass (best: 5 H, current high: 5 NT)
-[2026-02-06 18:54:33.751 GMT+2] Player 3 decides to pass (best: 5 NT, current high: 5 NT)
-[2026-02-06 18:54:33.822 GMT+2] Auction phase completed: Player 3 won auction with 5 NT
-[2026-02-06 18:54:33.826 GMT+2] Starting bidding phase, first bidder: Player 0
-[2026-02-06 18:54:33.826 GMT+2] Player 0 bids 3 tricks
-[2026-02-06 18:54:33.900 GMT+2] Player 1 bids 2 tricks
-[2026-02-06 18:54:33.973 GMT+2] Player 2 bids 4 tricks
-[2026-02-06 18:54:34.044 GMT+2] Bidding phase completed. Bids: [3, 2, 4, 5], Sum: 14/13 (over-round)
-[2026-02-06 18:54:34.050 GMT+2] Starting playing phase: 13 tricks to play, trump: NT
-[2026-02-06 18:54:34.050 GMT+2] Bids: [3, 2, 4, 5]
-[2026-02-06 18:54:34.051 GMT+2] First player: Player 3
-[2026-02-06 18:54:34.052 GMT+2] Player 3 plays 10C - Playing highest legal card (need 5 more)
-[2026-02-06 18:54:34.125 GMT+2] Player 0 plays 9C - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:34.195 GMT+2] Player 1 plays 6C - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:34.267 GMT+2] Player 2 plays 5C - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:34.270 GMT+2] Trick 1/13 won by Player 3 (now has 1 tricks)
-[2026-02-06 18:54:37.347 GMT+2] Player 3 plays 7S - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:37.415 GMT+2] Player 0 plays 10S - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:37.482 GMT+2] Player 1 plays 9S - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:37.553 GMT+2] Player 2 plays AS - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:37.555 GMT+2] Trick 2/13 won by Player 2 (now has 1 tricks)
-[2026-02-06 18:54:40.633 GMT+2] Player 2 plays 10H - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:40.708 GMT+2] Player 3 plays 6H - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:40.778 GMT+2] Player 0 plays 5H - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:40.856 GMT+2] Player 1 plays 9H - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:40.864 GMT+2] Trick 3/13 won by Player 2 (now has 2 tricks)
-[2026-02-06 18:54:43.951 GMT+2] Player 2 plays 8H - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:44.027 GMT+2] Player 3 plays 6S - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:44.096 GMT+2] Player 0 plays 4H - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:44.166 GMT+2] Player 1 plays JH - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:44.168 GMT+2] Trick 4/13 won by Player 1 (now has 1 tricks)
-[2026-02-06 18:54:47.251 GMT+2] Player 1 plays 9D - Playing highest legal card (need 1 more)
-[2026-02-06 18:54:47.324 GMT+2] Player 2 plays 6D - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:47.392 GMT+2] Player 3 plays QD - Playing highest legal card (need 4 more)
-[2026-02-06 18:54:47.463 GMT+2] Player 0 plays 10D - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:47.470 GMT+2] Trick 5/13 won by Player 3 (now has 2 tricks)
-[2026-02-06 18:54:50.558 GMT+2] Player 3 plays 3S - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:50.631 GMT+2] Player 0 plays 5S - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:50.707 GMT+2] Player 1 plays 8S - Playing highest legal card (need 1 more)
-[2026-02-06 18:54:50.783 GMT+2] Player 2 plays 7H - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:50.787 GMT+2] Trick 6/13 won by Player 1 (now has 2 tricks)
-[2026-02-06 18:54:53.878 GMT+2] Player 1 plays 2S - Playing lowest legal card (bid met)
-[2026-02-06 18:54:53.958 GMT+2] Player 2 plays QH - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:54.036 GMT+2] Player 3 plays JS - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:54.107 GMT+2] Player 0 plays 8C - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:54.109 GMT+2] Trick 7/13 won by Player 3 (now has 3 tricks)
-[2026-02-06 18:54:57.194 GMT+2] Player 3 plays QS - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:57.264 GMT+2] Player 0 plays 4D - Playing highest legal card (need 3 more)
-[2026-02-06 18:54:57.332 GMT+2] Player 1 plays 4S - Playing lowest legal card (bid met)
-[2026-02-06 18:54:57.399 GMT+2] Player 2 plays KH - Playing highest legal card (need 2 more)
-[2026-02-06 18:54:57.401 GMT+2] Trick 8/13 won by Player 3 (now has 4 tricks)
-[2026-02-06 18:55:00.488 GMT+2] Player 3 plays 7C - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:00.565 GMT+2] Player 0 plays AC - Playing highest legal card (need 3 more)
-[2026-02-06 18:55:00.636 GMT+2] Player 1 plays 2C - Playing lowest legal card (bid met)
-[2026-02-06 18:55:00.705 GMT+2] Player 2 plays 4C - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:00.707 GMT+2] Trick 9/13 won by Player 0 (now has 1 tricks)
-[2026-02-06 18:55:03.798 GMT+2] Player 0 plays 3H - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:03.874 GMT+2] Player 1 plays KS - Playing lowest legal card (bid met)
-[2026-02-06 18:55:03.946 GMT+2] Player 2 plays AH - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:04.016 GMT+2] Player 3 plays 3C - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:04.020 GMT+2] Trick 10/13 won by Player 2 (now has 3 tricks)
-[2026-02-06 18:55:07.119 GMT+2] Player 2 plays 5D - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:07.197 GMT+2] Player 3 plays AD - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:07.268 GMT+2] Player 0 plays JD - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:07.336 GMT+2] Player 1 plays 7D - Playing lowest legal card (bid met)
-[2026-02-06 18:55:07.338 GMT+2] Trick 11/13 won by Player 3 (now has 5 tricks)
-[2026-02-06 18:55:10.428 GMT+2] Player 3 plays QC - Playing lowest legal card (bid met)
-[2026-02-06 18:55:10.505 GMT+2] Player 0 plays 2H - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:10.577 GMT+2] Player 1 plays JC - Playing lowest legal card (bid met)
-[2026-02-06 18:55:10.645 GMT+2] Player 2 plays 3D - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:10.647 GMT+2] Trick 12/13 won by Player 3 (now has 6 tricks)
-[2026-02-06 18:55:13.737 GMT+2] Player 3 plays KC - Playing lowest legal card (bid met)
-[2026-02-06 18:55:13.808 GMT+2] Player 0 plays KD - Playing highest legal card (need 2 more)
-[2026-02-06 18:55:13.886 GMT+2] Player 1 plays 8D - Playing lowest legal card (bid met)
-[2026-02-06 18:55:13.958 GMT+2] Player 2 plays 2D - Playing highest legal card (need 1 more)
-[2026-02-06 18:55:13.960 GMT+2] Trick 13/13 won by Player 3 (now has 7 tricks)
-[2026-02-06 18:55:16.967 GMT+2] Playing phase completed. Tricks won: [1, 2, 3, 7]
-[2026-02-06 18:55:16.967 GMT+2] Scores: [-20, 14, -10, -20]
-[2026-02-06 18:55:16.975 GMT+2] Closed 4 socket clients
-[2026-02-06 18:55:16.975 GMT+2] Room cleanup skipped for SO5GKK
-[2026-02-06 19:12:59.224 GMT+2] =================================================
-[2026-02-06 19:12:59.225 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 19:12:59.225 GMT+2] =================================================
-[2026-02-06 19:12:59.869 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:12:59.870 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:12:59.906 GMT+2] All 4 clients connected
-[2026-02-06 19:12:59.907 GMT+2] All 4 clients connected
-[2026-02-06 19:13:00.103 GMT+2] Room created by test.user1@whist-game.com: MWD0SJ
-[2026-02-06 19:13:00.177 GMT+2] test.user2@whist-game.com joined room: MWD0SJ
-[2026-02-06 19:13:00.247 GMT+2] test.user3@whist-game.com joined room: MWD0SJ
-[2026-02-06 19:13:00.315 GMT+2] test.user4@whist-game.com joined room: MWD0SJ
-[2026-02-06 19:13:00.315 GMT+2] Room MWD0SJ created with 4 players
-[2026-02-06 19:13:00.393 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 19:13:00.393 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 19:13:00.394 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 19:13:00.394 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 19:13:00.395 GMT+2] Player 0 hand: 4S, 6S, JS, QS, QH, 7C, 10C, JC, KC, 4D, 10D, JD, AD
-[2026-02-06 19:13:00.395 GMT+2] Player 1 hand: 7S, 10S, 4H, 5H, 6H, 8H, 9H, 6C, 9C, 2D, 5D, 6D, 7D
-[2026-02-06 19:13:00.396 GMT+2] Player 2 hand: 3S, 8S, 9S, AS, 2H, 3H, 10H, KH, AH, 3C, 8C, QC, 9D
-[2026-02-06 19:13:00.396 GMT+2] Player 3 hand: 2S, 5S, KS, 7H, JH, 2C, 4C, 5C, AC, 3D, 8D, QD, KD
-[2026-02-06 19:13:00.461 GMT+2] Dealer for room MWD0SJ is: 0
-[2026-02-06 19:13:00.462 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 19:13:00.464 GMT+2] Player 1 decides to pass (best: 1 H, current high: none)
-[2026-02-06 19:13:00.536 GMT+2] Player 2 bids 5 tricks with H
-[2026-02-06 19:13:00.611 GMT+2] Player 3 decides to pass (best: 4 NT, current high: 5 H)
-[2026-02-06 19:13:00.683 GMT+2] Player 0 bids 5 tricks with NT
-[2026-02-06 19:13:00.753 GMT+2] Player 2 decides to pass (best: 5 H, current high: 5 NT)
-[2026-02-06 19:13:00.828 GMT+2] Player 0 decides to pass (best: 5 NT, current high: 5 NT)
-[2026-02-06 19:13:00.905 GMT+2] Auction phase completed: Player 0 won auction with 5 NT
-[2026-02-06 19:13:00.907 GMT+2] Starting bidding phase, first bidder: Player 1
-[2026-02-06 19:13:00.908 GMT+2] Player 1 bids 0 tricks
-[2026-02-06 19:13:00.980 GMT+2] Player 2 bids 4 tricks
-[2026-02-06 19:13:01.050 GMT+2] Player 3 bid 4 is forbidden (total would be 13), using alternative: 3
-[2026-02-06 19:13:01.051 GMT+2] Player 3 bids 3 tricks
-[2026-02-06 19:13:01.121 GMT+2] Bidding phase completed. Bids: [5, 0, 4, 3], Sum: 12/13 (under-round)
-[2026-02-06 19:13:01.123 GMT+2] Starting playing phase: 13 tricks to play, trump: NT
-[2026-02-06 19:13:01.123 GMT+2] Bids: [5, 0, 4, 3]
-[2026-02-06 19:13:01.124 GMT+2] First player: Player 0
-[2026-02-06 19:13:01.124 GMT+2] Player 0 plays 6S - Playing highest legal card (need 5 more)
-[2026-02-06 19:13:01.194 GMT+2] Player 1 plays 7S - Playing lowest legal card (bid met)
-[2026-02-06 19:13:01.264 GMT+2] Player 2 plays 9S - Playing highest legal card (need 4 more)
-[2026-02-06 19:13:01.335 GMT+2] Player 3 plays 5S - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:01.338 GMT+2] Trick 1/13 won by Player 2 (now has 1 tricks)
-[2026-02-06 19:13:04.419 GMT+2] Player 2 plays 8S - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:04.500 GMT+2] Player 3 plays 2S - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:04.573 GMT+2] Player 0 plays 4S - Playing highest legal card (need 5 more)
-[2026-02-06 19:13:04.647 GMT+2] Player 1 plays 10S - Playing lowest legal card (bid met)
-[2026-02-06 19:13:04.650 GMT+2] Trick 2/13 won by Player 1 (now has 1 tricks)
-[2026-02-06 19:13:07.741 GMT+2] Player 1 plays 2D - Playing lowest legal card (bid met)
-[2026-02-06 19:13:07.810 GMT+2] Player 2 plays 9D - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:07.882 GMT+2] Player 3 plays 8D - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:07.953 GMT+2] Player 0 plays 10D - Playing highest legal card (need 5 more)
-[2026-02-06 19:13:07.955 GMT+2] Trick 3/13 won by Player 0 (now has 1 tricks)
-[2026-02-06 19:13:11.040 GMT+2] Player 0 plays JS - Playing highest legal card (need 4 more)
-[2026-02-06 19:13:11.115 GMT+2] Player 1 plays 4H - Playing lowest legal card (bid met)
-[2026-02-06 19:13:11.190 GMT+2] Player 2 plays 3S - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:11.259 GMT+2] Player 3 plays KS - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:11.260 GMT+2] Trick 4/13 won by Player 3 (now has 1 tricks)
-[2026-02-06 19:13:14.331 GMT+2] Player 3 plays 7H - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:14.398 GMT+2] Player 0 plays QH - Playing highest legal card (need 4 more)
-[2026-02-06 19:13:14.470 GMT+2] Player 1 plays 5H - Playing lowest legal card (bid met)
-[2026-02-06 19:13:14.545 GMT+2] Player 2 plays 10H - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:14.549 GMT+2] Trick 5/13 won by Player 0 (now has 2 tricks)
-[2026-02-06 19:13:17.636 GMT+2] Player 0 plays QS - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:17.719 GMT+2] Player 1 plays 5D - Playing lowest legal card (bid met)
-[2026-02-06 19:13:17.797 GMT+2] Player 2 plays AS - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:17.871 GMT+2] Player 3 plays JH - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:17.875 GMT+2] Trick 6/13 won by Player 2 (now has 2 tricks)
-[2026-02-06 19:13:20.946 GMT+2] Player 2 plays 3H - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:21.017 GMT+2] Player 3 plays 5C - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:21.089 GMT+2] Player 0 plays 10C - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:21.160 GMT+2] Player 1 plays 6H - Playing lowest legal card (bid met)
-[2026-02-06 19:13:21.167 GMT+2] Trick 7/13 won by Player 1 (now has 2 tricks)
-[2026-02-06 19:13:24.256 GMT+2] Player 1 plays 6C - Playing lowest legal card (bid met)
-[2026-02-06 19:13:24.323 GMT+2] Player 2 plays 8C - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:24.392 GMT+2] Player 3 plays 4C - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:24.459 GMT+2] Player 0 plays 7C - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:24.460 GMT+2] Trick 8/13 won by Player 2 (now has 3 tricks)
-[2026-02-06 19:13:27.551 GMT+2] Player 2 plays 2H - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:27.627 GMT+2] Player 3 plays 2C - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:27.697 GMT+2] Player 0 plays JC - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:27.765 GMT+2] Player 1 plays 8H - Playing lowest legal card (bid met)
-[2026-02-06 19:13:27.766 GMT+2] Trick 9/13 won by Player 1 (now has 3 tricks)
-[2026-02-06 19:13:30.855 GMT+2] Player 1 plays 6D - Playing lowest legal card (bid met)
-[2026-02-06 19:13:30.931 GMT+2] Player 2 plays KH - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:31.000 GMT+2] Player 3 plays 3D - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:31.070 GMT+2] Player 0 plays 4D - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:31.074 GMT+2] Trick 10/13 won by Player 1 (now has 4 tricks)
-[2026-02-06 19:13:34.148 GMT+2] Player 1 plays 7D - Playing lowest legal card (bid met)
-[2026-02-06 19:13:34.216 GMT+2] Player 2 plays AH - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:34.284 GMT+2] Player 3 plays QD - Playing highest legal card (need 2 more)
-[2026-02-06 19:13:34.354 GMT+2] Player 0 plays JD - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:34.356 GMT+2] Trick 11/13 won by Player 3 (now has 2 tricks)
-[2026-02-06 19:13:37.433 GMT+2] Player 3 plays AC - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:37.504 GMT+2] Player 0 plays KC - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:37.579 GMT+2] Player 1 plays 9C - Playing lowest legal card (bid met)
-[2026-02-06 19:13:37.659 GMT+2] Player 2 plays 3C - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:37.663 GMT+2] Trick 12/13 won by Player 3 (now has 3 tricks)
-[2026-02-06 19:13:40.744 GMT+2] Player 3 plays KD - Playing lowest legal card (bid met)
-[2026-02-06 19:13:40.816 GMT+2] Player 0 plays AD - Playing highest legal card (need 3 more)
-[2026-02-06 19:13:40.883 GMT+2] Player 1 plays 9H - Playing lowest legal card (bid met)
-[2026-02-06 19:13:40.954 GMT+2] Player 2 plays QC - Playing highest legal card (need 1 more)
-[2026-02-06 19:13:40.955 GMT+2] Trick 13/13 won by Player 0 (now has 3 tricks)
-[2026-02-06 19:13:43.973 GMT+2] Playing phase completed. Tricks won: [3, 4, 3, 3]
-[2026-02-06 19:13:43.974 GMT+2] Scores: [-20, -20, -10, 19]
-[2026-02-06 19:13:43.988 GMT+2] Closed 4 socket clients
-[2026-02-06 19:13:44.128 GMT+2] Admin logged in
-[2026-02-06 19:13:44.323 GMT+2] Room MWD0SJ deleted
-[2026-02-06 19:16:24.524 GMT+2] =================================================
-[2026-02-06 19:16:24.525 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 19:16:24.525 GMT+2] =================================================
-[2026-02-06 19:16:25.197 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:16:25.198 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:16:25.233 GMT+2] All 4 clients connected
-[2026-02-06 19:16:25.234 GMT+2] All 4 clients connected
-[2026-02-06 19:16:25.416 GMT+2] Room created by test.user1@whist-game.com: FJUN7J
-[2026-02-06 19:16:25.514 GMT+2] test.user2@whist-game.com joined room: FJUN7J
-[2026-02-06 19:16:25.590 GMT+2] test.user3@whist-game.com joined room: FJUN7J
-[2026-02-06 19:16:25.659 GMT+2] test.user4@whist-game.com joined room: FJUN7J
-[2026-02-06 19:16:25.659 GMT+2] Room FJUN7J created with 4 players
-[2026-02-06 19:16:25.742 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 19:16:25.744 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 19:16:25.746 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 19:16:25.748 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 19:16:25.750 GMT+2] Player 0 hand: 3S, 5S, QS, KS, 2C, 4C, 6C, 9C, QC, 3D, 4D, 10D, QD
-[2026-02-06 19:16:25.751 GMT+2] Player 1 hand: 6S, 9S, JS, 2H, 3H, 9H, 10H, QH, JC, KC, 7D, 8D, 9D
-[2026-02-06 19:16:25.753 GMT+2] Player 2 hand: 2S, 8S, AS, 6H, 7H, JH, 3C, 8C, 10C, 2D, 6D, JD, KD
-[2026-02-06 19:16:25.754 GMT+2] Player 3 hand: 4S, 7S, 10S, 4H, 5H, 8H, KH, AH, 5C, 7C, AC, 5D, AD
-[2026-02-06 19:16:25.827 GMT+2] Dealer for room FJUN7J is: 0
-[2026-02-06 19:16:25.829 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 19:16:25.831 GMT+2] Player 1 decides to pass (best: 4 H, current high: none)
-[2026-02-06 19:16:25.908 GMT+2] Player 2 decides to pass (best: 3 NT, current high: none)
-[2026-02-06 19:16:25.989 GMT+2] Player 3 bids 5 tricks with H
-[2026-02-06 19:16:26.080 GMT+2] Player 0 decides to pass (best: 4 S, current high: 5 H)
-[2026-02-06 19:16:26.158 GMT+2] Player 3 decides to pass (best: 5 H, current high: 5 H)
-[2026-02-06 19:16:26.242 GMT+2] Auction phase completed: Player 3 won auction with 5 H
-[2026-02-06 19:16:26.246 GMT+2] Starting bidding phase, first bidder: Player 0
-[2026-02-06 19:16:26.247 GMT+2] Player 0 bids 3 tricks
-[2026-02-06 19:16:26.330 GMT+2] Player 1 bids 4 tricks
-[2026-02-06 19:16:26.405 GMT+2] Player 2 bids 3 tricks
-[2026-02-06 19:16:26.481 GMT+2] Bidding phase completed. Bids: [3, 4, 3, 5], Sum: 15/13 (over-round)
-[2026-02-06 19:16:26.489 GMT+2] Starting playing phase: 13 tricks to play, trump: H
-[2026-02-06 19:16:26.489 GMT+2] Bids: [3, 4, 3, 5]
-[2026-02-06 19:16:26.490 GMT+2] First player: Player 3
-[2026-02-06 19:16:26.491 GMT+2] Player 3 plays 10S - Playing highest legal card (need 5 more)
-[2026-02-06 19:16:26.570 GMT+2] Player 0 plays 5S - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:26.647 GMT+2] Player 1 plays 9S - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:26.730 GMT+2] Player 2 plays 8S - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:26.733 GMT+2] Trick 1/13 won by Player 3 (now has 1 tricks)
-[2026-02-06 19:16:29.823 GMT+2] Player 3 plays 8H - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:29.899 GMT+2] Player 0 plays 3S - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:29.976 GMT+2] Player 1 plays 10H - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:30.068 GMT+2] Player 2 plays 7H - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:30.073 GMT+2] Trick 2/13 won by Player 1 (now has 1 tricks)
-[2026-02-06 19:16:33.157 GMT+2] Player 1 plays 6S - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:33.236 GMT+2] Player 2 plays 2S - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:33.317 GMT+2] Player 3 plays 7S - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:33.405 GMT+2] Player 0 plays QS - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:33.407 GMT+2] Trick 3/13 won by Player 0 (now has 1 tricks)
-[2026-02-06 19:16:36.490 GMT+2] Player 0 plays KS - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:36.559 GMT+2] Player 1 plays JS - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:36.628 GMT+2] Player 2 plays AS - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:36.703 GMT+2] Player 3 plays 4S - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:36.705 GMT+2] Trick 4/13 won by Player 2 (now has 1 tricks)
-[2026-02-06 19:16:39.797 GMT+2] Player 2 plays 6H - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:39.873 GMT+2] Player 3 plays 5H - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:39.942 GMT+2] Player 0 plays 10D - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:40.015 GMT+2] Player 1 plays 9H - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:40.024 GMT+2] Trick 5/13 won by Player 1 (now has 2 tricks)
-[2026-02-06 19:16:43.109 GMT+2] Player 1 plays 3H - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:43.187 GMT+2] Player 2 plays JH - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:43.260 GMT+2] Player 3 plays 4H - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:43.330 GMT+2] Player 0 plays 9C - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:43.333 GMT+2] Trick 6/13 won by Player 2 (now has 2 tricks)
-[2026-02-06 19:16:46.424 GMT+2] Player 2 plays 10C - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:46.503 GMT+2] Player 3 plays 7C - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:46.574 GMT+2] Player 0 plays 6C - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:46.646 GMT+2] Player 1 plays JC - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:46.649 GMT+2] Trick 7/13 won by Player 1 (now has 3 tricks)
-[2026-02-06 19:16:49.736 GMT+2] Player 1 plays 2H - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:49.811 GMT+2] Player 2 plays 8C - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:49.881 GMT+2] Player 3 plays KH - Playing highest legal card (need 4 more)
-[2026-02-06 19:16:49.954 GMT+2] Player 0 plays 4C - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:49.963 GMT+2] Trick 8/13 won by Player 3 (now has 2 tricks)
-[2026-02-06 19:16:53.084 GMT+2] Player 3 plays AH - Playing highest legal card (need 3 more)
-[2026-02-06 19:16:53.152 GMT+2] Player 0 plays 2C - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:53.221 GMT+2] Player 1 plays QH - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:53.297 GMT+2] Player 2 plays 6D - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:53.298 GMT+2] Trick 9/13 won by Player 3 (now has 3 tricks)
-[2026-02-06 19:16:56.409 GMT+2] Player 3 plays 5C - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:56.480 GMT+2] Player 0 plays QC - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:56.549 GMT+2] Player 1 plays KC - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:56.618 GMT+2] Player 2 plays 3C - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:56.619 GMT+2] Trick 10/13 won by Player 1 (now has 4 tricks)
-[2026-02-06 19:16:59.699 GMT+2] Player 1 plays 7D - Playing lowest legal card (bid met)
-[2026-02-06 19:16:59.792 GMT+2] Player 2 plays 2D - Playing highest legal card (need 1 more)
-[2026-02-06 19:16:59.879 GMT+2] Player 3 plays 5D - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:59.949 GMT+2] Player 0 plays 4D - Playing highest legal card (need 2 more)
-[2026-02-06 19:16:59.950 GMT+2] Trick 11/13 won by Player 1 (now has 5 tricks)
-[2026-02-06 19:17:03.030 GMT+2] Player 1 plays 8D - Playing lowest legal card (bid met)
-[2026-02-06 19:17:03.103 GMT+2] Player 2 plays JD - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:03.176 GMT+2] Player 3 plays AD - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:03.248 GMT+2] Player 0 plays 3D - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:03.252 GMT+2] Trick 12/13 won by Player 3 (now has 4 tricks)
-[2026-02-06 19:17:06.324 GMT+2] Player 3 plays AC - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:06.399 GMT+2] Player 0 plays QD - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:06.468 GMT+2] Player 1 plays 9D - Playing lowest legal card (bid met)
-[2026-02-06 19:17:06.540 GMT+2] Player 2 plays KD - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:06.541 GMT+2] Trick 13/13 won by Player 3 (now has 5 tricks)
-[2026-02-06 19:17:09.565 GMT+2] Playing phase completed. Tricks won: [1, 5, 2, 5]
-[2026-02-06 19:17:09.566 GMT+2] Scores: [-20, -10, -10, 35]
-[2026-02-06 19:17:09.576 GMT+2] Closed 4 socket clients
-[2026-02-06 19:17:09.718 GMT+2] Admin logged in
-[2026-02-06 19:17:09.917 GMT+2] Room FJUN7J deleted
-[2026-02-06 19:17:30.175 GMT+2] =================================================
-[2026-02-06 19:17:30.176 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 19:17:30.176 GMT+2] =================================================
-[2026-02-06 19:17:30.759 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:17:30.761 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:17:30.799 GMT+2] All 4 clients connected
-[2026-02-06 19:17:30.800 GMT+2] All 4 clients connected
-[2026-02-06 19:17:31.002 GMT+2] Room created by test.user1@whist-game.com: HAJRB9
-[2026-02-06 19:17:31.076 GMT+2] test.user2@whist-game.com joined room: HAJRB9
-[2026-02-06 19:17:31.144 GMT+2] test.user3@whist-game.com joined room: HAJRB9
-[2026-02-06 19:17:31.213 GMT+2] test.user4@whist-game.com joined room: HAJRB9
-[2026-02-06 19:17:31.213 GMT+2] Room HAJRB9 created with 4 players
-[2026-02-06 19:17:31.290 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 19:17:31.291 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 19:17:31.292 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 19:17:31.292 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 19:17:31.293 GMT+2] Player 0 hand: 4S, 5S, 8S, 10S, 2H, 3C, AC, 2D, 4D, 5D, 6D, 7D, AD
-[2026-02-06 19:17:31.294 GMT+2] Player 1 hand: 2S, 7S, AS, 6H, 10H, JH, QH, KH, 4C, 8C, QC, KC, JD
-[2026-02-06 19:17:31.294 GMT+2] Player 2 hand: 6S, JS, QS, KS, 5H, 8H, 2C, 5C, 6C, 10C, JC, 9D, KD
-[2026-02-06 19:17:31.295 GMT+2] Player 3 hand: 3S, 9S, 3H, 4H, 7H, 9H, AH, 7C, 9C, 3D, 8D, 10D, QD
-[2026-02-06 19:17:31.361 GMT+2] Dealer for room HAJRB9 is: 0
-[2026-02-06 19:17:31.362 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 19:17:31.364 GMT+2] Player 1 bids 6 tricks with H
-[2026-02-06 19:17:31.438 GMT+2] Player 2 decides to pass (best: 4 NT, current high: 6 H)
-[2026-02-06 19:17:31.518 GMT+2] Player 3 decides to pass (best: 3 H, current high: 6 H)
-[2026-02-06 19:17:31.600 GMT+2] Player 0 decides to pass (best: 3 D, current high: 6 H)
-[2026-02-06 19:17:31.678 GMT+2] Player 1 decides to pass (best: 6 H, current high: 6 H)
-[2026-02-06 19:17:31.749 GMT+2] Auction phase completed: Player 1 won auction with 6 H
-[2026-02-06 19:17:31.754 GMT+2] Starting bidding phase, first bidder: Player 2
-[2026-02-06 19:17:31.754 GMT+2] Player 2 bids 3 tricks
-[2026-02-06 19:17:31.834 GMT+2] Player 3 bids 3 tricks
-[2026-02-06 19:17:31.905 GMT+2] Player 0 bids 2 tricks
-[2026-02-06 19:17:31.980 GMT+2] Bidding phase completed. Bids: [2, 6, 3, 3], Sum: 14/13 (over-round)
-[2026-02-06 19:17:31.982 GMT+2] Starting playing phase: 13 tricks to play, trump: H
-[2026-02-06 19:17:31.982 GMT+2] Bids: [2, 6, 3, 3]
-[2026-02-06 19:17:31.982 GMT+2] First player: Player 1
-[2026-02-06 19:17:31.982 GMT+2] Player 1 plays 10H - Playing highest legal card (need 6 more)
-[2026-02-06 19:17:32.054 GMT+2] Player 2 plays 8H - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:32.125 GMT+2] Player 3 plays 9H - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:32.202 GMT+2] Player 0 plays 2H - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:32.206 GMT+2] Trick 1/13 won by Player 1 (now has 1 tricks)
-[2026-02-06 19:17:35.288 GMT+2] Player 1 plays 7S - Playing highest legal card (need 5 more)
-[2026-02-06 19:17:35.360 GMT+2] Player 2 plays 6S - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:35.430 GMT+2] Player 3 plays 9S - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:35.500 GMT+2] Player 0 plays 10S - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:35.511 GMT+2] Trick 2/13 won by Player 0 (now has 1 tricks)
-[2026-02-06 19:17:38.608 GMT+2] Player 0 plays 8S - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:38.691 GMT+2] Player 1 plays 2S - Playing highest legal card (need 5 more)
-[2026-02-06 19:17:38.769 GMT+2] Player 2 plays JS - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:38.844 GMT+2] Player 3 plays 3S - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:38.848 GMT+2] Trick 3/13 won by Player 2 (now has 1 tricks)
-[2026-02-06 19:17:41.934 GMT+2] Player 2 plays QS - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:42.003 GMT+2] Player 3 plays 3H - Need 3 more trick(s), playing lowest trump
-[2026-02-06 19:17:42.073 GMT+2] Player 0 plays 5S - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:42.144 GMT+2] Player 1 plays AS - Playing highest legal card (need 5 more)
-[2026-02-06 19:17:42.146 GMT+2] Trick 4/13 won by Player 3 (now has 1 tricks)
-[2026-02-06 19:17:45.236 GMT+2] Player 3 plays 10D - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:45.317 GMT+2] Player 0 plays 7D - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:45.396 GMT+2] Player 1 plays JD - Playing highest legal card (need 5 more)
-[2026-02-06 19:17:45.467 GMT+2] Player 2 plays 9D - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:45.471 GMT+2] Trick 5/13 won by Player 1 (now has 2 tricks)
-[2026-02-06 19:17:48.553 GMT+2] Player 1 plays 6H - Playing highest legal card (need 4 more)
-[2026-02-06 19:17:48.621 GMT+2] Player 2 plays 5H - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:48.692 GMT+2] Player 3 plays 7H - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:48.769 GMT+2] Player 0 plays 6D - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:48.780 GMT+2] Trick 6/13 won by Player 3 (now has 2 tricks)
-[2026-02-06 19:17:51.870 GMT+2] Player 3 plays 4H - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:51.941 GMT+2] Player 0 plays 4S - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:52.019 GMT+2] Player 1 plays JH - Playing highest legal card (need 4 more)
-[2026-02-06 19:17:52.098 GMT+2] Player 2 plays KS - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:52.104 GMT+2] Trick 7/13 won by Player 1 (now has 3 tricks)
-[2026-02-06 19:17:55.193 GMT+2] Player 1 plays QH - Playing highest legal card (need 3 more)
-[2026-02-06 19:17:55.259 GMT+2] Player 2 plays 10C - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:55.329 GMT+2] Player 3 plays AH - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:55.400 GMT+2] Player 0 plays 3C - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:55.408 GMT+2] Trick 8/13 won by Player 3 (now has 3 tricks)
-[2026-02-06 19:17:58.491 GMT+2] Player 3 plays 3D - Playing lowest legal card (bid met)
-[2026-02-06 19:17:58.558 GMT+2] Player 0 plays 5D - Playing highest legal card (need 1 more)
-[2026-02-06 19:17:58.626 GMT+2] Player 1 plays KH - Need 3 more trick(s), playing lowest trump
-[2026-02-06 19:17:58.695 GMT+2] Player 2 plays KD - Playing highest legal card (need 2 more)
-[2026-02-06 19:17:58.697 GMT+2] Trick 9/13 won by Player 1 (now has 4 tricks)
-[2026-02-06 19:18:01.776 GMT+2] Player 1 plays 8C - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:01.852 GMT+2] Player 2 plays 6C - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:01.929 GMT+2] Player 3 plays 7C - Playing lowest legal card (bid met)
-[2026-02-06 19:18:01.998 GMT+2] Player 0 plays AC - Playing highest legal card (need 1 more)
-[2026-02-06 19:18:02.006 GMT+2] Trick 10/13 won by Player 0 (now has 2 tricks)
-[2026-02-06 19:18:05.093 GMT+2] Player 0 plays 2D - Playing lowest legal card (bid met)
-[2026-02-06 19:18:05.176 GMT+2] Player 1 plays 4C - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:05.254 GMT+2] Player 2 plays 5C - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:05.332 GMT+2] Player 3 plays 8D - Playing lowest legal card (bid met)
-[2026-02-06 19:18:05.339 GMT+2] Trick 11/13 won by Player 3 (now has 4 tricks)
-[2026-02-06 19:18:08.425 GMT+2] Player 3 plays 9C - Playing lowest legal card (bid met)
-[2026-02-06 19:18:08.493 GMT+2] Player 0 plays 4D - Playing lowest legal card (bid met)
-[2026-02-06 19:18:08.560 GMT+2] Player 1 plays QC - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:08.627 GMT+2] Player 2 plays 2C - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:08.629 GMT+2] Trick 12/13 won by Player 1 (now has 5 tricks)
-[2026-02-06 19:18:11.727 GMT+2] Player 1 plays KC - Playing highest legal card (need 1 more)
-[2026-02-06 19:18:11.805 GMT+2] Player 2 plays JC - Playing highest legal card (need 2 more)
-[2026-02-06 19:18:11.873 GMT+2] Player 3 plays QD - Playing lowest legal card (bid met)
-[2026-02-06 19:18:11.941 GMT+2] Player 0 plays AD - Playing lowest legal card (bid met)
-[2026-02-06 19:18:11.943 GMT+2] Trick 13/13 won by Player 1 (now has 6 tricks)
-[2026-02-06 19:18:14.965 GMT+2] Playing phase completed. Tricks won: [2, 6, 1, 4]
-[2026-02-06 19:18:14.965 GMT+2] Scores: [14, 46, -20, -10]
-[2026-02-06 19:18:14.978 GMT+2] Closed 4 socket clients
-[2026-02-06 19:18:15.130 GMT+2] Admin logged in
-[2026-02-06 19:18:15.334 GMT+2] Room HAJRB9 deleted
-[2026-02-06 19:20:06.252 GMT+2] =================================================
-[2026-02-06 19:20:06.253 GMT+2] =====     Starting E2E Whist Game tests     =====
-[2026-02-06 19:20:06.253 GMT+2] =================================================
-[2026-02-06 19:20:06.824 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:20:06.826 GMT+2] Successfully logged in 4 test users
-[2026-02-06 19:20:06.870 GMT+2] All 4 clients connected
-[2026-02-06 19:20:06.872 GMT+2] All 4 clients connected
-[2026-02-06 19:20:07.044 GMT+2] Room created by test.user1@whist-game.com: F72RTY
-[2026-02-06 19:20:07.115 GMT+2] test.user2@whist-game.com joined room: F72RTY
-[2026-02-06 19:20:07.183 GMT+2] test.user3@whist-game.com joined room: F72RTY
-[2026-02-06 19:20:07.250 GMT+2] test.user4@whist-game.com joined room: F72RTY
-[2026-02-06 19:20:07.251 GMT+2] Room F72RTY created with 4 players
-[2026-02-06 19:20:07.330 GMT+2] Player 0 received hand with 13 cards
-[2026-02-06 19:20:07.330 GMT+2] Player 1 received hand with 13 cards
-[2026-02-06 19:20:07.330 GMT+2] Player 2 received hand with 13 cards
-[2026-02-06 19:20:07.331 GMT+2] Player 3 received hand with 13 cards
-[2026-02-06 19:20:07.331 GMT+2] Player 0 hand: 6S, AS, 5H, KH, 2C, 4C, 7C, 9C, 2D, 3D, 9D, JD, AD
-[2026-02-06 19:20:07.332 GMT+2] Player 1 hand: 3S, 4S, 5S, 7S, JS, KS, 8H, JH, QC, 5D, 6D, 7D, 8D
-[2026-02-06 19:20:07.332 GMT+2] Player 2 hand: 2S, QS, 2H, 4H, 7H, 9H, 10H, 8C, JC, 4D, 10D, QD, KD
-[2026-02-06 19:20:07.332 GMT+2] Player 3 hand: 8S, 9S, 10S, 3H, 6H, QH, AH, 3C, 5C, 6C, 10C, KC, AC
-[2026-02-06 19:20:07.397 GMT+2] Dealer for room F72RTY is: 0
-[2026-02-06 19:20:07.399 GMT+2] Starting auction, first bidder: Player 1
-[2026-02-06 19:20:07.400 GMT+2] Player 1 decides to pass (best: 3 S, current high: none)
-[2026-02-06 19:20:07.473 GMT+2] Player 2 decides to pass (best: 4 H, current high: none)
-[2026-02-06 19:20:07.548 GMT+2] Player 3 bids 6 tricks with C
-[2026-02-06 19:20:07.620 GMT+2] Player 0 decides to pass (best: 4 D, current high: 6 C)
-[2026-02-06 19:20:07.716 GMT+2] Player 3 decides to pass (best: 6 C, current high: 6 C)
-[2026-02-06 19:20:07.791 GMT+2] Auction phase completed: Player 3 won auction with 6 C
-[2026-02-06 19:20:07.794 GMT+2] Starting bidding phase, first bidder: Player 0
-[2026-02-06 19:20:07.794 GMT+2] Player 0 bids 3 tricks
-[2026-02-06 19:20:07.867 GMT+2] Player 1 bids 2 tricks
-[2026-02-06 19:20:07.939 GMT+2] Player 2 bids 3 tricks
-[2026-02-06 19:20:08.020 GMT+2] Bidding phase completed. Bids: [3, 2, 3, 6], Sum: 14/13 (over-round)
-[2026-02-06 19:20:08.021 GMT+2] Starting playing phase: 13 tricks to play, trump: C
-[2026-02-06 19:20:08.022 GMT+2] Bids: [3, 2, 3, 6]
-[2026-02-06 19:20:08.022 GMT+2] First player: Player 3
-[2026-02-06 19:20:08.022 GMT+2] Player 3 plays 10S - Playing highest legal card (need 6 more)
-[2026-02-06 19:20:08.102 GMT+2] Player 0 plays 6S - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:08.185 GMT+2] Player 1 plays 7S - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:08.254 GMT+2] Player 2 plays 2S - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:08.256 GMT+2] Trick 1/13 won by Player 3 (now has 1 tricks)
-[2026-02-06 19:20:08.435 GMT+2] Player 3 plays 10C - Playing highest legal card (need 5 more)
-[2026-02-06 19:20:08.517 GMT+2] Player 0 plays 9C - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:08.586 GMT+2] Player 1 plays QC - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:08.656 GMT+2] Player 2 plays 8C - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:08.658 GMT+2] Trick 2/13 won by Player 1 (now has 1 tricks)
-[2026-02-06 19:20:08.833 GMT+2] Player 1 plays 8H - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:08.902 GMT+2] Player 2 plays 10H - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:08.972 GMT+2] Player 3 plays 6H - Playing highest legal card (need 5 more)
-[2026-02-06 19:20:09.040 GMT+2] Player 0 plays 5H - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:09.042 GMT+2] Trick 3/13 won by Player 2 (now has 1 tricks)
-[2026-02-06 19:20:09.244 GMT+2] Player 2 plays QS - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:09.320 GMT+2] Player 3 plays 9S - Playing highest legal card (need 5 more)
-[2026-02-06 19:20:09.386 GMT+2] Player 0 plays AS - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:09.453 GMT+2] Player 1 plays 5S - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:09.455 GMT+2] Trick 4/13 won by Player 0 (now has 1 tricks)
-[2026-02-06 19:20:09.624 GMT+2] Player 0 plays KH - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:09.691 GMT+2] Player 1 plays JH - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:09.758 GMT+2] Player 2 plays 9H - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:09.825 GMT+2] Player 3 plays 3H - Playing highest legal card (need 5 more)
-[2026-02-06 19:20:09.827 GMT+2] Trick 5/13 won by Player 0 (now has 2 tricks)
-[2026-02-06 19:20:09.997 GMT+2] Player 0 plays 9D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:10.065 GMT+2] Player 1 plays 8D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:10.132 GMT+2] Player 2 plays 10D - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:10.200 GMT+2] Player 3 plays 3C - Need 5 more trick(s), playing lowest trump
-[2026-02-06 19:20:10.201 GMT+2] Trick 6/13 won by Player 3 (now has 2 tricks)
-[2026-02-06 19:20:10.369 GMT+2] Player 3 plays 8S - Playing highest legal card (need 4 more)
-[2026-02-06 19:20:10.436 GMT+2] Player 0 plays 2C - Need 1 more trick(s), playing lowest trump
-[2026-02-06 19:20:10.501 GMT+2] Player 1 plays 4S - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:10.569 GMT+2] Player 2 plays JC - Need 2 more trick(s), playing lowest trump
-[2026-02-06 19:20:10.571 GMT+2] Trick 7/13 won by Player 2 (now has 2 tricks)
-[2026-02-06 19:20:10.741 GMT+2] Player 2 plays 7H - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:10.808 GMT+2] Player 3 plays QH - Playing highest legal card (need 4 more)
-[2026-02-06 19:20:10.874 GMT+2] Player 0 plays 4C - Need 1 more trick(s), playing lowest trump
-[2026-02-06 19:20:10.942 GMT+2] Player 1 plays 3S - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:10.944 GMT+2] Trick 8/13 won by Player 0 (now has 3 tricks)
-[2026-02-06 19:20:11.114 GMT+2] Player 0 plays 2D - Playing lowest legal card (bid met)
-[2026-02-06 19:20:11.180 GMT+2] Player 1 plays 7D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:11.247 GMT+2] Player 2 plays 4D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:11.315 GMT+2] Player 3 plays 5C - Need 4 more trick(s), playing lowest trump
-[2026-02-06 19:20:11.317 GMT+2] Trick 9/13 won by Player 3 (now has 3 tricks)
-[2026-02-06 19:20:11.498 GMT+2] Player 3 plays AH - Playing highest legal card (need 3 more)
-[2026-02-06 19:20:11.564 GMT+2] Player 0 plays 3D - Playing lowest legal card (bid met)
-[2026-02-06 19:20:11.631 GMT+2] Player 1 plays JS - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:11.698 GMT+2] Player 2 plays 4H - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:11.700 GMT+2] Trick 10/13 won by Player 3 (now has 4 tricks)
-[2026-02-06 19:20:11.877 GMT+2] Player 3 plays 6C - Playing highest legal card (need 2 more)
-[2026-02-06 19:20:11.943 GMT+2] Player 0 plays 7C - Playing lowest legal card (bid met)
-[2026-02-06 19:20:12.010 GMT+2] Player 1 plays KS - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.078 GMT+2] Player 2 plays 2H - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.079 GMT+2] Trick 11/13 won by Player 0 (now has 4 tricks)
-[2026-02-06 19:20:12.251 GMT+2] Player 0 plays JD - Playing lowest legal card (bid met)
-[2026-02-06 19:20:12.320 GMT+2] Player 1 plays 6D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.387 GMT+2] Player 2 plays QD - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.454 GMT+2] Player 3 plays KC - Need 2 more trick(s), playing lowest trump
-[2026-02-06 19:20:12.456 GMT+2] Trick 12/13 won by Player 3 (now has 5 tricks)
-[2026-02-06 19:20:12.626 GMT+2] Player 3 plays AC - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.693 GMT+2] Player 0 plays AD - Playing lowest legal card (bid met)
-[2026-02-06 19:20:12.763 GMT+2] Player 1 plays 5D - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.830 GMT+2] Player 2 plays KD - Playing highest legal card (need 1 more)
-[2026-02-06 19:20:12.831 GMT+2] Trick 13/13 won by Player 3 (now has 6 tricks)
-[2026-02-06 19:20:12.936 GMT+2] Playing phase completed. Tricks won: [4, 1, 2, 6]
-[2026-02-06 19:20:12.936 GMT+2] Scores: [-10, -10, -10, 46]
-[2026-02-06 19:20:12.939 GMT+2] Closed 4 socket clients
-[2026-02-06 19:20:13.070 GMT+2] Admin logged in
-[2026-02-06 19:20:13.264 GMT+2] Room F72RTY deleted
+[2026-02-06 19:23:03.607 GMT+2] =================================================
+[2026-02-06 19:23:03.607 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 19:23:03.607 GMT+2] =================================================
+[2026-02-06 19:23:04.161 GMT+2] Successfully logged in 4 test users
+[2026-02-06 19:23:04.163 GMT+2] Successfully logged in 4 test users
+[2026-02-06 19:23:04.203 GMT+2] All 4 clients connected
+[2026-02-06 19:23:04.204 GMT+2] All 4 clients connected
+[2026-02-06 19:23:04.397 GMT+2] Room created by test.user1@whist-game.com: ESPQ52
+[2026-02-06 19:23:04.470 GMT+2] test.user2@whist-game.com joined room: ESPQ52
+[2026-02-06 19:23:04.539 GMT+2] test.user3@whist-game.com joined room: ESPQ52
+[2026-02-06 19:23:04.607 GMT+2] test.user4@whist-game.com joined room: ESPQ52
+[2026-02-06 19:23:04.607 GMT+2] Room ESPQ52 created with 4 players
+[2026-02-06 19:23:04.685 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 19:23:04.685 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 19:23:04.686 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 19:23:04.686 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 19:23:04.687 GMT+2] Player 0 hand: 4S, 5S, 7S, 9S, 10S, AS, 2H, 5H, 10H, AH, 7C, 9C, 9D
+[2026-02-06 19:23:04.687 GMT+2] Player 1 hand: 2S, 4H, 3C, 8C, 10C, JC, QC, 2D, 3D, 4D, 6D, 7D, KD
+[2026-02-06 19:23:04.688 GMT+2] Player 2 hand: 3S, 8S, JS, QS, 3H, 6H, 8H, 9H, JH, QH, 5C, JD, AD
+[2026-02-06 19:23:04.688 GMT+2] Player 3 hand: 6S, KS, 7H, KH, 2C, 4C, 6C, KC, AC, 5D, 8D, 10D, QD
+[2026-02-06 19:23:04.754 GMT+2] Dealer for room ESPQ52 is: 0
+[2026-02-06 19:23:04.756 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 19:23:04.757 GMT+2] Player 1 decides to pass (best: 4 D, current high: none)
+[2026-02-06 19:23:04.832 GMT+2] Player 2 bids 5 tricks with H
+[2026-02-06 19:23:04.906 GMT+2] Player 3 decides to pass (best: 5 C, current high: 5 H)
+[2026-02-06 19:23:04.981 GMT+2] Player 0 decides to pass (best: 4 S, current high: 5 H)
+[2026-02-06 19:23:05.052 GMT+2] Player 2 decides to pass (best: 5 H, current high: 5 H)
+[2026-02-06 19:23:05.122 GMT+2] Auction phase completed: Player 2 won auction with 5 H
+[2026-02-06 19:23:05.124 GMT+2] Starting bidding phase, first bidder: Player 3
+[2026-02-06 19:23:05.124 GMT+2] Player 3 bids 4 tricks
+[2026-02-06 19:23:05.195 GMT+2] Player 0 bids 3 tricks
+[2026-02-06 19:23:05.265 GMT+2] Player 1 bids 2 tricks
+[2026-02-06 19:23:05.334 GMT+2] Bidding phase completed. Bids: [3, 2, 5, 4], Sum: 14/13 (over-round)
+[2026-02-06 19:23:05.336 GMT+2] Starting playing phase: 13 tricks to play, trump: H
+[2026-02-06 19:23:05.336 GMT+2] Bids: [3, 2, 5, 4]
+[2026-02-06 19:23:05.337 GMT+2] First player: Player 2
+[2026-02-06 19:23:05.337 GMT+2] Player 2 plays 8S - Playing highest legal card (need 5 more)
+[2026-02-06 19:23:05.416 GMT+2] Player 3 plays 6S - Playing highest legal card (need 4 more)
+[2026-02-06 19:23:05.492 GMT+2] Player 0 plays 10S - Playing highest legal card (need 3 more)
+[2026-02-06 19:23:05.562 GMT+2] Player 1 plays 2S - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:05.564 GMT+2] Trick 1/13 won by Player 0 (now has 1 tricks)
+[2026-02-06 19:23:05.742 GMT+2] Player 0 plays 10H - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:05.812 GMT+2] Player 1 plays 4H - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:05.881 GMT+2] Player 2 plays 9H - Playing highest legal card (need 5 more)
+[2026-02-06 19:23:05.951 GMT+2] Player 3 plays 7H - Playing highest legal card (need 4 more)
+[2026-02-06 19:23:05.953 GMT+2] Trick 2/13 won by Player 0 (now has 2 tricks)
+[2026-02-06 19:23:06.131 GMT+2] Player 0 plays 9S - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:06.200 GMT+2] Player 1 plays 10C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:06.271 GMT+2] Player 2 plays 3S - Playing highest legal card (need 5 more)
+[2026-02-06 19:23:06.339 GMT+2] Player 3 plays KS - Playing highest legal card (need 4 more)
+[2026-02-06 19:23:06.341 GMT+2] Trick 3/13 won by Player 3 (now has 1 tricks)
+[2026-02-06 19:23:06.518 GMT+2] Player 3 plays KH - Playing highest legal card (need 3 more)
+[2026-02-06 19:23:06.586 GMT+2] Player 0 plays 5H - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:06.653 GMT+2] Player 1 plays 8C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:06.722 GMT+2] Player 2 plays 8H - Playing highest legal card (need 5 more)
+[2026-02-06 19:23:06.724 GMT+2] Trick 4/13 won by Player 3 (now has 2 tricks)
+[2026-02-06 19:23:06.906 GMT+2] Player 3 plays 10D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:06.981 GMT+2] Player 0 plays 9D - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:07.048 GMT+2] Player 1 plays 7D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:07.115 GMT+2] Player 2 plays JD - Playing highest legal card (need 5 more)
+[2026-02-06 19:23:07.117 GMT+2] Trick 5/13 won by Player 2 (now has 1 tricks)
+[2026-02-06 19:23:07.297 GMT+2] Player 2 plays JS - Playing highest legal card (need 4 more)
+[2026-02-06 19:23:07.366 GMT+2] Player 3 plays 8D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:07.442 GMT+2] Player 0 plays 7S - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:07.509 GMT+2] Player 1 plays 3C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:07.511 GMT+2] Trick 6/13 won by Player 2 (now has 2 tricks)
+[2026-02-06 19:23:07.691 GMT+2] Player 2 plays QS - Playing highest legal card (need 3 more)
+[2026-02-06 19:23:07.758 GMT+2] Player 3 plays 6C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:07.825 GMT+2] Player 0 plays 5S - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:07.895 GMT+2] Player 1 plays JC - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:07.898 GMT+2] Trick 7/13 won by Player 2 (now has 3 tricks)
+[2026-02-06 19:23:08.078 GMT+2] Player 2 plays 6H - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.146 GMT+2] Player 3 plays 4C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.213 GMT+2] Player 0 plays 2H - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:08.282 GMT+2] Player 1 plays QC - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.284 GMT+2] Trick 8/13 won by Player 2 (now has 4 tricks)
+[2026-02-06 19:23:08.453 GMT+2] Player 2 plays 3H - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:08.521 GMT+2] Player 3 plays 2C - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.588 GMT+2] Player 0 plays AH - Playing highest legal card (need 1 more)
+[2026-02-06 19:23:08.659 GMT+2] Player 1 plays 6D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.660 GMT+2] Trick 9/13 won by Player 0 (now has 3 tricks)
+[2026-02-06 19:23:08.839 GMT+2] Player 0 plays 4S - Playing lowest legal card (bid met)
+[2026-02-06 19:23:08.906 GMT+2] Player 1 plays 4D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:08.989 GMT+2] Player 2 plays JH - Need 1 more trick(s), playing lowest trump
+[2026-02-06 19:23:09.062 GMT+2] Player 3 plays KC - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:09.063 GMT+2] Trick 10/13 won by Player 2 (now has 5 tricks)
+[2026-02-06 19:23:09.242 GMT+2] Player 2 plays QH - Playing lowest legal card (bid met)
+[2026-02-06 19:23:09.311 GMT+2] Player 3 plays AC - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:09.379 GMT+2] Player 0 plays AS - Playing lowest legal card (bid met)
+[2026-02-06 19:23:09.446 GMT+2] Player 1 plays 3D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:09.448 GMT+2] Trick 11/13 won by Player 2 (now has 6 tricks)
+[2026-02-06 19:23:09.627 GMT+2] Player 2 plays 5C - Playing lowest legal card (bid met)
+[2026-02-06 19:23:09.693 GMT+2] Player 3 plays 5D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:09.761 GMT+2] Player 0 plays 7C - Playing lowest legal card (bid met)
+[2026-02-06 19:23:09.828 GMT+2] Player 1 plays 2D - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:09.829 GMT+2] Trick 12/13 won by Player 0 (now has 4 tricks)
+[2026-02-06 19:23:10.003 GMT+2] Player 0 plays 9C - Playing lowest legal card (bid met)
+[2026-02-06 19:23:10.073 GMT+2] Player 1 plays KD - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:10.141 GMT+2] Player 2 plays AD - Playing lowest legal card (bid met)
+[2026-02-06 19:23:10.208 GMT+2] Player 3 plays QD - Playing highest legal card (need 2 more)
+[2026-02-06 19:23:10.210 GMT+2] Trick 13/13 won by Player 0 (now has 5 tricks)
+[2026-02-06 19:23:10.324 GMT+2] Playing phase completed. Tricks won: [5, 0, 6, 2]
+[2026-02-06 19:23:10.324 GMT+2] Scores: [-20, -20, -10, -20]
+[2026-02-06 19:23:10.327 GMT+2] Closed 4 socket clients
+[2026-02-06 19:23:10.327 GMT+2] Room cleanup skipped for ESPQ52
