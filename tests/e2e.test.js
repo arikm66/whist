@@ -121,92 +121,64 @@ describe('E2E Whist Game', () => {
             // Set up each player's AI logic that reacts to events
             const auctionNextBidderHandlers = [];
             
-            for (let i = 0; i < 4; i++) {
-                const client = setup.getClient(i);
-                const user = setup.getUser(i);
+            // Helper function to calculate and place bid or pass
+            const processBidTurn = (playerIdx, game) => {
+                const client = setup.getClient(playerIdx);
+                const user = setup.getUser(playerIdx);
                 
+                // Calculate bids for all trump options
+                const trumpOptions = ['H', 'D', 'C', 'S', 'NT'];
+                const bidEstimates = trumpOptions.map(trump => {
+                    const trumpSuit = trump === 'NT' ? null : trump;
+                    const result = calculateTrickBid(playerHands[playerIdx], trumpSuit);
+                    return {
+                        suit: trump,
+                        quantity: result.bid
+                    };
+                });
+                
+                // Find the best bid considering both quantity and suit strength
+                const bestBid = bidEstimates.reduce((max, current) => 
+                    compareAuctionBids(current, max) > 0 ? current : max
+                );
+                
+                const currentHighBid = game.auctionHighestBid;
+                const isFirstBidder = !currentHighBid;
+                
+                // Decide whether to bid or pass (minimum 5 tricks, must beat current high bid)
+                const meetsMinimum = bestBid.quantity >= 5;
+                const shouldBid = meetsMinimum && (isFirstBidder || compareAuctionBids(bestBid, currentHighBid) > 0);
+                
+                if (shouldBid) {
+                    testLog(`Player ${playerIdx} bids ${bestBid.quantity} tricks with ${bestBid.suit}`);
+                    client.emit('placeAuctionBid', { 
+                        roomCode: setup.roomCode, 
+                        userId: user.userId,
+                        quantity: bestBid.quantity,
+                        suit: bestBid.suit
+                    });
+                } else {
+                    const highBidStr = currentHighBid ? `${currentHighBid.quantity} ${currentHighBid.suit}` : 'none';
+                    testLog(`Player ${playerIdx} decides to pass (best: ${bestBid.quantity} ${bestBid.suit}, current high: ${highBidStr})`);
+                    client.emit('passAuction', { roomCode: setup.roomCode, userId: user.userId });
+                }
+            };
+            
+            // Set up handlers for each player that call the helper function
+            for (let i = 0; i < 4; i++) {
                 const handler = (data) => {
-                    // Check if it's my turn based on the updated game state
                     if (data.game.auctionCurrentBidder === i) {
-                        
-                        // Calculate bids for all trump options
-                        const trumpOptions = ['H', 'D', 'C', 'S', 'NT'];
-                        const bidEstimates = trumpOptions.map(trump => {
-                            const trumpSuit = trump === 'NT' ? null : trump; // 'H', 'D', 'C', 'S', or null
-                            const result = calculateTrickBid(playerHands[i], trumpSuit);
-                            return {
-                                suit: trump,
-                                quantity: result.bid
-                            };
-                        });
-                        
-                        // Find the best bid considering both quantity and suit strength
-                        const bestBid = bidEstimates.reduce((max, current) => 
-                            compareAuctionBids(current, max) > 0 ? current : max
-                        );
-                        
-                        const currentHighBid = data.game.auctionHighestBid;
-                        const isFirstBidder = !currentHighBid;
-                        
-                        // Decide whether to bid or pass
-                        // Must meet minimum bid of 5 and beat current high bid
-                        const meetsMinimum = bestBid.quantity >= 5;
-                        const shouldBid = meetsMinimum && (isFirstBidder || compareAuctionBids(bestBid, currentHighBid) > 0);
-                        
-                        if (shouldBid) {
-                            testLog(`Player ${i} bids ${bestBid.quantity} tricks with ${bestBid.suit}`);
-                            client.emit('placeAuctionBid', { 
-                                roomCode: setup.roomCode, 
-                                userId: user.userId,
-                                quantity: bestBid.quantity,
-                                suit: bestBid.suit
-                            });
-                        } else {
-                            const highBidStr = currentHighBid ? `${currentHighBid.quantity} ${currentHighBid.suit}` : 'none';
-                            testLog(`Player ${i} decides to pass (best: ${bestBid.quantity} ${bestBid.suit}, current high: ${highBidStr})`);
-                            client.emit('passAuction', { roomCode: setup.roomCode, userId: user.userId });
-                        }
+                        processBidTurn(i, data.game);
                     }
                 };
                 
                 auctionNextBidderHandlers.push(handler);
-                client.on('auctionNextBidder', handler);
+                setup.getClient(i).on('auctionNextBidder', handler);
             }
             
             // Trigger the first player to start
-            const firstBidderIdx = currentGame.auctionCurrentBidder;
-            testLog(`Starting auction, first bidder: Player ${firstBidderIdx}`);
-            
-            // Calculate first player's best bid
-            const trumpOptions = ['H', 'D', 'C', 'S', 'NT'];
-            const firstBidEstimates = trumpOptions.map(trump => {
-                const trumpSuit = trump === 'NT' ? null : trump; // 'H', 'D', 'C', 'S', or null
-                const result = calculateTrickBid(playerHands[firstBidderIdx], trumpSuit);
-                return {
-                    suit: trump,
-                    quantity: result.bid
-                };
-            });
-            const firstBestBid = firstBidEstimates.reduce((max, current) => 
-                compareAuctionBids(current, max) > 0 ? current : max
-            );
-            
-            // Check if first bidder can place a valid bid (minimum 5 tricks)
-            if (firstBestBid.quantity >= 5) {
-                testLog(`Player ${firstBidderIdx} bids ${firstBestBid.quantity} tricks with ${firstBestBid.suit}`);
-                setup.getClient(firstBidderIdx).emit('placeAuctionBid', { 
-                    roomCode: setup.roomCode, 
-                    userId: setup.getUser(firstBidderIdx).userId,
-                    quantity: firstBestBid.quantity,
-                    suit: firstBestBid.suit
-                });
-            } else {
-                testLog(`Player ${firstBidderIdx} decides to pass (best bid ${firstBestBid.quantity} < minimum 5)`);
-                setup.getClient(firstBidderIdx).emit('passAuction', { 
-                    roomCode: setup.roomCode, 
-                    userId: setup.getUser(firstBidderIdx).userId
-                });
-            }
+            testLog(`Starting auction, first bidder: Player ${currentGame.auctionCurrentBidder}`);
+            processBidTurn(currentGame.auctionCurrentBidder, currentGame)
             
             // Wait for auction to complete
             const result = await new Promise((resolve) => {

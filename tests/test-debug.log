@@ -120,3 +120,35 @@
 [2026-02-06 05:50:17.510 GMT+2] Closed 4 socket clients
 [2026-02-06 05:50:17.634 GMT+2] Admin logged in
 [2026-02-06 05:50:17.829 GMT+2] Room MOFRI4 deleted
+[2026-02-06 06:08:47.496 GMT+2] =================================================
+[2026-02-06 06:08:47.496 GMT+2] =====     Starting E2E Whist Game tests     =====
+[2026-02-06 06:08:47.496 GMT+2] =================================================
+[2026-02-06 06:08:48.342 GMT+2] Successfully logged in 4 test users
+[2026-02-06 06:08:48.344 GMT+2] Successfully logged in 4 test users
+[2026-02-06 06:08:48.378 GMT+2] All 4 clients connected
+[2026-02-06 06:08:48.379 GMT+2] All 4 clients connected
+[2026-02-06 06:08:48.562 GMT+2] Room created by test.user1@whist-game.com: SXEN5L
+[2026-02-06 06:08:48.647 GMT+2] test.user2@whist-game.com joined room: SXEN5L
+[2026-02-06 06:08:48.734 GMT+2] test.user3@whist-game.com joined room: SXEN5L
+[2026-02-06 06:08:49.292 GMT+2] test.user4@whist-game.com joined room: SXEN5L
+[2026-02-06 06:08:49.292 GMT+2] Room SXEN5L created with 4 players
+[2026-02-06 06:08:49.385 GMT+2] Player 0 received hand with 13 cards
+[2026-02-06 06:08:49.386 GMT+2] Player 1 received hand with 13 cards
+[2026-02-06 06:08:49.387 GMT+2] Player 2 received hand with 13 cards
+[2026-02-06 06:08:49.387 GMT+2] Player 3 received hand with 13 cards
+[2026-02-06 06:08:49.388 GMT+2] Player 0 hand: 3S, 9S, JS, KS, 6H, 7H, JH, KH, QC, KC, AC, 2D, AD
+[2026-02-06 06:08:49.388 GMT+2] Player 1 hand: 2S, 6S, 7S, 5H, 8H, QH, 8C, 10C, JC, 4D, 5D, 8D, 9D
+[2026-02-06 06:08:49.389 GMT+2] Player 2 hand: 4S, 5S, 10S, 2H, 4H, 9H, 10H, 2C, 7C, 9C, 3D, 7D, JD
+[2026-02-06 06:08:49.389 GMT+2] Player 3 hand: 8S, QS, AS, 3H, AH, 3C, 4C, 5C, 6C, 6D, 10D, QD, KD
+[2026-02-06 06:08:49.459 GMT+2] Dealer for room SXEN5L is: 0
+[2026-02-06 06:08:49.463 GMT+2] Starting auction, first bidder: Player 1
+[2026-02-06 06:08:49.466 GMT+2] Player 1 decides to pass (best: 1 NT, current high: none)
+[2026-02-06 06:08:49.553 GMT+2] Player 2 decides to pass (best: 1 NT, current high: none)
+[2026-02-06 06:08:49.636 GMT+2] Player 3 bids 5 tricks with D
+[2026-02-06 06:08:49.729 GMT+2] Player 0 bids 6 tricks with NT
+[2026-02-06 06:08:49.805 GMT+2] Player 3 decides to pass (best: 5 D, current high: 6 NT)
+[2026-02-06 06:08:49.889 GMT+2] Player 0 decides to pass (best: 6 NT, current high: 6 NT)
+[2026-02-06 06:08:49.965 GMT+2] Auction phase completed: complete
+[2026-02-06 06:08:49.972 GMT+2] Closed 4 socket clients
+[2026-02-06 06:08:50.104 GMT+2] Admin logged in
+[2026-02-06 06:08:50.308 GMT+2] Room SXEN5L deleted
