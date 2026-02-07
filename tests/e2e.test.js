@@ -314,6 +314,9 @@ describe('E2E Whist Game', () => {
             // Track tricks won by each player
             const tricksWon = [0, 0, 0, 0];
             
+            // Track all cards played in completed tricks for advanced strategy
+            const cardsPlayedThisRound = [];
+            
             // Helper to convert string card ("4S") to object {rank: "4", suit: "S"}
             const parseCard = (cardStr) => {
                 return {
@@ -330,6 +333,14 @@ describe('E2E Whist Game', () => {
                 tricksCompleted++;
                 const winner = data.winner;
                 tricksWon[winner]++;
+                
+                // Track cards from completed trick
+                if (data.trick && Array.isArray(data.trick)) {
+                    data.trick.forEach(tc => {
+                        cardsPlayedThisRound.push(parseCard(tc.card));
+                    });
+                }
+                
                 testLog(`Trick ${tricksCompleted}/${totalTricks} won by Player ${winner} (now has ${tricksWon[winner]} tricks)`);
             });
             
@@ -353,13 +364,15 @@ describe('E2E Whist Game', () => {
                 const myHandObjects = myHandStrings.map(parseCard);
                 const currentTrickObjects = currentTrick.map(tc => parseCard(tc.card));
                 
-                // Calculate which card to play
+                // Calculate which card to play using advanced strategy
                 const result = calculateCardToPlay(
                     myHandObjects,
                     currentTrickObjects,
                     game.trumpSuit,
                     myBid,
-                    myTricksWon
+                    myTricksWon,
+                    game.bids,
+                    cardsPlayedThisRound
                 );
                 
                 const cardToPlay = result.card;
