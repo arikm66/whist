@@ -30,10 +30,20 @@ describe('E2E Whist Game', () => {
     testLog(`=================================================`);
     testLog(`=====     Starting E2E Whist Game tests     =====`);
     testLog(`=================================================`);
+    
+    // Environment variables:
+    // - SKIP_ROOM_CLEANUP=1: Keep room after test completion for debugging
+    // - FORCE_FRISH=1: Force all players to pass in auction to trigger frish
+    
+    if (process.env.FORCE_FRISH === '1') {
+        testLog(`FORCE_FRISH mode enabled - all players will pass in auction`);
+    }
+    
     const setup = createTestSetup();
     let dealer;
     const playerHands = [null, null, null, null]; // Store each player's hand
     let currentGame = null; // Store the game state from gameStarted
+    let hadFrish = false; // Track if frish occurred (to skip subsequent phases)
 
     afterAll(async () => {
       const skipCleanup = process.env.SKIP_ROOM_CLEANUP === '1';
@@ -126,6 +136,13 @@ describe('E2E Whist Game', () => {
                 const client = setup.getClient(playerIdx);
                 const user = setup.getUser(playerIdx);
                 
+                // Force frish if environment variable is set
+                if (process.env.FORCE_FRISH === '1') {
+                    testLog(`Player ${playerIdx} forced to pass (FORCE_FRISH=1)`);
+                    client.emit('passAuction', { roomCode: setup.roomCode, userId: user.userId });
+                    return;
+                }
+                
                 // Calculate bids for all trump options
                 const trumpOptions = ['H', 'D', 'C', 'S', 'NT'];
                 const bidEstimates = trumpOptions.map(trump => {
@@ -211,8 +228,8 @@ describe('E2E Whist Game', () => {
 
     describe('Bidding Phase', () => {
         test('all players place their bids', async () => {
-            // Skip if auction ended in frish
-            if (currentGame.status === 'frish') {
+            // Skip if auction ended in frish or if we had frish
+            if (currentGame.status === 'frish' || hadFrish) {
                 testLog('Skipping bidding phase - auction ended in frish');
                 return;
             }
@@ -298,8 +315,89 @@ describe('E2E Whist Game', () => {
         });
     });
 
+    describe('Frish Phase', () => {
+        test('handle frish card exchange if auction ended in frish', async () => {
+            // Skip if not frish
+            if (currentGame.status !== 'frish') {
+                testLog('Skipping frish phase - game has normal auction winner');
+                return;
+            }
+
+            testLog('Starting frish phase - players will exchange 3 cards each');
+            expect(currentGame.status).toBe('frish');
+
+            // Helper function to select 3 frish cards for a player
+            const selectFrishCards = (playerIdx) => {
+                const client = setup.getClient(playerIdx);
+                const user = setup.getUser(playerIdx);
+                const myHand = playerHands[playerIdx];
+
+                // TODO: Implement smart frish card selection logic
+                // For now, just select the first 3 cards
+                const selectedCards = myHand.slice(0, 3);
+                
+                testLog(`Player ${playerIdx} selecting frish cards: ${selectedCards.join(', ')}`);
+
+                // Send each card to server with selectFrishCard event
+                selectedCards.forEach((card, index) => {
+                    client.emit('selectFrishCard', {
+                        roomCode: setup.roomCode,
+                        userId: user.userId,
+                        card: card
+                    });
+                    testLog(`Player ${playerIdx} sent frish card ${index + 1}/3: ${card}`);
+                });
+
+                // After sending all 3 cards, emit readyForFrish
+                client.emit('readyForFrish', {
+                    roomCode: setup.roomCode,
+                    userId: user.userId
+                });
+                
+                testLog(`Player ${playerIdx} sent readyForFrish`);
+            };
+
+            // All players select their 3 frish cards
+            for (let i = 0; i < 4; i++) {
+                selectFrishCards(i);
+            }
+
+            // Wait for server to exchange cards and emit auctionRestarted
+            const result = await new Promise((resolve) => {
+                setup.getClient(0).once('auctionRestarted', (data) => {
+                    resolve(data.game);
+                });
+            });
+
+            // Update current game state
+            currentGame = result;
+
+            testLog('Frish phase completed - auction restarted');
+            testLog(`New hands after frish exchange: P0=${currentGame.players[0].hand.length}, P1=${currentGame.players[1].hand.length}, P2=${currentGame.players[2].hand.length}, P3=${currentGame.players[3].hand.length}`);
+
+            // Update playerHands arrays with new hands from server
+            for (let i = 0; i < 4; i++) {
+                playerHands[i] = currentGame.players[i].hand;
+            }
+
+            // Verify status is back to auction
+            expect(currentGame.status).toBe('auction');
+            expect(currentGame.auctionCurrentBidder).toBeDefined();
+            
+            // Mark that frish occurred (subsequent tests should skip)
+            hadFrish = true;
+            testLog('Note: After frish, test suite ends. Second auction/bidding/playing not implemented yet.');
+        });
+    });
+
     describe('Playing Phase', () => {
         test('all players play their cards through all tricks', async () => {
+            // Skip if frish or had frish
+            if (currentGame.status === 'frish' || hadFrish) {
+                testLog('Skipping normal playing phase - game ended in frish');
+                return;
+            }
+
             expect(currentGame.status).toBe('playing');
             expect(currentGame.currentTurn).toBeDefined();
             
