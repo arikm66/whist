@@ -343,7 +343,7 @@ describe('E2E Whist Game', () => {
                     client.emit('selectFrishCard', {
                         roomCode: setup.roomCode,
                         userId: user.userId,
-                        card: card
+                        frishCard: card
                     });
                     testLog(`Player ${playerIdx} sent frish card ${index + 1}/3: ${card}`);
                 });
@@ -363,22 +363,28 @@ describe('E2E Whist Game', () => {
             }
 
             // Wait for server to exchange cards and emit auctionRestarted
-            const result = await new Promise((resolve) => {
-                setup.getClient(0).once('auctionRestarted', (data) => {
-                    resolve(data.game);
+            // Each client receives a filtered view with only their own hand visible
+            const auctionRestartedPromises = [];
+            for (let i = 0; i < 4; i++) {
+                const promise = new Promise((resolve) => {
+                    setup.getClient(i).once('auctionRestarted', (data) => {
+                        // Extract this player's new hand from their filtered view
+                        playerHands[i] = data.game.players[i].hand;
+                        testLog(`Player ${i} received new hand with ${playerHands[i].length} cards after frish`);
+                        resolve(data.game);
+                    });
                 });
-            });
+                auctionRestartedPromises.push(promise);
+            }
 
-            // Update current game state
-            currentGame = result;
+            // Wait for all players to receive their auctionRestarted event
+            const results = await Promise.all(auctionRestartedPromises);
+            
+            // Update current game state (use player 0's view)
+            currentGame = results[0];
 
             testLog('Frish phase completed - auction restarted');
-            testLog(`New hands after frish exchange: P0=${currentGame.players[0].hand.length}, P1=${currentGame.players[1].hand.length}, P2=${currentGame.players[2].hand.length}, P3=${currentGame.players[3].hand.length}`);
-
-            // Update playerHands arrays with new hands from server
-            for (let i = 0; i < 4; i++) {
-                playerHands[i] = currentGame.players[i].hand;
-            }
+            testLog(`All hands after frish exchange: P0=${playerHands[0].length}, P1=${playerHands[1].length}, P2=${playerHands[2].length}, P3=${playerHands[3].length}`);
 
             // Verify status is back to auction
             expect(currentGame.status).toBe('auction');
@@ -387,7 +393,7 @@ describe('E2E Whist Game', () => {
             // Mark that frish occurred (subsequent tests should skip)
             hadFrish = true;
             testLog('Note: After frish, test suite ends. Second auction/bidding/playing not implemented yet.');
-        });
+        }, 30000); // 30 second timeout for frish phase
     });
 
     describe('Playing Phase', () => {
