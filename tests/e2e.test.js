@@ -34,9 +34,14 @@ describe('E2E Whist Game', () => {
     // Environment variables:
     // - SKIP_ROOM_CLEANUP=1: Keep room after test completion for debugging
     // - FORCE_FRISH=1: Force all players to pass in auction to trigger frish
+    // - ROOM_CODE=<code>: Join existing room instead of creating a new one
     
     if (process.env.FORCE_FRISH === '1') {
         testLog(`FORCE_FRISH mode enabled - all players will pass in auction`);
+    }
+    
+    if (process.env.ROOM_CODE) {
+        testLog(`ROOM_CODE mode enabled - will join existing room: ${process.env.ROOM_CODE}`);
     }
     
     const setup = createTestSetup();
@@ -44,6 +49,7 @@ describe('E2E Whist Game', () => {
     const playerHands = [null, null, null, null]; // Store each player's hand
     let currentGame = null; // Store the game state from gameStarted
     let hadFrish = false; // Track if frish occurred (to skip subsequent phases)
+    let gameAlreadyFinished = false; // Track if ROOM_CODE points to a finished game
 
     afterAll(async () => {
       const skipCleanup = process.env.SKIP_ROOM_CLEANUP === '1';
@@ -70,30 +76,80 @@ describe('E2E Whist Game', () => {
 
     describe('Room Creation & Setup', () => {
         test('user1 creates a room and all four players join', async () => {
-            // Set up listeners for gameStarted event before creating room
-            const gameStartedPromises = [];
-            for (let i = 0; i < 4; i++) {
-                const promise = new Promise((resolve) => {
-                    setup.getClient(i).once('gameStarted', (data) => {
-                        // Each player receives filtered game with only their own hand
-                        playerHands[i] = data.game.players[i].hand;
-                        // Store the game state from player 0
-                        if (i === 0) {
-                            currentGame = data.game;
+            let roomCode;
+            
+            if (process.env.ROOM_CODE) {
+                // Use existing room - join and get state from roomJoined events
+                roomCode = process.env.ROOM_CODE;
+                setup.roomCode = roomCode;
+                testLog(`Joining existing room: ${roomCode}`);
+                
+                // Join all 4 players and capture their roomJoined responses
+                try {
+                    for (let i = 0; i < 4; i++) {
+                        const user = setup.getUser(i);
+                        const joinResponse = await joinRoom(setup.getClient(i), roomCode, user);
+                        
+                        // Check if game is finished (check on first player to fail fast)
+                        if (i === 0 && joinResponse && joinResponse.game && joinResponse.game.status === 'finished') {
+                            testLog(`===========================================`);
+                            testLog(`Room ${roomCode} game is already finished`);
+                            testLog(`Test will skip all phases gracefully`);
+                            testLog(`===========================================`);
+                            gameAlreadyFinished = true;
+                            currentGame = joinResponse.game;
+                            return; // Skip this test gracefully
                         }
-                        testLog(`Player ${i} received hand with ${playerHands[i].length} cards`);
-                        resolve();
+                        
+                        // Extract hand from the roomJoined response
+                        if (joinResponse && joinResponse.game && joinResponse.game.players && joinResponse.game.players[i]) {
+                            playerHands[i] = joinResponse.game.players[i].hand;
+                            if (i === 0) {
+                                currentGame = joinResponse.game;
+                            }
+                            testLog(`Player ${i} joined with ${playerHands[i] ? playerHands[i].length : 0} cards`);
+                        } else {
+                            testLog(`Player ${i} joined but no hand data received`);
+                        }
+                    }
+                } catch (error) {
+                    testLog(`Failed to join room ${roomCode}: ${error.message}`);
+                    throw new Error(`ROOM_CODE ${roomCode} does not exist or cannot be joined. Create a new room or remove ROOM_CODE env var to let test create one.`);
+                }
+            } else {
+                // Create new room and wait for gameStarted events
+                const gameStartedPromises = [];
+                for (let i = 0; i < 4; i++) {
+                    const promise = new Promise((resolve) => {
+                        setup.getClient(i).once('gameStarted', (data) => {
+                            // Each player receives filtered game with only their own hand
+                            playerHands[i] = data.game.players[i].hand;
+                            // Store the game state from player 0
+                            if (i === 0) {
+                                currentGame = data.game;
+                            }
+                            testLog(`Player ${i} received hand with ${playerHands[i].length} cards`);
+                            resolve();
+                        });
                     });
-                });
-                gameStartedPromises.push(promise);
-            }
+                    gameStartedPromises.push(promise);
+                }
 
-            const roomCode = await setup.createRoomAndJoin();
+                // Create new room (player 0 creates, players 1-3 join)
+                roomCode = await setup.createRoomAndJoin();
+                
+                // Wait for all players to receive their gameStarted event
+                await Promise.all(gameStartedPromises);
+            }
+            
             expect(roomCode).toBeDefined();
             expect(roomCode).toBeTruthy();
 
-            // Wait for all players to receive their gameStarted event
-            await Promise.all(gameStartedPromises);
+            // Skip hand verification if game is already finished
+            if (gameAlreadyFinished) {
+                testLog('Game already finished - skipping hand verification');
+                return;
+            }
 
             // Verify each player received a 13-card hand
             for (let i = 0; i < 4; i++) {
@@ -104,6 +160,11 @@ describe('E2E Whist Game', () => {
         });
 
         test('dealer in created room is valid', async () => {
+            if (gameAlreadyFinished) {
+                testLog('Skipping dealer test - game already finished');
+                return;
+            }
+            
             expect(setup.roomCode).toBeTruthy();
             
             const rooms = await getRoomsList(setup.getClient(0));
@@ -124,6 +185,11 @@ describe('E2E Whist Game', () => {
 
     describe('Auction Phase', () => {
         test('auction proceeds until complete', async () => {
+            if (gameAlreadyFinished) {
+                testLog('Skipping auction phase - game already finished');
+                return;
+            }
+            
             // Use the game state from gameStarted event
             expect(currentGame).toBeDefined();
             expect(currentGame.auctionCurrentBidder).toBeDefined();
@@ -228,6 +294,11 @@ describe('E2E Whist Game', () => {
 
     describe('Bidding Phase', () => {
         test('all players place their bids', async () => {
+            if (gameAlreadyFinished) {
+                testLog('Skipping bidding phase - game already finished');
+                return;
+            }
+            
             // Skip if auction ended in frish or if we had frish
             if (currentGame.status === 'frish' || hadFrish) {
                 testLog('Skipping bidding phase - auction ended in frish');
@@ -317,6 +388,11 @@ describe('E2E Whist Game', () => {
 
     describe('Frish Phase', () => {
         test('handle frish card exchange if auction ended in frish', async () => {
+            if (gameAlreadyFinished) {
+                testLog('Skipping frish phase - game already finished');
+                return;
+            }
+            
             // Skip if not frish
             if (currentGame.status !== 'frish') {
                 testLog('Skipping frish phase - game has normal auction winner');
@@ -398,6 +474,11 @@ describe('E2E Whist Game', () => {
 
     describe('Playing Phase', () => {
         test('all players play their cards through all tricks', async () => {
+            if (gameAlreadyFinished) {
+                testLog('Skipping playing phase - game already finished');
+                return;
+            }
+            
             // Skip if frish or had frish
             if (currentGame.status === 'frish' || hadFrish) {
                 testLog('Skipping normal playing phase - game ended in frish');
@@ -406,6 +487,14 @@ describe('E2E Whist Game', () => {
 
             expect(currentGame.status).toBe('playing');
             expect(currentGame.currentTurn).toBeDefined();
+            
+            // Set up gameFinished listener to log when game completes
+            setup.getClient(0).once('gameFinished', (data) => {
+                testLog('===========================================');
+                testLog('GAME FINISHED - All 5 rounds completed');
+                testLog('===========================================');
+                testLog(`Final scores: [${data.game.scores.map(s => s.score).join(', ')}]`);
+            });
             
             const totalTricks = playerHands[0].length;
             testLog(`Starting playing phase: ${totalTricks} tricks to play, trump: ${currentGame.trumpSuit || 'NT'}`);
@@ -540,7 +629,7 @@ describe('E2E Whist Game', () => {
             currentGame = result;
             
             testLog(`Playing phase completed. Tricks won: [${tricksWon.join(', ')}]`);
-            testLog(`Scores: [${result.scores.map(s => s.score).join(', ')}]`);
+            testLog(`Scores after round ${result.round}: [${result.scores.map(s => s.score).join(', ')}]`);
             
             // Verify all tricks were played
             expect(tricksCompleted).toBe(totalTricks);

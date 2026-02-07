@@ -1,3 +1,8 @@
+// Module imports at the top
+const Game = require('../../models/Game');
+const { appendRoomLog, closeRoomLog } = require('../../utils/logToFile');
+const { dealCards, sortHand } = require('../../utils/gameLogic');
+
 // Complete frish phase: exchange cards, reset flags, start new auction
 function completeFrishPhase(game, roomCode, io, activeGames, sortHand, appendRoomLog) {
   // 1. Remove frish cards from each player's hand
@@ -132,7 +137,9 @@ async function endRound(game, roomCode, io) {
       const filteredGame = getFilteredGameForPlayer(game, p.userId);
       io.to(p.userId.toString()).emit('gameFinished', { game: filteredGame });
     });
-    appendRoomLog(roomCode, 'Game finished');
+    appendRoomLog(roomCode, '===========================================');
+    appendRoomLog(roomCode, 'GAME FINISHED - All 5 rounds completed');
+    appendRoomLog(roomCode, '===========================================');
     // Log final scores
     const scoreLines = game.scores.map(s => {
       const player = game.players[s.position];
@@ -145,7 +152,6 @@ async function endRound(game, roomCode, io) {
     appendRoomLog(roomCode, `Round started: Round ${game.round}`);
     game.dealer = (game.dealer + 1) % 4;
     game.players.forEach(p => p.tricksWon = 0);
-    const { dealCards, sortHand } = require('../../utils/gameLogic');
     const hands = dealCards();
     game.players[0].hand = sortHand(hands.player0);
     game.players[1].hand = sortHand(hands.player1);
@@ -230,8 +236,6 @@ async function advanceAuctionTurn(game, roomCode, io, activeGames) {
     io.to(p.userId.toString()).emit('auctionNextBidder', { game: filteredGame });
   });
 }
-const Game = require('../../models/Game');
-const { appendRoomLog } = require('../../utils/logToFile');
 
 async function broadcastRoomsList(io) {
   try {
@@ -252,9 +256,6 @@ function generateRoomCode() {
 }
 
 async function startGame(roomCode, io, activeGames) {
-  const Game = require('../../models/Game');
-  const { dealCards, sortHand } = require('../../utils/gameLogic');
-  const { appendRoomLog } = require('../../utils/logToFile');
   try {
     let game = activeGames.get(roomCode) || await Game.findOne({ roomCode });
     if (game.dealer === undefined) {
